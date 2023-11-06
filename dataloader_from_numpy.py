@@ -298,5 +298,13 @@ class WavDatasetForVerification(Dataset):
                 piezos.append(piezo)
                 audios.append(audio)
                 ids.append(user)
-            return (np.array(piezos), np.array(audios), np.array(ids))
+            piezos = np.array(piezos)
+            audios = np.array(audios)
+            ids = np.array(ids)
+            piezos = torch.from_numpy(piezos).float()
+            audios = torch.from_numpy(audios).float()
+            ids = torch.from_numpy(ids)
+
+
+            return (piezos, audios, ids)
 

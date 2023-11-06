@@ -260,8 +260,8 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------------
     
     lr = 0.001
-    n_user = 58
-    train_ratio = 0.9
+    n_user = 51
+    train_ratio = 0.8
     num_of_epoches = 800
     train_batch_size = 4
     test_batch_size = 2
@@ -281,17 +281,25 @@ if __name__ == "__main__":
     # extractor.classifier[3] = nn.Linear(extractor.classifier[3].in_features, n_user)
     # 
 
-    extractor = torchvision.models.resnet50(pretrained=True)
-    extractor.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
-    extractor.fc = nn.Linear(extractor.fc.in_features, 51)
+    extractor_p = torchvision.models.resnet50(pretrained=True)
+    extractor_p.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
+    extractor_p.fc = nn.Linear(extractor_p.fc.in_features, 51)
     # hook for feature layer output
-    hook = extractor.avgpool.register_forward_hook(hook_fn)
-    extractor.to(device)
+    hook = extractor_p.avgpool.register_forward_hook(hook_fn)
+    extractor_p.to(device)
+
+    extractor_a = torchvision.models.resnet50(pretrained=True)
+    extractor_a.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
+    extractor_a.fc = nn.Linear(extractor_a.fc.in_features, 51)
+    # hook for feature layer output
+    hook = extractor_a.avgpool.register_forward_hook(hook_fn)
+    extractor_a.to(device)
 
     ge2e_loss = GE2ELoss_ori(device).to(device)
 
     optimizer = torch.optim.Adam([
-        {'params': extractor.parameters()},
+        {'params': extractor_a.parameters()},
+        {'params': extractor_p.parameters()},
         {'params': ge2e_loss.parameters()}
     ], lr=lr)
     

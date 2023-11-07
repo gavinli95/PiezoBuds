@@ -14,6 +14,7 @@ import torchvision
 from mobile_net_v3 import *
 from SincNet import SincConv_fast
 import torchaudio
+from ECAPA_TDNN import *
 
 
 def hook_fn(module, input, output):
@@ -66,11 +67,10 @@ def compute_EER(sim_matrix):
 
     return EER, threshold, EER_FAR, EER_FRR
 
-def train_and_test_model(device, extractor, ge2e_loss, loss_func, data_set, optimizer, train_batch_size, test_batch_size,
+def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimizer, train_batch_size, test_batch_size,
                          n_fft=512, hop_length=256, win_length=512, window_fn = torch.hann_window, power=None,
                          num_epochs=2000, train_ratio=0.8):
-    # writer = SummaryWriter()
-    # number of user for train and test in each epoch. Train 4 users, test 2 users.
+
     data_size = len(data_set)
     train_size = int(data_size * train_ratio)
     test_size = data_size - train_size
@@ -91,6 +91,9 @@ def train_and_test_model(device, extractor, ge2e_loss, loss_func, data_set, opti
                                                 ).to(device)
     amplitude_to_db = torchaudio.transforms.AmplitudeToDB(stype='magnitude', top_db=80).to(device)
 
+    (extractor_a, extractor_p, converter) = models
+    (ge2e_loss_a, ge2e_loss_p) = ge2e_loss
+
     # initialize torchaudio.
 
     for epoch in range(num_epochs):
@@ -102,11 +105,19 @@ def train_and_test_model(device, extractor, ge2e_loss, loss_func, data_set, opti
         for phase in ['train', 'test']:
             if phase == 'train':
                 # set model to training
-                extractor.train()
+                extractor_a.train()
+                extractor_p.train()
+                converter.train()
+                ge2e_loss_a.train()
+                ge2e_loss_p.train()
                 dataloader = train_loader
             else:
                 # set model to test
-                extractor.eval()
+                extractor_a.eval()
+                extractor_p.eval()
+                converter.eval()
+                ge2e_loss_a.eval()
+                ge2e_loss_p.eval()
                 dataloader = test_loader
 
             # train each batch
@@ -143,39 +154,38 @@ def train_and_test_model(device, extractor, ge2e_loss, loss_func, data_set, opti
                         audio_clips.contiguous()
                         audio_clips = audio_clips.view(batch_size * n_uttr, -1)
 
-                        piezos = amplitude_to_db(spectrogram(piezo_clips).abs())
-                        _, f_len, t_len = piezos.shape
-                        piezos.contiguous()
-                        piezos = piezos.view(batch_size, n_uttr, 1, f_len, t_len)
+                        embeddings_audio = extractor_a(audio_clips)
+                        embeddings_piezo = extractor_p(piezo_clips)
+                        embeddings_conv = torch.clone(embeddings_audio)
+                        embeddings_conv.contiguous()
+                        embeddings_conv = embeddings_conv.view(batch_size * n_uttr, 1, -1)
+                        embeddings_conv = converter(embeddings_conv)
+                        embeddings_conv.contiguous()
+                        embeddings_conv.squeeze()
+
+                        embeddings_audio.contiguous()
+                        embeddings_audio = embeddings_audio.view(batch_size, n_uttr, -1)
+                        embeddings_piezo.contiguous()
+                        embeddings_piezo = embeddings_piezo.view(batch_size, n_uttr, -1)
+                        embeddings_conv.contiguous()
+                        embeddings_conv = embeddings_conv.view(batch_size, n_uttr, -1)
+
+                        loss_a = ge2e_loss_a(embeddings_audio)
+                        loss_p = ge2e_loss_p(embeddings_piezo)
+                        centroids_p = get_centroids(embeddings_piezo)
+                        cos_sim = get_modal_cossim(embeddings_conv, centroids_p)
+                        loss_conv, _, _, _ = calc_loss(cos_sim)
                         
-                        audios = amplitude_to_db(spectrogram(audio_clips).abs())
-                        _, f_len, t_len = audios.shape
-                        audios.contiguous()
-                        audios = audios.view(batch_size, n_uttr, 1, f_len, t_len)
-
-                        combined = torch.cat((piezos, audios), dim=0)
-                        combined.contiguous()
-                        combined = combined.view(2 * batch_size * n_uttr, 1, f_len, t_len)
-
-                        pred_ids_combined = extractor(combined)
-                        embeddings_all = torch.clone(hooked_output)
-                        embeddings_all.contiguous()
-                        embeddings_all = embeddings_all.view(2 * batch_size, n_uttr, -1)
-                        embeddings_piezo, embeddings_audio = torch.split(embeddings_all, batch_size, dim=0)
-                        # loss_ge2e = ge2e_loss(embeddings_piezo) + ge2e_loss(embeddings_audio)
-                        loss_ge2e = ge2e_loss(embeddings_all)
-
-                        # ids_gpu = ids.to(device)
-                        # ids_gpu = ids_gpu.reshape((batch_size * n_uttr))
-                        # loss_class = loss_func(pred_ids_combined, ids_gpu)
-                        # acc += np.sum(np.argmax(pred_ids_combined.cpu().data.numpy(), axis=1) == ids_gpu.cpu().data.numpy())
-                        loss_extractor = loss_ge2e
+                        loss_extractor = loss_a + loss_p + loss_conv
                         loss_avg_batch_all += loss_extractor.item()
 
                         optimizer.zero_grad()
                         loss_extractor.backward()
-                        torch.nn.utils.clip_grad_norm_(extractor.parameters(), 10.0)
-                        torch.nn.utils.clip_grad_norm_(ge2e_loss.parameters(), 1.0)
+                        torch.nn.utils.clip_grad_norm_(extractor_a.parameters(), 10.0)
+                        torch.nn.utils.clip_grad_norm_(extractor_p.parameters(), 10.0)
+                        torch.nn.utils.clip_grad_norm_(converter.parameters(), 5.0)
+                        torch.nn.utils.clip_grad_norm_(ge2e_loss_a.parameters(), 1.0)
+                        torch.nn.utils.clip_grad_norm_(ge2e_loss_p.parameters(), 1.0)
                         optimizer.step()
 
                     if phase == 'test':
@@ -186,36 +196,53 @@ def train_and_test_model(device, extractor, ge2e_loss, loss_func, data_set, opti
                         piezo_clips = piezo_clips.to(device)
                         audio_clips = audio_clips.to(device)
                         
-                        _, n_uttr, _ = piezo_clips.shape
+                        _, n_uttr, f_len = piezo_clips.shape
                         piezo_clips.contiguous()
                         piezo_clips = piezo_clips.view(batch_size * n_uttr, -1)
                         audio_clips.contiguous()
                         audio_clips = audio_clips.view(batch_size * n_uttr, -1)
 
-                        piezos = amplitude_to_db(spectrogram(piezo_clips).abs())
-                        _, f_len, t_len = piezos.shape
-                        piezos.contiguous()
-                        piezos = piezos.view(batch_size, n_uttr, 1, f_len, t_len)
+                        embeddings_audio = extractor_a(audio_clips)
+                        embeddings_piezo = extractor_p(piezo_clips)
+                        embeddings_audio.contiguous()
+                        embeddings_piezo.contiguous()
+                        embeddings_audio = embeddings_audio.view(batch_size, n_uttr, -1)
+                        embeddings_piezo = embeddings_piezo.view(batch_size, n_uttr, -1)
+
+                        # split data to enroll and verify
+                        embeddings_audio_enroll, embeddings_audio_verify = torch.split(embeddings_audio, n_uttr // 2, dim=1)
+                        embeddings_piezo_enroll, embeddings_piezo_verify = torch.split(embeddings_piezo, n_uttr // 2, dim=1)
+                        tmp_converter = UNet1D(in_channels=1, out_channels=1).to(device)
+                        tmp_converter.load_state_dict(converter.state_dict())
+                        tmp_converter.train()
+                        embeddings_enroll = torch.cat((embeddings_audio_enroll, embeddings_piezo_enroll), dim=-1)
                         
-                        audios = amplitude_to_db(spectrogram(audio_clips).abs())
-                        _, f_len, t_len = audios.shape
-                        audios.contiguous()
-                        audios = audios.view(batch_size, n_uttr, 1, f_len, t_len)
 
-                        combined = torch.cat((piezos, audios), dim=0)
-                        combined.contiguous()
-                        combined = combined.view(2 * batch_size * n_uttr, 1, f_len, t_len)
 
-                        pred_ids_combined = extractor(combined)
-                        embeddings_all = torch.clone(hooked_output)
-                        embeddings_all.contiguous()
-                        embeddings_all = embeddings_all.view(2 * batch_size, n_uttr, -1)
-                        embeddings_piezo, embeddings_audio = torch.split(embeddings_all, batch_size, dim=0)
-                        embeddings_enroll_piezo, embeddings_veri_piezo = torch.split(embeddings_piezo, n_uttr // 2, dim=1)
-                        embeddings_enroll_audio, embeddings_veri_audio = torch.split(embeddings_audio, n_uttr // 2, dim=1)
-                        embeddings_enroll = torch.cat((embeddings_enroll_piezo, embeddings_enroll_audio), dim=-1)
-                        embeddings_veri = torch.cat((embeddings_veri_piezo, embeddings_veri_audio), dim=-1)
-                        centroids = get_centroids(embeddings_enroll)
+
+
+                        embeddings_conv = torch.clone(embeddings_audio)
+                        embeddings_conv.contiguous()
+                        embeddings_conv = embeddings_conv.view(batch_size * n_uttr, 1, -1)
+                        embeddings_conv = converter(embeddings_conv)
+                        embeddings_conv.contiguous()
+                        embeddings_conv.squeeze()
+
+                        embeddings_audio.contiguous()
+                        embeddings_audio = embeddings_audio.view(batch_size, n_uttr, -1)
+                        embeddings_piezo.contiguous()
+                        embeddings_piezo = embeddings_piezo.view(batch_size, n_uttr, -1)
+                        embeddings_conv.contiguous()
+                        embeddings_conv = embeddings_conv.view(batch_size, n_uttr, -1)
+
+                        loss_a = ge2e_loss_a(embeddings_audio)
+                        loss_p = ge2e_loss_p(embeddings_piezo)
+                        centroids_p = get_centroids(embeddings_piezo)
+                        cos_sim = get_modal_cossim(embeddings_conv, centroids_p)
+                        loss_conv, _, _, _ = calc_loss(cos_sim)
+                        
+                        loss_extractor = loss_a + loss_p + loss_conv
+                        loss_avg_batch_all += loss_extractor.item()
 
                         sim_matrix = get_modal_cossim(embeddings_veri, centroids)
                         EER, EER_thresh, EER_FAR, EER_FRR = compute_EER(sim_matrix)
@@ -250,7 +277,7 @@ if __name__ == "__main__":
 
     device = "cuda:1" if torch.cuda.is_available() else "cpu"
     
-    data_file_dir = './processed_data/wav_clips/piezobuds/' # folder where stores the data for training and test
+    data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds/' # folder where stores the data for training and test
     pth_store_dir = './pth_model/'
     os.makedirs(pth_store_dir, exist_ok=True)
 
@@ -281,26 +308,32 @@ if __name__ == "__main__":
     # extractor.classifier[3] = nn.Linear(extractor.classifier[3].in_features, n_user)
     # 
 
-    extractor_p = torchvision.models.resnet50(pretrained=True)
-    extractor_p.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
-    extractor_p.fc = nn.Linear(extractor_p.fc.in_features, 51)
-    # hook for feature layer output
-    hook = extractor_p.avgpool.register_forward_hook(hook_fn)
-    extractor_p.to(device)
+    # extractor_p = torchvision.models.resnet50(pretrained=True)
+    # extractor_p.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
+    # extractor_p.fc = nn.Linear(extractor_p.fc.in_features, 51)
+    # # hook for feature layer output
+    # hook = extractor_p.avgpool.register_forward_hook(hook_fn)
+    # extractor_p.to(device)
 
-    extractor_a = torchvision.models.resnet50(pretrained=True)
-    extractor_a.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
-    extractor_a.fc = nn.Linear(extractor_a.fc.in_features, 51)
-    # hook for feature layer output
-    hook = extractor_a.avgpool.register_forward_hook(hook_fn)
-    extractor_a.to(device)
+    # extractor_a = torchvision.models.resnet50(pretrained=True)
+    # extractor_a.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
+    # extractor_a.fc = nn.Linear(extractor_a.fc.in_features, 51)
+    # # hook for feature layer output
+    # hook = extractor_a.avgpool.register_forward_hook(hook_fn)
+    # extractor_a.to(device)
 
-    ge2e_loss = GE2ELoss_ori(device).to(device)
+    extractor_a = ECAPA_TDNN(512, is_stft=True).to(device)
+    extractor_p = ECAPA_TDNN(512, is_stft=True).to(device)
+    ge2e_loss_a = GE2ELoss_ori(device).to(device)
+    ge2e_loss_p = GE2ELoss_ori(device).to(device)
+    converter = UNet1D(in_channels=1, out_channels=1).to(device)
 
     optimizer = torch.optim.Adam([
         {'params': extractor_a.parameters()},
         {'params': extractor_p.parameters()},
-        {'params': ge2e_loss.parameters()}
+        {'params': ge2e_loss_a.parameters()},
+        {'params': ge2e_loss_p.parameters()},
+        {'params': converter.parameters()},
     ], lr=lr)
     
     # create the folder to store the model
@@ -321,12 +354,14 @@ if __name__ == "__main__":
     os.makedirs(model_final_path, exist_ok=True)
 
     # load the data 
-    data_set = WavDatasetForVerification('./processed_data/wav_clips/piezobuds/', list(range(n_user)), 50)
+    data_set = WavDatasetForVerification(data_file_dir, list(range(n_user)), 50)
     print(len(data_set))
 
     loss_func = nn.CrossEntropyLoss()
 
-    extractor = train_and_test_model(device=device, extractor=extractor, ge2e_loss=ge2e_loss, loss_func=loss_func, data_set=data_set, optimizer=optimizer,
+    models = (extractor_a, extractor_p, converter)
+    ge2e_loss = (ge2e_loss_a, ge2e_loss_p)
+    extractor = train_and_test_model(device=device, models=models, ge2e_loss=ge2e_loss, loss_func=loss_func, data_set=data_set, optimizer=optimizer,
                                                        train_batch_size=train_batch_size, test_batch_size=test_batch_size, n_fft=n_fft, 
                                                        hop_length=hop_length, win_length=win_length, window_fn=window_fn, power=None,
                                                        num_epochs=num_of_epoches, train_ratio=train_ratio)

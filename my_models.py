@@ -759,6 +759,6 @@ if __name__ == "__main__":
     model = UNet1D(in_channels=1, out_channels=1)
     print(model)
 
-    input_tensor = torch.rand(1, 1, 2048)
+    input_tensor = torch.rand(1, 1, 192)
     output = model(input_tensor)
     print(output.shape)

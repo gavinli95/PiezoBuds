@@ -131,9 +131,10 @@ class FbankAug(nn.Module):
 
 class ECAPA_TDNN(nn.Module):
 
-    def __init__(self, C):
+    def __init__(self, C, is_stft=True):
 
         super(ECAPA_TDNN, self).__init__()
+        self.is_stft  = is_stft
 
         self.spectrogram = torchaudio.transforms.Spectrogram(
                                                     n_fft=512,
@@ -175,13 +176,13 @@ class ECAPA_TDNN(nn.Module):
         self.bn6 = nn.BatchNorm1d(192)
 
 
-    def forward(self, x, aug, is_stft=True):
+    def forward(self, x, aug=False):
         with torch.no_grad():
-            if is_stft:
+            if self.is_stft:
                 x = self.amplitude_to_db(self.spectrogram(x).abs()) + 1e-6
             else:
                 x = self.torchfbank(x)+1e-6
-            x = x.log()   
+                x = x.log()   
             x = x - torch.mean(x, dim=-1, keepdim=True)
             if aug == True:
                 x = self.specaug(x)

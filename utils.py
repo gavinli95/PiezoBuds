@@ -412,15 +412,8 @@ def normalize_tensors_based_audio(tensor_p, tensor_a):
 
 
 if __name__ == "__main__":
-    # w = grad.Variable(torch.tensor(1.0))
-    # b = grad.Variable(torch.tensor(0.0))
-    # embeddings = torch.tensor([[0,1,0],[0,0,1], [0,1,0], [0,1,0], [1,0,0], [1,0,0]]).to(torch.float).reshape(3,2,3)
-    # centroids = get_centroids(embeddings)
-    # cossim = get_cossim(embeddings, centroids)
-    # sim_matrix = w*cossim + b
-    # loss, per_embedding_loss = calc_loss(sim_matrix)
-    time_stamp = 'test'
-    data_file_pth = './processed_data/stft/res_256_hop_128_t_160/'
-    utter_n = 0.8
-    user_n = 42
-    pick_n_utterances(time_stamp, data_file_pth, utter_n, user_n)
+    # tensor_a = torch.randn(10, 20, 192)
+    # tensor_b = torch.randn(10, 20, 192)
+    # c = get_cossim_across_same_user(tensor_a, tensor_b)
+    # print(c.shape)
+    pass

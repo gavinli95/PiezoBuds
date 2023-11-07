@@ -214,37 +214,39 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         embeddings_piezo_enroll, embeddings_piezo_verify = torch.split(embeddings_piezo, n_uttr // 2, dim=1)
                         tmp_converter = UNet1D(in_channels=1, out_channels=1).to(device)
                         tmp_converter.load_state_dict(converter.state_dict())
+                        tmp_optimizer = torch.optim.Adam([
+                            {'params': tmp_converter.parameters()},
+                        ], lr=lr)
                         tmp_converter.train()
-                        embeddings_enroll = torch.cat((embeddings_audio_enroll, embeddings_piezo_enroll), dim=-1)
-
-
-
-
-
-                        embeddings_conv = torch.clone(embeddings_audio)
-                        embeddings_conv.contiguous()
-                        embeddings_conv = embeddings_conv.view(batch_size * n_uttr, 1, -1)
-                        embeddings_conv = converter(embeddings_conv)
-                        embeddings_conv.contiguous()
-                        embeddings_conv.squeeze()
-
-                        embeddings_audio.contiguous()
-                        embeddings_audio = embeddings_audio.view(batch_size, n_uttr, -1)
-                        embeddings_piezo.contiguous()
-                        embeddings_piezo = embeddings_piezo.view(batch_size, n_uttr, -1)
-                        embeddings_conv.contiguous()
-                        embeddings_conv = embeddings_conv.view(batch_size, n_uttr, -1)
-
-                        loss_a = ge2e_loss_a(embeddings_audio)
-                        loss_p = ge2e_loss_p(embeddings_piezo)
-                        centroids_p = get_centroids(embeddings_piezo)
-                        cos_sim = get_modal_cossim(embeddings_conv, centroids_p)
-                        loss_conv, _, _, _ = calc_loss(cos_sim)
+                        with torch.set_grad_enabled(True) and torch.autograd.set_detect_anomaly(True):
+                            for e in range(1):
+                                # embeddings_enroll = torch.cat((embeddings_audio_enroll, embeddings_piezo_enroll), dim=-1)
+                                embeddings_audio_enroll.contiguous()
+                                embeddings_audio_enroll = embeddings_audio_enroll.reshape((batch_size * n_uttr // 2, 1, -1))
+                                embeddings_conv_enroll = tmp_converter(embeddings_audio_enroll)
+                                embeddings_conv_enroll.contiguous()
+                                embeddings_conv_enroll = embeddings_conv_enroll.view(batch_size, n_uttr //2, -1)
+                                embeddings_piezo_enroll.contiguous()
+                                embeddings_piezo_enroll = embeddings_piezo_enroll.view(batch_size, n_uttr // 2, -1)
+                                centroids = get_centroids(embeddings_piezo_enroll)
+                                cos_sim = get_modal_cossim(embeddings_conv_enroll, centroids)
+                                loss_conv, _, _, _ = calc_loss(cos_sim)
+                                tmp_optimizer.zero_grad()
+                                loss_conv.backward()
+                                torch.nn.utils.clip_grad_norm_(tmp_converter.parameters(), 5.0)
+                                tmp_optimizer.step()
+                        tmp_converter.eval()
+                        with torch.set_grad_enabled(False) and torch.autograd.set_detect_anomaly(True):
+                            embeddings_audio_verify.contiguous()
+                            embeddings_audio_verify = embeddings_audio_verify.reshape((batch_size * n_uttr // 2, 1, -1))
+                            embeddings_conv_verify = tmp_converter(embeddings_audio_verify)
+                            embeddings_conv_verify.contiguous()
+                            embeddings_conv_verify = embeddings_conv_verify.view(batch_size, n_uttr //2, -1)
+                            embeddings_piezo_verify.contiguous()
+                            embeddings_piezo_verify = embeddings_piezo_verify.view(batch_size, n_uttr // 2, -1)
+                            centroids_p = get_centroids(embeddings_piezo_verify)
+                            sim_matrix = get_modal_cossim(embeddings_conv_verify, centroids_p)
                         
-                        loss_extractor = loss_a + loss_p + loss_conv
-                        loss_avg_batch_all += loss_extractor.item()
-
-                        sim_matrix = get_modal_cossim(embeddings_veri, centroids)
                         EER, EER_thresh, EER_FAR, EER_FRR = compute_EER(sim_matrix)
                         EERs[0] += EER
                         EER_FARs[0] += EER_FAR

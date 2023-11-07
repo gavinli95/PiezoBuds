@@ -216,7 +216,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         tmp_converter.load_state_dict(converter.state_dict())
                         tmp_converter.train()
                         embeddings_enroll = torch.cat((embeddings_audio_enroll, embeddings_piezo_enroll), dim=-1)
-                        
+
 
 
 

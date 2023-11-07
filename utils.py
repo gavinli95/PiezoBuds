@@ -410,6 +410,30 @@ def normalize_tensors_based_audio(tensor_p, tensor_a):
     return tensor_p, tensor_a
 
 
+def random_split_tensor(input_tensor, split_n, device):
+    '''
+    Create the sublists of the given tensor with split_n
+    '''
+    N, U, E = input_tensor.shape
+    if U < split_n:
+        raise ValueError("Not enough utterances to be splited!")
+
+
+    # randomly shuffle the utterance order list
+    indices = torch.randperm(U).to(device)
+
+    # get the number of sublists
+    if U % split_n != 0:
+        raise ValueError("The utterances cannot be evenly splitted.")
+    
+    sublist_size = U // split_n
+
+    shuffled_tensor = torch.gather(input_tensor, 1, indices.expand_as(input_tensor))
+    
+    return shuffled_tensor, sublist_size
+
+
+
 
 if __name__ == "__main__":
     # tensor_a = torch.randn(10, 20, 192)

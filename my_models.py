@@ -692,7 +692,7 @@ class Conv1dEmbedder(nn.Module):
 class ConvBlock(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size=3, padding=1):
         super(ConvBlock, self).__init__()
-        self.conv1 = nn.Conv1d(in_channels=in_channels, out_channels=out_channels, kernerl_size=kernel_size, padding=padding)
+        self.conv1 = nn.Conv1d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, padding=padding)
         self.bn1 = nn.BatchNorm1d(out_channels)
         self.relu = nn.ReLU(inplace=True)
         self.conv2 = nn.Conv1d(in_channels=out_channels, out_channels=out_channels, kernel_size=kernel_size, padding=padding)
@@ -754,3 +754,11 @@ class UNet1D(nn.Module):
         x = self.dec1(x, skip1)
         x = self.final(x)
         return x
+    
+if __name__ == "__main__":
+    model = UNet1D(in_channels=1, out_channels=1)
+    print(model)
+
+    input_tensor = torch.rand(1, 1, 2048)
+    output = model(input_tensor)
+    print(output.shape)

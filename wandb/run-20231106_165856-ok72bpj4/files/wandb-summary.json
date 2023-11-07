@@ -1,1 +1,0 @@
-{"epoch": 799, "Loss/train_all": 12.411796386425312, "_timestamp": 1699310957.7803879, "_runtime": 3021.4426589012146, "_step": 3199, "Acc/train": 0.0, "EER/C_AfP_VI_AfP": 0.0033333332588275275, "FAR/C_AfP_VI_AfP": 0.0, "FRR/C_AfP_VI_AfP": 0.006666666517655055, "threshold/C_AfP_VI_AfP": 0.5, "_wandb": {"runtime": 3021}}

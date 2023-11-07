@@ -135,6 +135,17 @@ class ECAPA_TDNN(nn.Module):
 
         super(ECAPA_TDNN, self).__init__()
 
+        self.spectrogram = torchaudio.transforms.Spectrogram(
+                                                    n_fft=512,
+                                                    win_length=400,
+                                                    hop_length=160,
+                                                    window_fn=torch.hamming_window,
+                                                    power=None,  # For power spectrogram, use 2. For complex spectrogram, use None.
+                                                    # batch_first=True,
+                                                    # sample_rate=16000
+                                                )
+        self.amplitude_to_db = torchaudio.transforms.AmplitudeToDB(stype='magnitude', top_db=80)
+
         self.torchfbank = torch.nn.Sequential(
             PreEmphasis(),            
             torchaudio.transforms.MelSpectrogram(sample_rate=16000, n_fft=512, win_length=400, hop_length=160, \
@@ -143,7 +154,7 @@ class ECAPA_TDNN(nn.Module):
 
         self.specaug = FbankAug() # Spec augmentation
 
-        self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
+        self.conv1  = nn.Conv1d(257, C, kernel_size=5, stride=1, padding=2)
         self.relu   = nn.ReLU()
         self.bn1    = nn.BatchNorm1d(C)
         self.layer1 = Bottle2neck(C, C, kernel_size=3, dilation=2, scale=8)
@@ -166,7 +177,8 @@ class ECAPA_TDNN(nn.Module):
 
     def forward(self, x, aug):
         with torch.no_grad():
-            x = self.torchfbank(x)+1e-6
+            # x = self.torchfbank(x)+1e-6
+            x = self.amplitude_to_db(self.spectrogram(x).abs()) + 1e-6
             x = x.log()   
             x = x - torch.mean(x, dim=-1, keepdim=True)
             if aug == True:
@@ -201,6 +213,6 @@ class ECAPA_TDNN(nn.Module):
     
 if __name__=='__main__':
     model = ECAPA_TDNN(512)
-    input = torch.rand(2, 257, 32)
+    input = torch.rand(10, 8000)
     output = model(input, True)
     print(output.shape)

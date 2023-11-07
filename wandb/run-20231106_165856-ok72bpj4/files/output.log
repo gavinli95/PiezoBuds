@@ -1,0 +1,4003 @@
+58
+13
+3
+Epoch 1/800
+----------
+train Loss Extractor: 448.6840
+Centroids: AfP  Verification Input: AfP
+EER : 0.26 (thres:0.96, FAR:0.26, FRR:0.26)
+Epoch 2/800
+----------
+train Loss Extractor: 366.7293
+Centroids: AfP  Verification Input: AfP
+EER : 0.15 (thres:0.78, FAR:0.15, FRR:0.14)
+Epoch 3/800
+----------
+train Loss Extractor: 308.3367
+Centroids: AfP  Verification Input: AfP
+EER : 0.16 (thres:0.94, FAR:0.16, FRR:0.16)
+Epoch 4/800
+----------
+train Loss Extractor: 283.4743
+Centroids: AfP  Verification Input: AfP
+EER : 0.11 (thres:0.74, FAR:0.11, FRR:0.11)
+Epoch 5/800
+----------
+train Loss Extractor: 216.7034
+Centroids: AfP  Verification Input: AfP
+EER : 0.25 (thres:0.94, FAR:0.25, FRR:0.25)
+Epoch 6/800
+----------
+train Loss Extractor: 220.8959
+Centroids: AfP  Verification Input: AfP
+EER : 0.15 (thres:0.78, FAR:0.15, FRR:0.14)
+Epoch 7/800
+----------
+train Loss Extractor: 230.1597
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.69, FAR:0.03, FRR:0.03)
+Epoch 8/800
+----------
+train Loss Extractor: 232.6639
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.60, FAR:0.05, FRR:0.05)
+Epoch 9/800
+----------
+train Loss Extractor: 210.4375
+Centroids: AfP  Verification Input: AfP
+EER : 0.21 (thres:0.90, FAR:0.21, FRR:0.21)
+Epoch 10/800
+----------
+train Loss Extractor: 211.3496
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.65, FAR:0.02, FRR:0.02)
+Epoch 11/800
+----------
+train Loss Extractor: 188.8532
+Centroids: AfP  Verification Input: AfP
+EER : 0.18 (thres:0.88, FAR:0.18, FRR:0.17)
+Epoch 12/800
+----------
+train Loss Extractor: 195.5028
+Centroids: AfP  Verification Input: AfP
+EER : 0.11 (thres:0.69, FAR:0.11, FRR:0.11)
+Epoch 13/800
+----------
+train Loss Extractor: 159.0661
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.61, FAR:0.03, FRR:0.03)
+Epoch 14/800
+----------
+train Loss Extractor: 191.5314
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.90, FAR:0.09, FRR:0.09)
+Epoch 15/800
+----------
+train Loss Extractor: 151.9954
+Centroids: AfP  Verification Input: AfP
+EER : 0.15 (thres:0.84, FAR:0.15, FRR:0.15)
+Epoch 16/800
+----------
+train Loss Extractor: 171.8197
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.61, FAR:0.05, FRR:0.05)
+Epoch 17/800
+----------
+train Loss Extractor: 139.5104
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.65, FAR:0.03, FRR:0.03)
+Epoch 18/800
+----------
+train Loss Extractor: 173.5784
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.85, FAR:0.08, FRR:0.08)
+Epoch 19/800
+----------
+train Loss Extractor: 174.5196
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.68, FAR:0.03, FRR:0.03)
+Epoch 20/800
+----------
+train Loss Extractor: 138.8514
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.72, FAR:0.05, FRR:0.05)
+Epoch 21/800
+----------
+train Loss Extractor: 173.6827
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.60, FAR:0.01, FRR:0.01)
+Epoch 22/800
+----------
+train Loss Extractor: 159.2813
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.75, FAR:0.06, FRR:0.06)
+Epoch 23/800
+----------
+train Loss Extractor: 153.6630
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.62, FAR:0.05, FRR:0.05)
+Epoch 24/800
+----------
+train Loss Extractor: 171.7572
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.68, FAR:0.01, FRR:0.01)
+Epoch 25/800
+----------
+train Loss Extractor: 161.4784
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.81, FAR:0.05, FRR:0.05)
+Epoch 26/800
+----------
+train Loss Extractor: 154.2490
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.64, FAR:0.06, FRR:0.05)
+Epoch 27/800
+----------
+train Loss Extractor: 132.9011
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.70, FAR:0.07, FRR:0.07)
+Epoch 28/800
+----------
+train Loss Extractor: 134.4952
+Centroids: AfP  Verification Input: AfP
+EER : 0.12 (thres:0.85, FAR:0.12, FRR:0.12)
+Epoch 29/800
+----------
+train Loss Extractor: 115.8917
+Centroids: AfP  Verification Input: AfP
+EER : 0.18 (thres:0.92, FAR:0.18, FRR:0.18)
+Epoch 30/800
+----------
+train Loss Extractor: 127.8278
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.81, FAR:0.09, FRR:0.09)
+Epoch 31/800
+----------
+train Loss Extractor: 129.4116
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.69, FAR:0.05, FRR:0.06)
+Epoch 32/800
+----------
+train Loss Extractor: 129.4897
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.64, FAR:0.03, FRR:0.03)
+Epoch 33/800
+----------
+train Loss Extractor: 120.0811
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.69, FAR:0.03, FRR:0.03)
+Epoch 34/800
+----------
+train Loss Extractor: 133.5474
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.60, FAR:0.02, FRR:0.02)
+Epoch 35/800
+----------
+train Loss Extractor: 154.1342
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.58, FAR:0.01, FRR:0.01)
+Epoch 36/800
+----------
+train Loss Extractor: 136.2287
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.86, FAR:0.09, FRR:0.09)
+Epoch 37/800
+----------
+train Loss Extractor: 111.0326
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.63, FAR:0.01, FRR:0.02)
+Epoch 38/800
+----------
+train Loss Extractor: 158.9039
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.56, FAR:0.00, FRR:0.01)
+Epoch 39/800
+----------
+train Loss Extractor: 149.8252
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.77, FAR:0.06, FRR:0.06)
+Epoch 40/800
+----------
+train Loss Extractor: 126.9729
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.68, FAR:0.02, FRR:0.03)
+Epoch 41/800
+----------
+train Loss Extractor: 102.0667
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.66, FAR:0.05, FRR:0.05)
+Epoch 42/800
+----------
+train Loss Extractor: 122.1474
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.71, FAR:0.03, FRR:0.03)
+Epoch 43/800
+----------
+train Loss Extractor: 122.5812
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.74, FAR:0.05, FRR:0.05)
+Epoch 44/800
+----------
+train Loss Extractor: 101.9143
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.66, FAR:0.00, FRR:0.00)
+Epoch 45/800
+----------
+train Loss Extractor: 97.0413
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.63, FAR:0.04, FRR:0.05)
+Epoch 46/800
+----------
+train Loss Extractor: 119.5656
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.74, FAR:0.07, FRR:0.07)
+Epoch 47/800
+----------
+train Loss Extractor: 134.2140
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.58, FAR:0.03, FRR:0.03)
+Epoch 48/800
+----------
+train Loss Extractor: 95.5779
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.66, FAR:0.05, FRR:0.04)
+Epoch 49/800
+----------
+train Loss Extractor: 127.6402
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.58, FAR:0.01, FRR:0.01)
+Epoch 50/800
+----------
+train Loss Extractor: 110.0621
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.83, FAR:0.09, FRR:0.08)
+Epoch 51/800
+----------
+train Loss Extractor: 111.0542
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.79, FAR:0.04, FRR:0.04)
+Epoch 52/800
+----------
+train Loss Extractor: 99.8847
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.71, FAR:0.05, FRR:0.04)
+Epoch 53/800
+----------
+train Loss Extractor: 119.7421
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.84, FAR:0.07, FRR:0.07)
+Epoch 54/800
+----------
+train Loss Extractor: 122.0991
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.60, FAR:0.01, FRR:0.01)
+Epoch 55/800
+----------
+train Loss Extractor: 116.3446
+Centroids: AfP  Verification Input: AfP
+EER : 0.13 (thres:0.84, FAR:0.12, FRR:0.13)
+Epoch 56/800
+----------
+train Loss Extractor: 97.5671
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.63, FAR:0.03, FRR:0.03)
+Epoch 57/800
+----------
+train Loss Extractor: 107.0060
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.65, FAR:0.02, FRR:0.02)
+Epoch 58/800
+----------
+train Loss Extractor: 119.8989
+Centroids: AfP  Verification Input: AfP
+EER : 0.10 (thres:0.87, FAR:0.11, FRR:0.10)
+Epoch 59/800
+----------
+train Loss Extractor: 80.7389
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.62, FAR:0.03, FRR:0.05)
+Epoch 60/800
+----------
+train Loss Extractor: 99.3244
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.67, FAR:0.01, FRR:0.02)
+Epoch 61/800
+----------
+train Loss Extractor: 79.1721
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.63, FAR:0.05, FRR:0.05)
+Epoch 62/800
+----------
+train Loss Extractor: 78.1327
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.63, FAR:0.05, FRR:0.06)
+Epoch 63/800
+----------
+train Loss Extractor: 120.1222
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.54, FAR:0.00, FRR:0.00)
+Epoch 64/800
+----------
+train Loss Extractor: 97.7704
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.55, FAR:0.01, FRR:0.01)
+Epoch 65/800
+----------
+train Loss Extractor: 80.2492
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.64, FAR:0.07, FRR:0.07)
+Epoch 66/800
+----------
+train Loss Extractor: 94.7200
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.64, FAR:0.02, FRR:0.04)
+Epoch 67/800
+----------
+train Loss Extractor: 93.0884
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.58, FAR:0.02, FRR:0.02)
+Epoch 68/800
+----------
+train Loss Extractor: 115.1875
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.63, FAR:0.03, FRR:0.03)
+Epoch 69/800
+----------
+train Loss Extractor: 72.7389
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.65, FAR:0.05, FRR:0.05)
+Epoch 70/800
+----------
+train Loss Extractor: 103.6851
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.65, FAR:0.04, FRR:0.03)
+Epoch 71/800
+----------
+train Loss Extractor: 106.9955
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.81, FAR:0.08, FRR:0.06)
+Epoch 72/800
+----------
+train Loss Extractor: 87.8453
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.64, FAR:0.02, FRR:0.02)
+Epoch 73/800
+----------
+train Loss Extractor: 88.7921
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.63, FAR:0.03, FRR:0.03)
+Epoch 74/800
+----------
+train Loss Extractor: 95.7687
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.85, FAR:0.07, FRR:0.08)
+Epoch 75/800
+----------
+train Loss Extractor: 116.3694
+Centroids: AfP  Verification Input: AfP
+EER : 0.12 (thres:0.75, FAR:0.13, FRR:0.12)
+Epoch 76/800
+----------
+train Loss Extractor: 113.3497
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.62, FAR:0.04, FRR:0.04)
+Epoch 77/800
+----------
+train Loss Extractor: 98.5893
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.75, FAR:0.05, FRR:0.05)
+Epoch 78/800
+----------
+train Loss Extractor: 78.8912
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.52, FAR:0.01, FRR:0.01)
+Epoch 79/800
+----------
+train Loss Extractor: 86.5477
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.56, FAR:0.01, FRR:0.01)
+Epoch 80/800
+----------
+train Loss Extractor: 92.4834
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.56, FAR:0.01, FRR:0.01)
+Epoch 81/800
+----------
+train Loss Extractor: 80.3923
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.59, FAR:0.03, FRR:0.03)
+Epoch 82/800
+----------
+train Loss Extractor: 71.0858
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.52, FAR:0.00, FRR:0.01)
+Epoch 83/800
+----------
+train Loss Extractor: 95.7436
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.77, FAR:0.07, FRR:0.07)
+Epoch 84/800
+----------
+train Loss Extractor: 82.7051
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 85/800
+----------
+train Loss Extractor: 93.3451
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.62, FAR:0.03, FRR:0.02)
+Epoch 86/800
+----------
+train Loss Extractor: 88.1389
+Centroids: AfP  Verification Input: AfP
+EER : 0.13 (thres:0.76, FAR:0.13, FRR:0.13)
+Epoch 87/800
+----------
+train Loss Extractor: 87.1574
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.60, FAR:0.01, FRR:0.01)
+Epoch 88/800
+----------
+train Loss Extractor: 82.6950
+Centroids: AfP  Verification Input: AfP
+EER : 0.12 (thres:0.86, FAR:0.12, FRR:0.12)
+Epoch 89/800
+----------
+train Loss Extractor: 68.6105
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.54, FAR:0.00, FRR:0.00)
+Epoch 90/800
+----------
+train Loss Extractor: 74.6468
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.55, FAR:0.01, FRR:0.01)
+Epoch 91/800
+----------
+train Loss Extractor: 89.3969
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.62, FAR:0.03, FRR:0.03)
+Epoch 92/800
+----------
+train Loss Extractor: 67.2073
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.73, FAR:0.02, FRR:0.02)
+Epoch 93/800
+----------
+train Loss Extractor: 64.5215
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.58, FAR:0.03, FRR:0.03)
+Epoch 94/800
+----------
+train Loss Extractor: 78.5191
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.60, FAR:0.03, FRR:0.03)
+Epoch 95/800
+----------
+train Loss Extractor: 75.2471
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.61, FAR:0.05, FRR:0.05)
+Epoch 96/800
+----------
+train Loss Extractor: 89.5878
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.62, FAR:0.03, FRR:0.03)
+Epoch 97/800
+----------
+train Loss Extractor: 79.2249
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.58, FAR:0.03, FRR:0.04)
+Epoch 98/800
+----------
+train Loss Extractor: 79.4406
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.74, FAR:0.09, FRR:0.09)
+Epoch 99/800
+----------
+train Loss Extractor: 79.1116
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.59, FAR:0.01, FRR:0.01)
+Epoch 100/800
+----------
+train Loss Extractor: 69.8719
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.50, FAR:0.01, FRR:0.00)
+Epoch 101/800
+----------
+train Loss Extractor: 67.5073
+Centroids: AfP  Verification Input: AfP
+EER : 0.10 (thres:0.83, FAR:0.10, FRR:0.10)
+Epoch 102/800
+----------
+train Loss Extractor: 83.6642
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.71, FAR:0.05, FRR:0.04)
+Epoch 103/800
+----------
+train Loss Extractor: 69.7146
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.61, FAR:0.03, FRR:0.03)
+Epoch 104/800
+----------
+train Loss Extractor: 76.1139
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.54, FAR:0.01, FRR:0.01)
+Epoch 105/800
+----------
+train Loss Extractor: 72.6316
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.58, FAR:0.01, FRR:0.02)
+Epoch 106/800
+----------
+train Loss Extractor: 67.6396
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.67, FAR:0.03, FRR:0.03)
+Epoch 107/800
+----------
+train Loss Extractor: 71.9012
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.59, FAR:0.03, FRR:0.08)
+Epoch 108/800
+----------
+train Loss Extractor: 88.5116
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.61, FAR:0.03, FRR:0.05)
+Epoch 109/800
+----------
+train Loss Extractor: 75.9137
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.56, FAR:0.01, FRR:0.01)
+Epoch 110/800
+----------
+train Loss Extractor: 82.0230
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.57, FAR:0.01, FRR:0.01)
+Epoch 111/800
+----------
+train Loss Extractor: 69.3035
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.71, FAR:0.08, FRR:0.08)
+Epoch 112/800
+----------
+train Loss Extractor: 61.7527
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.61, FAR:0.05, FRR:0.05)
+Epoch 113/800
+----------
+train Loss Extractor: 71.8219
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.61, FAR:0.01, FRR:0.03)
+Epoch 114/800
+----------
+train Loss Extractor: 68.9510
+Centroids: AfP  Verification Input: AfP
+EER : 0.11 (thres:0.75, FAR:0.11, FRR:0.11)
+Epoch 115/800
+----------
+train Loss Extractor: 87.7982
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.54, FAR:0.01, FRR:0.01)
+Epoch 116/800
+----------
+train Loss Extractor: 65.3115
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.58, FAR:0.03, FRR:0.03)
+Epoch 117/800
+----------
+train Loss Extractor: 57.5132
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.61, FAR:0.03, FRR:0.03)
+Epoch 118/800
+----------
+train Loss Extractor: 70.5330
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.57, FAR:0.03, FRR:0.03)
+Epoch 119/800
+----------
+train Loss Extractor: 70.8513
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.57, FAR:0.01, FRR:0.01)
+Epoch 120/800
+----------
+train Loss Extractor: 64.2695
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.59, FAR:0.01, FRR:0.01)
+Epoch 121/800
+----------
+train Loss Extractor: 78.9003
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.59, FAR:0.01, FRR:0.01)
+Epoch 122/800
+----------
+train Loss Extractor: 73.1443
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.56, FAR:0.03, FRR:0.03)
+Epoch 123/800
+----------
+train Loss Extractor: 72.6226
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.62, FAR:0.01, FRR:0.02)
+Epoch 124/800
+----------
+train Loss Extractor: 60.5420
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.54, FAR:0.01, FRR:0.01)
+Epoch 125/800
+----------
+train Loss Extractor: 70.6284
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.57, FAR:0.01, FRR:0.01)
+Epoch 126/800
+----------
+train Loss Extractor: 55.1986
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.51, FAR:0.01, FRR:0.01)
+Epoch 127/800
+----------
+train Loss Extractor: 55.7059
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 128/800
+----------
+train Loss Extractor: 60.5704
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.65, FAR:0.03, FRR:0.03)
+Epoch 129/800
+----------
+train Loss Extractor: 61.0529
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.60, FAR:0.02, FRR:0.02)
+Epoch 130/800
+----------
+train Loss Extractor: 55.1160
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.56, FAR:0.05, FRR:0.05)
+Epoch 131/800
+----------
+train Loss Extractor: 68.2050
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.62, FAR:0.01, FRR:0.01)
+Epoch 132/800
+----------
+train Loss Extractor: 60.6099
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.61, FAR:0.03, FRR:0.03)
+Epoch 133/800
+----------
+train Loss Extractor: 74.4628
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.55, FAR:0.02, FRR:0.03)
+Epoch 134/800
+----------
+train Loss Extractor: 92.8952
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.79, FAR:0.08, FRR:0.08)
+Epoch 135/800
+----------
+train Loss Extractor: 82.6397
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.69, FAR:0.09, FRR:0.09)
+Epoch 136/800
+----------
+train Loss Extractor: 74.5431
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.61, FAR:0.04, FRR:0.04)
+Epoch 137/800
+----------
+train Loss Extractor: 54.5176
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.02, FRR:0.02)
+Epoch 138/800
+----------
+train Loss Extractor: 74.4376
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.71, FAR:0.03, FRR:0.03)
+Epoch 139/800
+----------
+train Loss Extractor: 54.0119
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.52, FAR:0.00, FRR:0.00)
+Epoch 140/800
+----------
+train Loss Extractor: 68.0512
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.59, FAR:0.04, FRR:0.04)
+Epoch 141/800
+----------
+train Loss Extractor: 54.2318
+Centroids: AfP  Verification Input: AfP
+EER : 0.11 (thres:0.74, FAR:0.11, FRR:0.11)
+Epoch 142/800
+----------
+train Loss Extractor: 55.7523
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.60, FAR:0.06, FRR:0.06)
+Epoch 143/800
+----------
+train Loss Extractor: 57.8269
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.72, FAR:0.07, FRR:0.06)
+Epoch 144/800
+----------
+train Loss Extractor: 77.9394
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.54, FAR:0.01, FRR:0.01)
+Epoch 145/800
+----------
+train Loss Extractor: 59.2770
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.56, FAR:0.01, FRR:0.01)
+Epoch 146/800
+----------
+train Loss Extractor: 58.9098
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.54, FAR:0.01, FRR:0.01)
+Epoch 147/800
+----------
+train Loss Extractor: 71.9645
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.54, FAR:0.01, FRR:0.01)
+Epoch 148/800
+----------
+train Loss Extractor: 51.5228
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.59, FAR:0.03, FRR:0.03)
+Epoch 149/800
+----------
+train Loss Extractor: 65.7399
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.56, FAR:0.04, FRR:0.04)
+Epoch 150/800
+----------
+train Loss Extractor: 53.3686
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.59, FAR:0.03, FRR:0.03)
+Epoch 151/800
+----------
+train Loss Extractor: 55.3397
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.64, FAR:0.02, FRR:0.02)
+Epoch 152/800
+----------
+train Loss Extractor: 43.3649
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.60, FAR:0.00, FRR:0.00)
+Epoch 153/800
+----------
+train Loss Extractor: 66.8284
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.63, FAR:0.05, FRR:0.05)
+Epoch 154/800
+----------
+train Loss Extractor: 61.9470
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.56, FAR:0.02, FRR:0.02)
+Epoch 155/800
+----------
+train Loss Extractor: 68.0037
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.61, FAR:0.07, FRR:0.07)
+Epoch 156/800
+----------
+train Loss Extractor: 68.8650
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.52, FAR:0.01, FRR:0.01)
+Epoch 157/800
+----------
+train Loss Extractor: 67.1443
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.70, FAR:0.05, FRR:0.05)
+Epoch 158/800
+----------
+train Loss Extractor: 39.2904
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.58, FAR:0.02, FRR:0.05)
+Epoch 159/800
+----------
+train Loss Extractor: 62.7210
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.57, FAR:0.02, FRR:0.02)
+Epoch 160/800
+----------
+train Loss Extractor: 51.0420
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.00, FRR:0.04)
+Epoch 161/800
+----------
+train Loss Extractor: 52.1092
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.70, FAR:0.05, FRR:0.06)
+Epoch 162/800
+----------
+train Loss Extractor: 62.6830
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.56, FAR:0.03, FRR:0.03)
+Epoch 163/800
+----------
+train Loss Extractor: 53.0460
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.56, FAR:0.03, FRR:0.05)
+Epoch 164/800
+----------
+train Loss Extractor: 61.4722
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.57, FAR:0.02, FRR:0.03)
+Epoch 165/800
+----------
+train Loss Extractor: 50.1437
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.59, FAR:0.01, FRR:0.01)
+Epoch 166/800
+----------
+train Loss Extractor: 51.0168
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.56, FAR:0.01, FRR:0.02)
+Epoch 167/800
+----------
+train Loss Extractor: 59.4588
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.64, FAR:0.06, FRR:0.06)
+Epoch 168/800
+----------
+train Loss Extractor: 52.5047
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.56, FAR:0.01, FRR:0.02)
+Epoch 169/800
+----------
+train Loss Extractor: 61.3277
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.60, FAR:0.01, FRR:0.02)
+Epoch 170/800
+----------
+train Loss Extractor: 46.7303
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.71, FAR:0.09, FRR:0.09)
+Epoch 171/800
+----------
+train Loss Extractor: 49.7828
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.59, FAR:0.04, FRR:0.04)
+Epoch 172/800
+----------
+train Loss Extractor: 51.7805
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.53, FAR:0.01, FRR:0.01)
+Epoch 173/800
+----------
+train Loss Extractor: 52.3844
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.57, FAR:0.03, FRR:0.04)
+Epoch 174/800
+----------
+train Loss Extractor: 47.9538
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.56, FAR:0.01, FRR:0.02)
+Epoch 175/800
+----------
+train Loss Extractor: 45.3907
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.59, FAR:0.00, FRR:0.00)
+Epoch 176/800
+----------
+train Loss Extractor: 52.6406
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.52, FAR:0.01, FRR:0.01)
+Epoch 177/800
+----------
+train Loss Extractor: 43.2166
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.64, FAR:0.03, FRR:0.03)
+Epoch 178/800
+----------
+train Loss Extractor: 49.0567
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.54, FAR:0.01, FRR:0.01)
+Epoch 179/800
+----------
+train Loss Extractor: 51.8808
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.61, FAR:0.03, FRR:0.03)
+Epoch 180/800
+----------
+train Loss Extractor: 57.4378
+Centroids: AfP  Verification Input: AfP
+EER : 0.12 (thres:0.76, FAR:0.12, FRR:0.12)
+Epoch 181/800
+----------
+train Loss Extractor: 46.9964
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.73, FAR:0.07, FRR:0.07)
+Epoch 182/800
+----------
+train Loss Extractor: 54.7708
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.74, FAR:0.07, FRR:0.07)
+Epoch 183/800
+----------
+train Loss Extractor: 47.8355
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.66, FAR:0.05, FRR:0.05)
+Epoch 184/800
+----------
+train Loss Extractor: 50.0859
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.58, FAR:0.01, FRR:0.01)
+Epoch 185/800
+----------
+train Loss Extractor: 45.3728
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.51, FAR:0.01, FRR:0.02)
+Epoch 186/800
+----------
+train Loss Extractor: 43.7611
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.70, FAR:0.09, FRR:0.09)
+Epoch 187/800
+----------
+train Loss Extractor: 64.1399
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.54, FAR:0.00, FRR:0.01)
+Epoch 188/800
+----------
+train Loss Extractor: 49.6137
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.65, FAR:0.07, FRR:0.07)
+Epoch 189/800
+----------
+train Loss Extractor: 43.9935
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.55, FAR:0.02, FRR:0.02)
+Epoch 190/800
+----------
+train Loss Extractor: 49.4911
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.51, FAR:0.00, FRR:0.01)
+Epoch 191/800
+----------
+train Loss Extractor: 41.3716
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.66, FAR:0.07, FRR:0.07)
+Epoch 192/800
+----------
+train Loss Extractor: 54.9996
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.54, FAR:0.01, FRR:0.01)
+Epoch 193/800
+----------
+train Loss Extractor: 45.0050
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.56, FAR:0.02, FRR:0.02)
+Epoch 194/800
+----------
+train Loss Extractor: 47.3350
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.54, FAR:0.01, FRR:0.02)
+Epoch 195/800
+----------
+train Loss Extractor: 47.4378
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.51, FAR:0.01, FRR:0.01)
+Epoch 196/800
+----------
+train Loss Extractor: 55.7604
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.76, FAR:0.07, FRR:0.07)
+Epoch 197/800
+----------
+train Loss Extractor: 45.5397
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.58, FAR:0.06, FRR:0.07)
+Epoch 198/800
+----------
+train Loss Extractor: 43.4359
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.70, FAR:0.07, FRR:0.06)
+Epoch 199/800
+----------
+train Loss Extractor: 37.0935
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.58, FAR:0.05, FRR:0.05)
+Epoch 200/800
+----------
+train Loss Extractor: 58.6226
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.54, FAR:0.04, FRR:0.05)
+Epoch 201/800
+----------
+train Loss Extractor: 45.2828
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.58, FAR:0.03, FRR:0.03)
+Epoch 202/800
+----------
+train Loss Extractor: 37.6698
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.51, FAR:0.01, FRR:0.01)
+Epoch 203/800
+----------
+train Loss Extractor: 48.8041
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.56, FAR:0.04, FRR:0.06)
+Epoch 204/800
+----------
+train Loss Extractor: 45.3527
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.53, FAR:0.01, FRR:0.03)
+Epoch 205/800
+----------
+train Loss Extractor: 45.9155
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.58, FAR:0.03, FRR:0.04)
+Epoch 206/800
+----------
+train Loss Extractor: 52.2065
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.67, FAR:0.06, FRR:0.06)
+Epoch 207/800
+----------
+train Loss Extractor: 54.2822
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.56, FAR:0.01, FRR:0.01)
+Epoch 208/800
+----------
+train Loss Extractor: 46.5035
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.58, FAR:0.05, FRR:0.05)
+Epoch 209/800
+----------
+train Loss Extractor: 44.4392
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.50, FAR:0.00, FRR:0.00)
+Epoch 210/800
+----------
+train Loss Extractor: 36.2625
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.56, FAR:0.03, FRR:0.04)
+Epoch 211/800
+----------
+train Loss Extractor: 62.0430
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.66, FAR:0.07, FRR:0.07)
+Epoch 212/800
+----------
+train Loss Extractor: 47.0311
+Centroids: AfP  Verification Input: AfP
+EER : 0.11 (thres:0.67, FAR:0.11, FRR:0.11)
+Epoch 213/800
+----------
+train Loss Extractor: 40.9279
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.61, FAR:0.05, FRR:0.05)
+Epoch 214/800
+----------
+train Loss Extractor: 48.7382
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.55, FAR:0.01, FRR:0.01)
+Epoch 215/800
+----------
+train Loss Extractor: 42.8467
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.57, FAR:0.03, FRR:0.03)
+Epoch 216/800
+----------
+train Loss Extractor: 38.8544
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.61, FAR:0.02, FRR:0.03)
+Epoch 217/800
+----------
+train Loss Extractor: 41.7935
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.00, FRR:0.04)
+Epoch 218/800
+----------
+train Loss Extractor: 44.1644
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.59, FAR:0.02, FRR:0.03)
+Epoch 219/800
+----------
+train Loss Extractor: 39.1979
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.59, FAR:0.03, FRR:0.04)
+Epoch 220/800
+----------
+train Loss Extractor: 43.0958
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.01)
+Epoch 221/800
+----------
+train Loss Extractor: 34.7748
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.72, FAR:0.09, FRR:0.09)
+Epoch 222/800
+----------
+train Loss Extractor: 42.9264
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.69, FAR:0.07, FRR:0.07)
+Epoch 223/800
+----------
+train Loss Extractor: 24.2037
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.53, FAR:0.02, FRR:0.04)
+Epoch 224/800
+----------
+train Loss Extractor: 40.7791
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.58, FAR:0.06, FRR:0.09)
+Epoch 225/800
+----------
+train Loss Extractor: 48.1556
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.54, FAR:0.01, FRR:0.01)
+Epoch 226/800
+----------
+train Loss Extractor: 41.5716
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.57, FAR:0.01, FRR:0.01)
+Epoch 227/800
+----------
+train Loss Extractor: 36.7277
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.75, FAR:0.08, FRR:0.08)
+Epoch 228/800
+----------
+train Loss Extractor: 33.7507
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.62, FAR:0.03, FRR:0.04)
+Epoch 229/800
+----------
+train Loss Extractor: 29.1454
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.68, FAR:0.06, FRR:0.06)
+Epoch 230/800
+----------
+train Loss Extractor: 48.9355
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 231/800
+----------
+train Loss Extractor: 47.3411
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.52, FAR:0.03, FRR:0.03)
+Epoch 232/800
+----------
+train Loss Extractor: 46.5618
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.56, FAR:0.01, FRR:0.03)
+Epoch 233/800
+----------
+train Loss Extractor: 34.1406
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.51, FAR:0.01, FRR:0.04)
+Epoch 234/800
+----------
+train Loss Extractor: 34.5358
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.60, FAR:0.05, FRR:0.05)
+Epoch 235/800
+----------
+train Loss Extractor: 37.1066
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.55, FAR:0.03, FRR:0.04)
+Epoch 236/800
+----------
+train Loss Extractor: 51.4772
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.70, FAR:0.07, FRR:0.07)
+Epoch 237/800
+----------
+train Loss Extractor: 39.2987
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 238/800
+----------
+train Loss Extractor: 36.7046
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.60, FAR:0.03, FRR:0.03)
+Epoch 239/800
+----------
+train Loss Extractor: 34.0268
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.59, FAR:0.04, FRR:0.04)
+Epoch 240/800
+----------
+train Loss Extractor: 36.1294
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.56, FAR:0.01, FRR:0.01)
+Epoch 241/800
+----------
+train Loss Extractor: 38.0143
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 242/800
+----------
+train Loss Extractor: 46.6071
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.59, FAR:0.05, FRR:0.06)
+Epoch 243/800
+----------
+train Loss Extractor: 31.5782
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.63, FAR:0.01, FRR:0.01)
+Epoch 244/800
+----------
+train Loss Extractor: 33.1426
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.63, FAR:0.07, FRR:0.08)
+Epoch 245/800
+----------
+train Loss Extractor: 44.9652
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.56, FAR:0.02, FRR:0.03)
+Epoch 246/800
+----------
+train Loss Extractor: 42.5327
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.57, FAR:0.04, FRR:0.04)
+Epoch 247/800
+----------
+train Loss Extractor: 42.9026
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.61, FAR:0.03, FRR:0.03)
+Epoch 248/800
+----------
+train Loss Extractor: 34.7326
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 249/800
+----------
+train Loss Extractor: 34.7951
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.58, FAR:0.05, FRR:0.06)
+Epoch 250/800
+----------
+train Loss Extractor: 37.0377
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.51, FAR:0.00, FRR:0.01)
+Epoch 251/800
+----------
+train Loss Extractor: 45.1607
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.67, FAR:0.09, FRR:0.09)
+Epoch 252/800
+----------
+train Loss Extractor: 45.1533
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.67, FAR:0.04, FRR:0.04)
+Epoch 253/800
+----------
+train Loss Extractor: 36.8655
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.52, FAR:0.01, FRR:0.01)
+Epoch 254/800
+----------
+train Loss Extractor: 36.9762
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.58, FAR:0.01, FRR:0.02)
+Epoch 255/800
+----------
+train Loss Extractor: 39.9333
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.66, FAR:0.07, FRR:0.07)
+Epoch 256/800
+----------
+train Loss Extractor: 42.3671
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.62, FAR:0.03, FRR:0.03)
+Epoch 257/800
+----------
+train Loss Extractor: 33.2078
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.01)
+Epoch 258/800
+----------
+train Loss Extractor: 55.9373
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.77, FAR:0.09, FRR:0.09)
+Epoch 259/800
+----------
+train Loss Extractor: 25.1152
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.58, FAR:0.03, FRR:0.05)
+Epoch 260/800
+----------
+train Loss Extractor: 34.2868
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.52, FAR:0.01, FRR:0.01)
+Epoch 261/800
+----------
+train Loss Extractor: 40.0294
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.62, FAR:0.01, FRR:0.01)
+Epoch 262/800
+----------
+train Loss Extractor: 45.7351
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.68, FAR:0.03, FRR:0.05)
+Epoch 263/800
+----------
+train Loss Extractor: 36.7203
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.59, FAR:0.05, FRR:0.05)
+Epoch 264/800
+----------
+train Loss Extractor: 36.4194
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.57, FAR:0.02, FRR:0.05)
+Epoch 265/800
+----------
+train Loss Extractor: 27.8439
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.55, FAR:0.02, FRR:0.03)
+Epoch 266/800
+----------
+train Loss Extractor: 31.6721
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.56, FAR:0.01, FRR:0.03)
+Epoch 267/800
+----------
+train Loss Extractor: 42.3119
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.57, FAR:0.02, FRR:0.04)
+Epoch 268/800
+----------
+train Loss Extractor: 40.2944
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.59, FAR:0.03, FRR:0.03)
+Epoch 269/800
+----------
+train Loss Extractor: 42.0860
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.59, FAR:0.06, FRR:0.07)
+Epoch 270/800
+----------
+train Loss Extractor: 47.1651
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.58, FAR:0.03, FRR:0.03)
+Epoch 271/800
+----------
+train Loss Extractor: 26.2298
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.59, FAR:0.04, FRR:0.05)
+Epoch 272/800
+----------
+train Loss Extractor: 36.6443
+Centroids: AfP  Verification Input: AfP
+EER : 0.12 (thres:0.77, FAR:0.12, FRR:0.12)
+Epoch 273/800
+----------
+train Loss Extractor: 40.5245
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.57, FAR:0.03, FRR:0.05)
+Epoch 274/800
+----------
+train Loss Extractor: 29.8365
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.58, FAR:0.05, FRR:0.05)
+Epoch 275/800
+----------
+train Loss Extractor: 40.0589
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.59, FAR:0.03, FRR:0.03)
+Epoch 276/800
+----------
+train Loss Extractor: 36.8746
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.58, FAR:0.04, FRR:0.05)
+Epoch 277/800
+----------
+train Loss Extractor: 32.7377
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.60, FAR:0.03, FRR:0.03)
+Epoch 278/800
+----------
+train Loss Extractor: 39.9833
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.01)
+Epoch 279/800
+----------
+train Loss Extractor: 38.7281
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.58, FAR:0.04, FRR:0.05)
+Epoch 280/800
+----------
+train Loss Extractor: 30.1087
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.58, FAR:0.03, FRR:0.03)
+Epoch 281/800
+----------
+train Loss Extractor: 31.1352
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.57, FAR:0.01, FRR:0.03)
+Epoch 282/800
+----------
+train Loss Extractor: 34.1683
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.58, FAR:0.06, FRR:0.06)
+Epoch 283/800
+----------
+train Loss Extractor: 37.7518
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.70, FAR:0.09, FRR:0.08)
+Epoch 284/800
+----------
+train Loss Extractor: 42.6041
+Centroids: AfP  Verification Input: AfP
+EER : 0.15 (thres:0.76, FAR:0.15, FRR:0.15)
+Epoch 285/800
+----------
+train Loss Extractor: 27.3828
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.61, FAR:0.04, FRR:0.04)
+Epoch 286/800
+----------
+train Loss Extractor: 39.3848
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.51, FAR:0.03, FRR:0.03)
+Epoch 287/800
+----------
+train Loss Extractor: 39.2920
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.01)
+Epoch 288/800
+----------
+train Loss Extractor: 43.1547
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 289/800
+----------
+train Loss Extractor: 31.3680
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.56, FAR:0.01, FRR:0.03)
+Epoch 290/800
+----------
+train Loss Extractor: 32.7205
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.59, FAR:0.05, FRR:0.05)
+Epoch 291/800
+----------
+train Loss Extractor: 29.9155
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.57, FAR:0.04, FRR:0.05)
+Epoch 292/800
+----------
+train Loss Extractor: 29.3464
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.53, FAR:0.01, FRR:0.03)
+Epoch 293/800
+----------
+train Loss Extractor: 34.0099
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.56, FAR:0.04, FRR:0.04)
+Epoch 294/800
+----------
+train Loss Extractor: 23.2345
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 295/800
+----------
+train Loss Extractor: 39.3084
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 296/800
+----------
+train Loss Extractor: 34.5277
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.62, FAR:0.05, FRR:0.05)
+Epoch 297/800
+----------
+train Loss Extractor: 35.8009
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.66, FAR:0.05, FRR:0.05)
+Epoch 298/800
+----------
+train Loss Extractor: 39.0641
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 299/800
+----------
+train Loss Extractor: 37.9815
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.63, FAR:0.02, FRR:0.04)
+Epoch 300/800
+----------
+train Loss Extractor: 38.6245
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.59, FAR:0.01, FRR:0.01)
+Epoch 301/800
+----------
+train Loss Extractor: 32.0123
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.57, FAR:0.02, FRR:0.05)
+Epoch 302/800
+----------
+train Loss Extractor: 34.7551
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 303/800
+----------
+train Loss Extractor: 45.0251
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.67, FAR:0.07, FRR:0.07)
+Epoch 304/800
+----------
+train Loss Extractor: 36.5173
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.65, FAR:0.08, FRR:0.08)
+Epoch 305/800
+----------
+train Loss Extractor: 30.3733
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.61, FAR:0.04, FRR:0.04)
+Epoch 306/800
+----------
+train Loss Extractor: 41.8916
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.59, FAR:0.03, FRR:0.03)
+Epoch 307/800
+----------
+train Loss Extractor: 35.4457
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.01)
+Epoch 308/800
+----------
+train Loss Extractor: 37.2705
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.60, FAR:0.05, FRR:0.05)
+Epoch 309/800
+----------
+train Loss Extractor: 36.3714
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.02)
+Epoch 310/800
+----------
+train Loss Extractor: 33.3925
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 311/800
+----------
+train Loss Extractor: 26.9154
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.75, FAR:0.09, FRR:0.09)
+Epoch 312/800
+----------
+train Loss Extractor: 27.9759
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.52, FAR:0.02, FRR:0.03)
+Epoch 313/800
+----------
+train Loss Extractor: 35.2531
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.55, FAR:0.02, FRR:0.02)
+Epoch 314/800
+----------
+train Loss Extractor: 40.9084
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.60, FAR:0.03, FRR:0.03)
+Epoch 315/800
+----------
+train Loss Extractor: 25.1600
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.59, FAR:0.05, FRR:0.06)
+Epoch 316/800
+----------
+train Loss Extractor: 39.0208
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.02)
+Epoch 317/800
+----------
+train Loss Extractor: 38.9579
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.55, FAR:0.01, FRR:0.03)
+Epoch 318/800
+----------
+train Loss Extractor: 26.0514
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.63, FAR:0.00, FRR:0.00)
+Epoch 319/800
+----------
+train Loss Extractor: 45.0669
+Centroids: AfP  Verification Input: AfP
+EER : 0.13 (thres:0.76, FAR:0.13, FRR:0.13)
+Epoch 320/800
+----------
+train Loss Extractor: 39.4703
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.58, FAR:0.03, FRR:0.03)
+Epoch 321/800
+----------
+train Loss Extractor: 26.2872
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.52, FAR:0.02, FRR:0.02)
+Epoch 322/800
+----------
+train Loss Extractor: 25.3333
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.61, FAR:0.04, FRR:0.06)
+Epoch 323/800
+----------
+train Loss Extractor: 30.2256
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.58, FAR:0.01, FRR:0.01)
+Epoch 324/800
+----------
+train Loss Extractor: 37.6927
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.57, FAR:0.03, FRR:0.05)
+Epoch 325/800
+----------
+train Loss Extractor: 38.9321
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.60, FAR:0.03, FRR:0.07)
+Epoch 326/800
+----------
+train Loss Extractor: 23.6435
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.57, FAR:0.03, FRR:0.03)
+Epoch 327/800
+----------
+train Loss Extractor: 33.8939
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.55, FAR:0.01, FRR:0.02)
+Epoch 328/800
+----------
+train Loss Extractor: 28.7749
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.55, FAR:0.00, FRR:0.03)
+Epoch 329/800
+----------
+train Loss Extractor: 29.8284
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.61, FAR:0.04, FRR:0.04)
+Epoch 330/800
+----------
+train Loss Extractor: 34.5576
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.71, FAR:0.07, FRR:0.07)
+Epoch 331/800
+----------
+train Loss Extractor: 26.7825
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.56, FAR:0.01, FRR:0.03)
+Epoch 332/800
+----------
+train Loss Extractor: 32.8765
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.59, FAR:0.03, FRR:0.04)
+Epoch 333/800
+----------
+train Loss Extractor: 25.9133
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.58, FAR:0.02, FRR:0.03)
+Epoch 334/800
+----------
+train Loss Extractor: 34.5265
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 335/800
+----------
+train Loss Extractor: 30.4989
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 336/800
+----------
+train Loss Extractor: 25.3553
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.54, FAR:0.01, FRR:0.01)
+Epoch 337/800
+----------
+train Loss Extractor: 23.6338
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.57, FAR:0.03, FRR:0.05)
+Epoch 338/800
+----------
+train Loss Extractor: 29.1651
+Centroids: AfP  Verification Input: AfP
+EER : 0.10 (thres:0.77, FAR:0.10, FRR:0.10)
+Epoch 339/800
+----------
+train Loss Extractor: 28.8858
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.61, FAR:0.01, FRR:0.01)
+Epoch 340/800
+----------
+train Loss Extractor: 30.1670
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.58, FAR:0.05, FRR:0.08)
+Epoch 341/800
+----------
+train Loss Extractor: 38.3077
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.52, FAR:0.01, FRR:0.01)
+Epoch 342/800
+----------
+train Loss Extractor: 32.6934
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.58, FAR:0.05, FRR:0.05)
+Epoch 343/800
+----------
+train Loss Extractor: 33.4005
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.59, FAR:0.06, FRR:0.06)
+Epoch 344/800
+----------
+train Loss Extractor: 29.2354
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 345/800
+----------
+train Loss Extractor: 29.2501
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 346/800
+----------
+train Loss Extractor: 41.5093
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.54, FAR:0.03, FRR:0.04)
+Epoch 347/800
+----------
+train Loss Extractor: 30.5337
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.58, FAR:0.04, FRR:0.04)
+Epoch 348/800
+----------
+train Loss Extractor: 29.6823
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.66, FAR:0.07, FRR:0.07)
+Epoch 349/800
+----------
+train Loss Extractor: 27.6509
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.61, FAR:0.03, FRR:0.03)
+Epoch 350/800
+----------
+train Loss Extractor: 30.1392
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.62, FAR:0.03, FRR:0.03)
+Epoch 351/800
+----------
+train Loss Extractor: 33.1168
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.74, FAR:0.03, FRR:0.03)
+Epoch 352/800
+----------
+train Loss Extractor: 28.9618
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.52, FAR:0.00, FRR:0.02)
+Epoch 353/800
+----------
+train Loss Extractor: 21.3403
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 354/800
+----------
+train Loss Extractor: 26.0360
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.62, FAR:0.03, FRR:0.03)
+Epoch 355/800
+----------
+train Loss Extractor: 26.4961
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.51, FAR:0.01, FRR:0.01)
+Epoch 356/800
+----------
+train Loss Extractor: 32.4216
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.02)
+Epoch 357/800
+----------
+train Loss Extractor: 27.9744
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.62, FAR:0.05, FRR:0.06)
+Epoch 358/800
+----------
+train Loss Extractor: 32.9021
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.56, FAR:0.05, FRR:0.05)
+Epoch 359/800
+----------
+train Loss Extractor: 36.2541
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.56, FAR:0.01, FRR:0.04)
+Epoch 360/800
+----------
+train Loss Extractor: 24.3583
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.61, FAR:0.05, FRR:0.07)
+Epoch 361/800
+----------
+train Loss Extractor: 26.0335
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.52, FAR:0.02, FRR:0.03)
+Epoch 362/800
+----------
+train Loss Extractor: 34.4230
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 363/800
+----------
+train Loss Extractor: 34.9704
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.56, FAR:0.01, FRR:0.01)
+Epoch 364/800
+----------
+train Loss Extractor: 37.0734
+Centroids: AfP  Verification Input: AfP
+EER : 0.10 (thres:0.64, FAR:0.10, FRR:0.10)
+Epoch 365/800
+----------
+train Loss Extractor: 26.0816
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.58, FAR:0.07, FRR:0.09)
+Epoch 366/800
+----------
+train Loss Extractor: 29.3268
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 367/800
+----------
+train Loss Extractor: 28.5391
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.60, FAR:0.03, FRR:0.03)
+Epoch 368/800
+----------
+train Loss Extractor: 24.1193
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.53, FAR:0.01, FRR:0.01)
+Epoch 369/800
+----------
+train Loss Extractor: 34.2966
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 370/800
+----------
+train Loss Extractor: 34.9072
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.56, FAR:0.03, FRR:0.03)
+Epoch 371/800
+----------
+train Loss Extractor: 29.5669
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.51, FAR:0.01, FRR:0.01)
+Epoch 372/800
+----------
+train Loss Extractor: 31.9890
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.55, FAR:0.01, FRR:0.01)
+Epoch 373/800
+----------
+train Loss Extractor: 31.7760
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.52, FAR:0.00, FRR:0.00)
+Epoch 374/800
+----------
+train Loss Extractor: 25.1796
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.53, FAR:0.02, FRR:0.02)
+Epoch 375/800
+----------
+train Loss Extractor: 19.7480
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.56, FAR:0.03, FRR:0.05)
+Epoch 376/800
+----------
+train Loss Extractor: 20.9990
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.53, FAR:0.02, FRR:0.02)
+Epoch 377/800
+----------
+train Loss Extractor: 30.9975
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 378/800
+----------
+train Loss Extractor: 21.9897
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.61, FAR:0.03, FRR:0.04)
+Epoch 379/800
+----------
+train Loss Extractor: 33.5550
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.62, FAR:0.07, FRR:0.07)
+Epoch 380/800
+----------
+train Loss Extractor: 22.5584
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 381/800
+----------
+train Loss Extractor: 26.4949
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.61, FAR:0.04, FRR:0.07)
+Epoch 382/800
+----------
+train Loss Extractor: 40.9163
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 383/800
+----------
+train Loss Extractor: 35.8592
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.70, FAR:0.01, FRR:0.01)
+Epoch 384/800
+----------
+train Loss Extractor: 34.0217
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.58, FAR:0.04, FRR:0.05)
+Epoch 385/800
+----------
+train Loss Extractor: 30.8441
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.61, FAR:0.04, FRR:0.07)
+Epoch 386/800
+----------
+train Loss Extractor: 31.4624
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.58, FAR:0.07, FRR:0.07)
+Epoch 387/800
+----------
+train Loss Extractor: 36.5175
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.52, FAR:0.00, FRR:0.01)
+Epoch 388/800
+----------
+train Loss Extractor: 36.1136
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.59, FAR:0.03, FRR:0.03)
+Epoch 389/800
+----------
+train Loss Extractor: 26.2142
+Centroids: AfP  Verification Input: AfP
+EER : 0.13 (thres:0.64, FAR:0.13, FRR:0.13)
+Epoch 390/800
+----------
+train Loss Extractor: 27.4826
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.54, FAR:0.01, FRR:0.03)
+Epoch 391/800
+----------
+train Loss Extractor: 26.5908
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.61, FAR:0.03, FRR:0.03)
+Epoch 392/800
+----------
+train Loss Extractor: 29.2448
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.71, FAR:0.07, FRR:0.07)
+Epoch 393/800
+----------
+train Loss Extractor: 31.4245
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.52, FAR:0.01, FRR:0.02)
+Epoch 394/800
+----------
+train Loss Extractor: 32.8144
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.60, FAR:0.06, FRR:0.06)
+Epoch 395/800
+----------
+train Loss Extractor: 24.8609
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.61, FAR:0.05, FRR:0.05)
+Epoch 396/800
+----------
+train Loss Extractor: 23.9522
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.65, FAR:0.01, FRR:0.01)
+Epoch 397/800
+----------
+train Loss Extractor: 32.6501
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.57, FAR:0.01, FRR:0.01)
+Epoch 398/800
+----------
+train Loss Extractor: 23.1080
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.58, FAR:0.05, FRR:0.05)
+Epoch 399/800
+----------
+train Loss Extractor: 19.5893
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.54, FAR:0.00, FRR:0.01)
+Epoch 400/800
+----------
+train Loss Extractor: 26.2577
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.56, FAR:0.03, FRR:0.03)
+Epoch 401/800
+----------
+train Loss Extractor: 25.5267
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.67, FAR:0.03, FRR:0.03)
+Epoch 402/800
+----------
+train Loss Extractor: 23.2829
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.61, FAR:0.03, FRR:0.03)
+Epoch 403/800
+----------
+train Loss Extractor: 22.8852
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.61, FAR:0.03, FRR:0.04)
+Epoch 404/800
+----------
+train Loss Extractor: 28.7891
+Centroids: AfP  Verification Input: AfP
+EER : 0.12 (thres:0.70, FAR:0.12, FRR:0.12)
+Epoch 405/800
+----------
+train Loss Extractor: 30.7600
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.52, FAR:0.01, FRR:0.01)
+Epoch 406/800
+----------
+train Loss Extractor: 25.2528
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.54, FAR:0.02, FRR:0.03)
+Epoch 407/800
+----------
+train Loss Extractor: 32.4961
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.76, FAR:0.09, FRR:0.08)
+Epoch 408/800
+----------
+train Loss Extractor: 42.5930
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.57, FAR:0.04, FRR:0.04)
+Epoch 409/800
+----------
+train Loss Extractor: 27.1819
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.57, FAR:0.03, FRR:0.03)
+Epoch 410/800
+----------
+train Loss Extractor: 25.1021
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.57, FAR:0.03, FRR:0.04)
+Epoch 411/800
+----------
+train Loss Extractor: 26.2226
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.60, FAR:0.03, FRR:0.03)
+Epoch 412/800
+----------
+train Loss Extractor: 24.5128
+Centroids: AfP  Verification Input: AfP
+EER : 0.12 (thres:0.80, FAR:0.12, FRR:0.12)
+Epoch 413/800
+----------
+train Loss Extractor: 25.3335
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.57, FAR:0.04, FRR:0.04)
+Epoch 414/800
+----------
+train Loss Extractor: 30.5439
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.56, FAR:0.01, FRR:0.01)
+Epoch 415/800
+----------
+train Loss Extractor: 24.4877
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.60, FAR:0.00, FRR:0.00)
+Epoch 416/800
+----------
+train Loss Extractor: 31.8843
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.66, FAR:0.05, FRR:0.05)
+Epoch 417/800
+----------
+train Loss Extractor: 28.1395
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.58, FAR:0.04, FRR:0.07)
+Epoch 418/800
+----------
+train Loss Extractor: 24.5675
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.55, FAR:0.03, FRR:0.03)
+Epoch 419/800
+----------
+train Loss Extractor: 28.8705
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 420/800
+----------
+train Loss Extractor: 31.1496
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.52, FAR:0.00, FRR:0.01)
+Epoch 421/800
+----------
+train Loss Extractor: 33.4020
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 422/800
+----------
+train Loss Extractor: 20.7472
+Centroids: AfP  Verification Input: AfP
+EER : 0.12 (thres:0.68, FAR:0.12, FRR:0.12)
+Epoch 423/800
+----------
+train Loss Extractor: 28.7683
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.62, FAR:0.04, FRR:0.06)
+Epoch 424/800
+----------
+train Loss Extractor: 37.9312
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.72, FAR:0.04, FRR:0.04)
+Epoch 425/800
+----------
+train Loss Extractor: 27.7386
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.79, FAR:0.06, FRR:0.06)
+Epoch 426/800
+----------
+train Loss Extractor: 23.6768
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.57, FAR:0.03, FRR:0.03)
+Epoch 427/800
+----------
+train Loss Extractor: 25.2186
+Centroids: AfP  Verification Input: AfP
+EER : 0.13 (thres:0.73, FAR:0.13, FRR:0.13)
+Epoch 428/800
+----------
+train Loss Extractor: 28.5449
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.58, FAR:0.03, FRR:0.03)
+Epoch 429/800
+----------
+train Loss Extractor: 29.2930
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.62, FAR:0.03, FRR:0.05)
+Epoch 430/800
+----------
+train Loss Extractor: 26.9772
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.72, FAR:0.08, FRR:0.08)
+Epoch 431/800
+----------
+train Loss Extractor: 24.2752
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.55, FAR:0.03, FRR:0.04)
+Epoch 432/800
+----------
+train Loss Extractor: 28.0730
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.58, FAR:0.03, FRR:0.04)
+Epoch 433/800
+----------
+train Loss Extractor: 27.6766
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 434/800
+----------
+train Loss Extractor: 20.9805
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.60, FAR:0.04, FRR:0.04)
+Epoch 435/800
+----------
+train Loss Extractor: 27.6203
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 436/800
+----------
+train Loss Extractor: 27.2187
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.59, FAR:0.03, FRR:0.05)
+Epoch 437/800
+----------
+train Loss Extractor: 25.8934
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.59, FAR:0.02, FRR:0.03)
+Epoch 438/800
+----------
+train Loss Extractor: 31.9183
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 439/800
+----------
+train Loss Extractor: 32.0074
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.77, FAR:0.09, FRR:0.09)
+Epoch 440/800
+----------
+train Loss Extractor: 18.7273
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.52, FAR:0.05, FRR:0.08)
+Epoch 441/800
+----------
+train Loss Extractor: 33.6013
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.57, FAR:0.05, FRR:0.06)
+Epoch 442/800
+----------
+train Loss Extractor: 25.7303
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.54, FAR:0.03, FRR:0.07)
+Epoch 443/800
+----------
+train Loss Extractor: 29.3253
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.53, FAR:0.02, FRR:0.03)
+Epoch 444/800
+----------
+train Loss Extractor: 25.8405
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.54, FAR:0.03, FRR:0.03)
+Epoch 445/800
+----------
+train Loss Extractor: 17.6100
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.51, FAR:0.01, FRR:0.01)
+Epoch 446/800
+----------
+train Loss Extractor: 31.0752
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.69, FAR:0.09, FRR:0.09)
+Epoch 447/800
+----------
+train Loss Extractor: 32.0890
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.66, FAR:0.07, FRR:0.07)
+Epoch 448/800
+----------
+train Loss Extractor: 24.7306
+Centroids: AfP  Verification Input: AfP
+EER : 0.15 (thres:0.71, FAR:0.15, FRR:0.15)
+Epoch 449/800
+----------
+train Loss Extractor: 17.1011
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.52, FAR:0.01, FRR:0.01)
+Epoch 450/800
+----------
+train Loss Extractor: 27.7995
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.59, FAR:0.05, FRR:0.10)
+Epoch 451/800
+----------
+train Loss Extractor: 27.5631
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.66, FAR:0.03, FRR:0.04)
+Epoch 452/800
+----------
+train Loss Extractor: 21.0624
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.56, FAR:0.03, FRR:0.05)
+Epoch 453/800
+----------
+train Loss Extractor: 23.9798
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.55, FAR:0.01, FRR:0.03)
+Epoch 454/800
+----------
+train Loss Extractor: 16.0428
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.56, FAR:0.03, FRR:0.04)
+Epoch 455/800
+----------
+train Loss Extractor: 19.8991
+Centroids: AfP  Verification Input: AfP
+EER : 0.11 (thres:0.69, FAR:0.11, FRR:0.11)
+Epoch 456/800
+----------
+train Loss Extractor: 20.3693
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.65, FAR:0.06, FRR:0.06)
+Epoch 457/800
+----------
+train Loss Extractor: 25.5618
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.00, FRR:0.04)
+Epoch 458/800
+----------
+train Loss Extractor: 22.8172
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 459/800
+----------
+train Loss Extractor: 26.1705
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.57, FAR:0.03, FRR:0.04)
+Epoch 460/800
+----------
+train Loss Extractor: 25.5038
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.59, FAR:0.05, FRR:0.06)
+Epoch 461/800
+----------
+train Loss Extractor: 19.7705
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.51, FAR:0.02, FRR:0.03)
+Epoch 462/800
+----------
+train Loss Extractor: 27.7978
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.54, FAR:0.03, FRR:0.03)
+Epoch 463/800
+----------
+train Loss Extractor: 18.0171
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.65, FAR:0.05, FRR:0.05)
+Epoch 464/800
+----------
+train Loss Extractor: 20.7071
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.02, FRR:0.03)
+Epoch 465/800
+----------
+train Loss Extractor: 32.6004
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.61, FAR:0.04, FRR:0.07)
+Epoch 466/800
+----------
+train Loss Extractor: 34.0675
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.53, FAR:0.01, FRR:0.01)
+Epoch 467/800
+----------
+train Loss Extractor: 32.8018
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 468/800
+----------
+train Loss Extractor: 19.6568
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.51, FAR:0.01, FRR:0.01)
+Epoch 469/800
+----------
+train Loss Extractor: 20.4791
+Centroids: AfP  Verification Input: AfP
+EER : 0.17 (thres:0.74, FAR:0.17, FRR:0.17)
+Epoch 470/800
+----------
+train Loss Extractor: 19.4386
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.62, FAR:0.07, FRR:0.09)
+Epoch 471/800
+----------
+train Loss Extractor: 26.6199
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 472/800
+----------
+train Loss Extractor: 25.0395
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.59, FAR:0.01, FRR:0.01)
+Epoch 473/800
+----------
+train Loss Extractor: 25.2109
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.60, FAR:0.01, FRR:0.03)
+Epoch 474/800
+----------
+train Loss Extractor: 27.4948
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.02)
+Epoch 475/800
+----------
+train Loss Extractor: 30.2171
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 476/800
+----------
+train Loss Extractor: 27.0476
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 477/800
+----------
+train Loss Extractor: 23.8184
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.56, FAR:0.03, FRR:0.04)
+Epoch 478/800
+----------
+train Loss Extractor: 18.2245
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.52, FAR:0.02, FRR:0.04)
+Epoch 479/800
+----------
+train Loss Extractor: 19.8995
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.01)
+Epoch 480/800
+----------
+train Loss Extractor: 18.3075
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.50, FAR:0.01, FRR:0.05)
+Epoch 481/800
+----------
+train Loss Extractor: 17.5674
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.55, FAR:0.00, FRR:0.03)
+Epoch 482/800
+----------
+train Loss Extractor: 22.9894
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.53, FAR:0.01, FRR:0.01)
+Epoch 483/800
+----------
+train Loss Extractor: 25.4886
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 484/800
+----------
+train Loss Extractor: 23.6931
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.55, FAR:0.05, FRR:0.05)
+Epoch 485/800
+----------
+train Loss Extractor: 23.1064
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.62, FAR:0.03, FRR:0.03)
+Epoch 486/800
+----------
+train Loss Extractor: 15.8394
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.63, FAR:0.01, FRR:0.02)
+Epoch 487/800
+----------
+train Loss Extractor: 16.2740
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.65, FAR:0.07, FRR:0.07)
+Epoch 488/800
+----------
+train Loss Extractor: 26.4618
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.52, FAR:0.01, FRR:0.03)
+Epoch 489/800
+----------
+train Loss Extractor: 24.3609
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.57, FAR:0.03, FRR:0.03)
+Epoch 490/800
+----------
+train Loss Extractor: 19.9240
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.63, FAR:0.07, FRR:0.07)
+Epoch 491/800
+----------
+train Loss Extractor: 20.2995
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.55, FAR:0.01, FRR:0.07)
+Epoch 492/800
+----------
+train Loss Extractor: 27.1993
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.01)
+Epoch 493/800
+----------
+train Loss Extractor: 22.0592
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.02)
+Epoch 494/800
+----------
+train Loss Extractor: 25.1444
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.55, FAR:0.02, FRR:0.03)
+Epoch 495/800
+----------
+train Loss Extractor: 26.2472
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.55, FAR:0.04, FRR:0.04)
+Epoch 496/800
+----------
+train Loss Extractor: 20.3805
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.54, FAR:0.03, FRR:0.06)
+Epoch 497/800
+----------
+train Loss Extractor: 20.7922
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.51, FAR:0.01, FRR:0.01)
+Epoch 498/800
+----------
+train Loss Extractor: 28.9368
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.52, FAR:0.01, FRR:0.01)
+Epoch 499/800
+----------
+train Loss Extractor: 21.9631
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.54, FAR:0.03, FRR:0.03)
+Epoch 500/800
+----------
+train Loss Extractor: 19.1869
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.69, FAR:0.04, FRR:0.04)
+Epoch 501/800
+----------
+train Loss Extractor: 23.9695
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.53, FAR:0.03, FRR:0.03)
+Epoch 502/800
+----------
+train Loss Extractor: 18.6234
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.54, FAR:0.02, FRR:0.03)
+Epoch 503/800
+----------
+train Loss Extractor: 18.8938
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.58, FAR:0.03, FRR:0.05)
+Epoch 504/800
+----------
+train Loss Extractor: 25.8994
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.56, FAR:0.02, FRR:0.04)
+Epoch 505/800
+----------
+train Loss Extractor: 16.5281
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.53, FAR:0.03, FRR:0.06)
+Epoch 506/800
+----------
+train Loss Extractor: 22.4093
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.74, FAR:0.07, FRR:0.07)
+Epoch 507/800
+----------
+train Loss Extractor: 16.5301
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.51, FAR:0.00, FRR:0.01)
+Epoch 508/800
+----------
+train Loss Extractor: 20.6104
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.51, FAR:0.01, FRR:0.01)
+Epoch 509/800
+----------
+train Loss Extractor: 22.1735
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.52, FAR:0.02, FRR:0.03)
+Epoch 510/800
+----------
+train Loss Extractor: 21.4296
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.65, FAR:0.03, FRR:0.03)
+Epoch 511/800
+----------
+train Loss Extractor: 24.5277
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.61, FAR:0.05, FRR:0.09)
+Epoch 512/800
+----------
+train Loss Extractor: 22.6017
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.57, FAR:0.03, FRR:0.03)
+Epoch 513/800
+----------
+train Loss Extractor: 22.8192
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.62, FAR:0.03, FRR:0.03)
+Epoch 514/800
+----------
+train Loss Extractor: 20.9392
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.51, FAR:0.00, FRR:0.01)
+Epoch 515/800
+----------
+train Loss Extractor: 24.3980
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.52, FAR:0.01, FRR:0.02)
+Epoch 516/800
+----------
+train Loss Extractor: 24.9938
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.61, FAR:0.07, FRR:0.09)
+Epoch 517/800
+----------
+train Loss Extractor: 19.7931
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.59, FAR:0.07, FRR:0.07)
+Epoch 518/800
+----------
+train Loss Extractor: 25.6692
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.53, FAR:0.01, FRR:0.04)
+Epoch 519/800
+----------
+train Loss Extractor: 21.3905
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.50, FAR:0.02, FRR:0.05)
+Epoch 520/800
+----------
+train Loss Extractor: 13.9085
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.58, FAR:0.01, FRR:0.01)
+Epoch 521/800
+----------
+train Loss Extractor: 15.4524
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 522/800
+----------
+train Loss Extractor: 16.0499
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.53, FAR:0.02, FRR:0.03)
+Epoch 523/800
+----------
+train Loss Extractor: 23.3129
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.52, FAR:0.02, FRR:0.06)
+Epoch 524/800
+----------
+train Loss Extractor: 22.6878
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.50, FAR:0.03, FRR:0.05)
+Epoch 525/800
+----------
+train Loss Extractor: 23.6865
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.78, FAR:0.08, FRR:0.08)
+Epoch 526/800
+----------
+train Loss Extractor: 24.0421
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.64, FAR:0.05, FRR:0.07)
+Epoch 527/800
+----------
+train Loss Extractor: 24.8229
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.57, FAR:0.01, FRR:0.01)
+Epoch 528/800
+----------
+train Loss Extractor: 21.0636
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.62, FAR:0.02, FRR:0.02)
+Epoch 529/800
+----------
+train Loss Extractor: 20.0721
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 530/800
+----------
+train Loss Extractor: 24.6906
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.02)
+Epoch 531/800
+----------
+train Loss Extractor: 16.7266
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 532/800
+----------
+train Loss Extractor: 17.4780
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 533/800
+----------
+train Loss Extractor: 21.7847
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.51, FAR:0.03, FRR:0.03)
+Epoch 534/800
+----------
+train Loss Extractor: 24.7026
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.62, FAR:0.09, FRR:0.09)
+Epoch 535/800
+----------
+train Loss Extractor: 24.3464
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.61, FAR:0.05, FRR:0.06)
+Epoch 536/800
+----------
+train Loss Extractor: 30.8892
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.58, FAR:0.03, FRR:0.04)
+Epoch 537/800
+----------
+train Loss Extractor: 21.7334
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.54, FAR:0.02, FRR:0.02)
+Epoch 538/800
+----------
+train Loss Extractor: 18.8655
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.68, FAR:0.04, FRR:0.04)
+Epoch 539/800
+----------
+train Loss Extractor: 18.7189
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.55, FAR:0.01, FRR:0.03)
+Epoch 540/800
+----------
+train Loss Extractor: 23.0384
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 541/800
+----------
+train Loss Extractor: 15.4246
+Centroids: AfP  Verification Input: AfP
+EER : 0.10 (thres:0.62, FAR:0.09, FRR:0.11)
+Epoch 542/800
+----------
+train Loss Extractor: 16.2454
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.78, FAR:0.08, FRR:0.07)
+Epoch 543/800
+----------
+train Loss Extractor: 27.1468
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 544/800
+----------
+train Loss Extractor: 21.5318
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.57, FAR:0.05, FRR:0.10)
+Epoch 545/800
+----------
+train Loss Extractor: 26.5410
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.56, FAR:0.03, FRR:0.03)
+Epoch 546/800
+----------
+train Loss Extractor: 19.9590
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.54, FAR:0.05, FRR:0.05)
+Epoch 547/800
+----------
+train Loss Extractor: 22.4226
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.54, FAR:0.01, FRR:0.05)
+Epoch 548/800
+----------
+train Loss Extractor: 25.2201
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.53, FAR:0.03, FRR:0.05)
+Epoch 549/800
+----------
+train Loss Extractor: 19.1726
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.55, FAR:0.03, FRR:0.05)
+Epoch 550/800
+----------
+train Loss Extractor: 24.3758
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 551/800
+----------
+train Loss Extractor: 16.7532
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 552/800
+----------
+train Loss Extractor: 22.7770
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.55, FAR:0.02, FRR:0.02)
+Epoch 553/800
+----------
+train Loss Extractor: 21.9737
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.50, FAR:0.00, FRR:0.00)
+Epoch 554/800
+----------
+train Loss Extractor: 21.0246
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 555/800
+----------
+train Loss Extractor: 19.6328
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.57, FAR:0.01, FRR:0.03)
+Epoch 556/800
+----------
+train Loss Extractor: 18.3056
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.60, FAR:0.03, FRR:0.03)
+Epoch 557/800
+----------
+train Loss Extractor: 19.1498
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.56, FAR:0.01, FRR:0.01)
+Epoch 558/800
+----------
+train Loss Extractor: 23.0611
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.59, FAR:0.03, FRR:0.09)
+Epoch 559/800
+----------
+train Loss Extractor: 24.8287
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.04)
+Epoch 560/800
+----------
+train Loss Extractor: 21.8698
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.57, FAR:0.05, FRR:0.05)
+Epoch 561/800
+----------
+train Loss Extractor: 18.8884
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.51, FAR:0.01, FRR:0.03)
+Epoch 562/800
+----------
+train Loss Extractor: 25.0114
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.60, FAR:0.01, FRR:0.01)
+Epoch 563/800
+----------
+train Loss Extractor: 19.4035
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.60, FAR:0.03, FRR:0.05)
+Epoch 564/800
+----------
+train Loss Extractor: 16.6998
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.00, FRR:0.04)
+Epoch 565/800
+----------
+train Loss Extractor: 17.8348
+Centroids: AfP  Verification Input: AfP
+EER : 0.11 (thres:0.69, FAR:0.11, FRR:0.11)
+Epoch 566/800
+----------
+train Loss Extractor: 15.1027
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.56, FAR:0.02, FRR:0.02)
+Epoch 567/800
+----------
+train Loss Extractor: 26.9773
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.56, FAR:0.01, FRR:0.03)
+Epoch 568/800
+----------
+train Loss Extractor: 20.3315
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.50, FAR:0.01, FRR:0.04)
+Epoch 569/800
+----------
+train Loss Extractor: 25.6339
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.62, FAR:0.05, FRR:0.07)
+Epoch 570/800
+----------
+train Loss Extractor: 18.1548
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.72, FAR:0.07, FRR:0.07)
+Epoch 571/800
+----------
+train Loss Extractor: 21.2598
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.01)
+Epoch 572/800
+----------
+train Loss Extractor: 19.2996
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.68, FAR:0.02, FRR:0.02)
+Epoch 573/800
+----------
+train Loss Extractor: 15.8667
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.65, FAR:0.07, FRR:0.07)
+Epoch 574/800
+----------
+train Loss Extractor: 15.8317
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.57, FAR:0.04, FRR:0.04)
+Epoch 575/800
+----------
+train Loss Extractor: 19.6524
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.58, FAR:0.03, FRR:0.09)
+Epoch 576/800
+----------
+train Loss Extractor: 13.5934
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.57, FAR:0.06, FRR:0.07)
+Epoch 577/800
+----------
+train Loss Extractor: 24.9579
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.50, FAR:0.01, FRR:0.05)
+Epoch 578/800
+----------
+train Loss Extractor: 26.5462
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 579/800
+----------
+train Loss Extractor: 26.4429
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.52, FAR:0.00, FRR:0.03)
+Epoch 580/800
+----------
+train Loss Extractor: 18.8579
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.55, FAR:0.00, FRR:0.01)
+Epoch 581/800
+----------
+train Loss Extractor: 23.8867
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.00, FRR:0.05)
+Epoch 582/800
+----------
+train Loss Extractor: 19.9460
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.50, FAR:0.00, FRR:0.00)
+Epoch 583/800
+----------
+train Loss Extractor: 15.4639
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.59, FAR:0.05, FRR:0.05)
+Epoch 584/800
+----------
+train Loss Extractor: 18.3405
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.53, FAR:0.01, FRR:0.01)
+Epoch 585/800
+----------
+train Loss Extractor: 22.6845
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.63, FAR:0.00, FRR:0.00)
+Epoch 586/800
+----------
+train Loss Extractor: 13.4012
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 587/800
+----------
+train Loss Extractor: 17.5927
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 588/800
+----------
+train Loss Extractor: 19.1740
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.60, FAR:0.07, FRR:0.08)
+Epoch 589/800
+----------
+train Loss Extractor: 22.0228
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.54, FAR:0.00, FRR:0.00)
+Epoch 590/800
+----------
+train Loss Extractor: 23.3667
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.54, FAR:0.01, FRR:0.01)
+Epoch 591/800
+----------
+train Loss Extractor: 20.6962
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 592/800
+----------
+train Loss Extractor: 22.3997
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.56, FAR:0.01, FRR:0.07)
+Epoch 593/800
+----------
+train Loss Extractor: 13.2997
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.57, FAR:0.03, FRR:0.03)
+Epoch 594/800
+----------
+train Loss Extractor: 21.4330
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.60, FAR:0.05, FRR:0.07)
+Epoch 595/800
+----------
+train Loss Extractor: 18.7994
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.50, FAR:0.01, FRR:0.08)
+Epoch 596/800
+----------
+train Loss Extractor: 22.6646
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.58, FAR:0.03, FRR:0.04)
+Epoch 597/800
+----------
+train Loss Extractor: 14.5248
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.61, FAR:0.07, FRR:0.09)
+Epoch 598/800
+----------
+train Loss Extractor: 24.9977
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.56, FAR:0.05, FRR:0.05)
+Epoch 599/800
+----------
+train Loss Extractor: 20.5021
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.55, FAR:0.01, FRR:0.04)
+Epoch 600/800
+----------
+train Loss Extractor: 20.4907
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 601/800
+----------
+train Loss Extractor: 13.6540
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.61, FAR:0.06, FRR:0.07)
+Epoch 602/800
+----------
+train Loss Extractor: 23.8200
+Centroids: AfP  Verification Input: AfP
+EER : 0.11 (thres:0.76, FAR:0.11, FRR:0.11)
+Epoch 603/800
+----------
+train Loss Extractor: 22.6902
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.55, FAR:0.03, FRR:0.03)
+Epoch 604/800
+----------
+train Loss Extractor: 16.7078
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.60, FAR:0.08, FRR:0.09)
+Epoch 605/800
+----------
+train Loss Extractor: 24.0851
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.54, FAR:0.03, FRR:0.05)
+Epoch 606/800
+----------
+train Loss Extractor: 20.8349
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.60, FAR:0.06, FRR:0.07)
+Epoch 607/800
+----------
+train Loss Extractor: 16.2189
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.56, FAR:0.03, FRR:0.04)
+Epoch 608/800
+----------
+train Loss Extractor: 15.5138
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 609/800
+----------
+train Loss Extractor: 12.1123
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.60, FAR:0.08, FRR:0.11)
+Epoch 610/800
+----------
+train Loss Extractor: 18.7057
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.50, FAR:0.03, FRR:0.07)
+Epoch 611/800
+----------
+train Loss Extractor: 12.7010
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.50, FAR:0.01, FRR:0.05)
+Epoch 612/800
+----------
+train Loss Extractor: 20.3001
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.70, FAR:0.04, FRR:0.04)
+Epoch 613/800
+----------
+train Loss Extractor: 17.7088
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.02)
+Epoch 614/800
+----------
+train Loss Extractor: 18.0394
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.58, FAR:0.01, FRR:0.03)
+Epoch 615/800
+----------
+train Loss Extractor: 23.8866
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.50, FAR:0.01, FRR:0.05)
+Epoch 616/800
+----------
+train Loss Extractor: 20.4649
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.60, FAR:0.06, FRR:0.05)
+Epoch 617/800
+----------
+train Loss Extractor: 15.5729
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.59, FAR:0.03, FRR:0.03)
+Epoch 618/800
+----------
+train Loss Extractor: 21.1882
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.54, FAR:0.05, FRR:0.06)
+Epoch 619/800
+----------
+train Loss Extractor: 14.2657
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.56, FAR:0.01, FRR:0.01)
+Epoch 620/800
+----------
+train Loss Extractor: 22.2718
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.64, FAR:0.05, FRR:0.05)
+Epoch 621/800
+----------
+train Loss Extractor: 16.8640
+Centroids: AfP  Verification Input: AfP
+EER : 0.10 (thres:0.62, FAR:0.07, FRR:0.12)
+Epoch 622/800
+----------
+train Loss Extractor: 14.4392
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.51, FAR:0.00, FRR:0.00)
+Epoch 623/800
+----------
+train Loss Extractor: 22.4852
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.57, FAR:0.01, FRR:0.01)
+Epoch 624/800
+----------
+train Loss Extractor: 19.4101
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.62, FAR:0.05, FRR:0.05)
+Epoch 625/800
+----------
+train Loss Extractor: 21.6460
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.58, FAR:0.04, FRR:0.06)
+Epoch 626/800
+----------
+train Loss Extractor: 15.4242
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.62, FAR:0.06, FRR:0.07)
+Epoch 627/800
+----------
+train Loss Extractor: 18.6880
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.56, FAR:0.03, FRR:0.03)
+Epoch 628/800
+----------
+train Loss Extractor: 16.4229
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 629/800
+----------
+train Loss Extractor: 17.3929
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.59, FAR:0.03, FRR:0.03)
+Epoch 630/800
+----------
+train Loss Extractor: 32.7743
+Centroids: AfP  Verification Input: AfP
+EER : 0.10 (thres:0.75, FAR:0.10, FRR:0.10)
+Epoch 631/800
+----------
+train Loss Extractor: 20.4855
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.70, FAR:0.05, FRR:0.05)
+Epoch 632/800
+----------
+train Loss Extractor: 14.2870
+Centroids: AfP  Verification Input: AfP
+EER : 0.11 (thres:0.63, FAR:0.10, FRR:0.13)
+Epoch 633/800
+----------
+train Loss Extractor: 23.6371
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.54, FAR:0.02, FRR:0.04)
+Epoch 634/800
+----------
+train Loss Extractor: 19.0921
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.57, FAR:0.05, FRR:0.08)
+Epoch 635/800
+----------
+train Loss Extractor: 15.7661
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.61, FAR:0.07, FRR:0.09)
+Epoch 636/800
+----------
+train Loss Extractor: 17.2664
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 637/800
+----------
+train Loss Extractor: 19.3030
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.53, FAR:0.01, FRR:0.01)
+Epoch 638/800
+----------
+train Loss Extractor: 23.6211
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.51, FAR:0.00, FRR:0.02)
+Epoch 639/800
+----------
+train Loss Extractor: 15.4869
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.51, FAR:0.01, FRR:0.02)
+Epoch 640/800
+----------
+train Loss Extractor: 16.0241
+Centroids: AfP  Verification Input: AfP
+EER : 0.15 (thres:0.72, FAR:0.15, FRR:0.15)
+Epoch 641/800
+----------
+train Loss Extractor: 19.5449
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.57, FAR:0.01, FRR:0.01)
+Epoch 642/800
+----------
+train Loss Extractor: 16.1167
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.60, FAR:0.04, FRR:0.05)
+Epoch 643/800
+----------
+train Loss Extractor: 16.5982
+Centroids: AfP  Verification Input: AfP
+EER : 0.10 (thres:0.76, FAR:0.10, FRR:0.10)
+Epoch 644/800
+----------
+train Loss Extractor: 12.6598
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.50, FAR:0.02, FRR:0.03)
+Epoch 645/800
+----------
+train Loss Extractor: 15.8965
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.65, FAR:0.04, FRR:0.04)
+Epoch 646/800
+----------
+train Loss Extractor: 15.9352
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.57, FAR:0.03, FRR:0.03)
+Epoch 647/800
+----------
+train Loss Extractor: 16.9131
+Centroids: AfP  Verification Input: AfP
+EER : 0.11 (thres:0.61, FAR:0.11, FRR:0.11)
+Epoch 648/800
+----------
+train Loss Extractor: 17.1455
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.62, FAR:0.07, FRR:0.08)
+Epoch 649/800
+----------
+train Loss Extractor: 17.5544
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 650/800
+----------
+train Loss Extractor: 17.3132
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.56, FAR:0.05, FRR:0.05)
+Epoch 651/800
+----------
+train Loss Extractor: 26.9383
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 652/800
+----------
+train Loss Extractor: 13.0774
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.57, FAR:0.03, FRR:0.03)
+Epoch 653/800
+----------
+train Loss Extractor: 15.2743
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.63, FAR:0.03, FRR:0.05)
+Epoch 654/800
+----------
+train Loss Extractor: 14.1407
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 655/800
+----------
+train Loss Extractor: 17.9345
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.57, FAR:0.05, FRR:0.05)
+Epoch 656/800
+----------
+train Loss Extractor: 20.2855
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.56, FAR:0.01, FRR:0.03)
+Epoch 657/800
+----------
+train Loss Extractor: 23.0876
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.00, FRR:0.05)
+Epoch 658/800
+----------
+train Loss Extractor: 22.0539
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 659/800
+----------
+train Loss Extractor: 19.1487
+Centroids: AfP  Verification Input: AfP
+EER : 0.13 (thres:0.76, FAR:0.13, FRR:0.13)
+Epoch 660/800
+----------
+train Loss Extractor: 15.0742
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.62, FAR:0.03, FRR:0.04)
+Epoch 661/800
+----------
+train Loss Extractor: 14.6900
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 662/800
+----------
+train Loss Extractor: 16.5489
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.58, FAR:0.06, FRR:0.08)
+Epoch 663/800
+----------
+train Loss Extractor: 11.8339
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.02)
+Epoch 664/800
+----------
+train Loss Extractor: 19.8796
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 665/800
+----------
+train Loss Extractor: 18.7739
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.02)
+Epoch 666/800
+----------
+train Loss Extractor: 17.1405
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.64, FAR:0.04, FRR:0.06)
+Epoch 667/800
+----------
+train Loss Extractor: 18.4136
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.68, FAR:0.09, FRR:0.09)
+Epoch 668/800
+----------
+train Loss Extractor: 18.7491
+Centroids: AfP  Verification Input: AfP
+EER : 0.10 (thres:0.69, FAR:0.10, FRR:0.11)
+Epoch 669/800
+----------
+train Loss Extractor: 13.8618
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.56, FAR:0.02, FRR:0.03)
+Epoch 670/800
+----------
+train Loss Extractor: 17.0890
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.57, FAR:0.03, FRR:0.03)
+Epoch 671/800
+----------
+train Loss Extractor: 16.0741
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.50, FAR:0.01, FRR:0.05)
+Epoch 672/800
+----------
+train Loss Extractor: 16.7901
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.57, FAR:0.03, FRR:0.03)
+Epoch 673/800
+----------
+train Loss Extractor: 17.2148
+Centroids: AfP  Verification Input: AfP
+EER : 0.13 (thres:0.73, FAR:0.13, FRR:0.13)
+Epoch 674/800
+----------
+train Loss Extractor: 18.5945
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.57, FAR:0.01, FRR:0.02)
+Epoch 675/800
+----------
+train Loss Extractor: 16.1386
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.60, FAR:0.03, FRR:0.03)
+Epoch 676/800
+----------
+train Loss Extractor: 16.9555
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.61, FAR:0.07, FRR:0.09)
+Epoch 677/800
+----------
+train Loss Extractor: 14.3662
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.56, FAR:0.02, FRR:0.02)
+Epoch 678/800
+----------
+train Loss Extractor: 14.8841
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 679/800
+----------
+train Loss Extractor: 21.0466
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.63, FAR:0.07, FRR:0.08)
+Epoch 680/800
+----------
+train Loss Extractor: 14.7282
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.61, FAR:0.08, FRR:0.09)
+Epoch 681/800
+----------
+train Loss Extractor: 17.2183
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 682/800
+----------
+train Loss Extractor: 19.1347
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 683/800
+----------
+train Loss Extractor: 17.1795
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.63, FAR:0.06, FRR:0.07)
+Epoch 684/800
+----------
+train Loss Extractor: 22.0276
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.02)
+Epoch 685/800
+----------
+train Loss Extractor: 20.2374
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.54, FAR:0.05, FRR:0.06)
+Epoch 686/800
+----------
+train Loss Extractor: 16.7697
+Centroids: AfP  Verification Input: AfP
+EER : 0.12 (thres:0.83, FAR:0.12, FRR:0.12)
+Epoch 687/800
+----------
+train Loss Extractor: 20.3846
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.64, FAR:0.03, FRR:0.03)
+Epoch 688/800
+----------
+train Loss Extractor: 15.1594
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.50, FAR:0.02, FRR:0.05)
+Epoch 689/800
+----------
+train Loss Extractor: 21.9937
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.52, FAR:0.03, FRR:0.04)
+Epoch 690/800
+----------
+train Loss Extractor: 22.6700
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.51, FAR:0.02, FRR:0.04)
+Epoch 691/800
+----------
+train Loss Extractor: 17.5402
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.60, FAR:0.06, FRR:0.06)
+Epoch 692/800
+----------
+train Loss Extractor: 18.0742
+Centroids: AfP  Verification Input: AfP
+EER : 0.15 (thres:0.72, FAR:0.15, FRR:0.15)
+Epoch 693/800
+----------
+train Loss Extractor: 16.2647
+Centroids: AfP  Verification Input: AfP
+EER : 0.10 (thres:0.57, FAR:0.07, FRR:0.13)
+Epoch 694/800
+----------
+train Loss Extractor: 14.1867
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 695/800
+----------
+train Loss Extractor: 20.8742
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.50, FAR:0.00, FRR:0.00)
+Epoch 696/800
+----------
+train Loss Extractor: 13.2669
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.53, FAR:0.03, FRR:0.03)
+Epoch 697/800
+----------
+train Loss Extractor: 12.1160
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.53, FAR:0.01, FRR:0.05)
+Epoch 698/800
+----------
+train Loss Extractor: 18.8764
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.50, FAR:0.02, FRR:0.03)
+Epoch 699/800
+----------
+train Loss Extractor: 12.9274
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.54, FAR:0.03, FRR:0.04)
+Epoch 700/800
+----------
+train Loss Extractor: 19.9177
+Centroids: AfP  Verification Input: AfP
+EER : 0.10 (thres:0.62, FAR:0.10, FRR:0.11)
+Epoch 701/800
+----------
+train Loss Extractor: 22.8215
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.52, FAR:0.03, FRR:0.04)
+Epoch 702/800
+----------
+train Loss Extractor: 15.1693
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.58, FAR:0.03, FRR:0.03)
+Epoch 703/800
+----------
+train Loss Extractor: 19.7067
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.54, FAR:0.03, FRR:0.04)
+Epoch 704/800
+----------
+train Loss Extractor: 16.0195
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.64, FAR:0.05, FRR:0.05)
+Epoch 705/800
+----------
+train Loss Extractor: 16.7444
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.61, FAR:0.09, FRR:0.10)
+Epoch 706/800
+----------
+train Loss Extractor: 13.8185
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 707/800
+----------
+train Loss Extractor: 25.1176
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.55, FAR:0.02, FRR:0.03)
+Epoch 708/800
+----------
+train Loss Extractor: 21.9562
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.57, FAR:0.04, FRR:0.06)
+Epoch 709/800
+----------
+train Loss Extractor: 24.3010
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.56, FAR:0.04, FRR:0.05)
+Epoch 710/800
+----------
+train Loss Extractor: 21.6333
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.54, FAR:0.01, FRR:0.01)
+Epoch 711/800
+----------
+train Loss Extractor: 17.1607
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.61, FAR:0.05, FRR:0.05)
+Epoch 712/800
+----------
+train Loss Extractor: 20.8473
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.55, FAR:0.01, FRR:0.01)
+Epoch 713/800
+----------
+train Loss Extractor: 11.6882
+Centroids: AfP  Verification Input: AfP
+EER : 0.11 (thres:0.70, FAR:0.11, FRR:0.11)
+Epoch 714/800
+----------
+train Loss Extractor: 13.7673
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.57, FAR:0.00, FRR:0.00)
+Epoch 715/800
+----------
+train Loss Extractor: 17.9693
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.61, FAR:0.08, FRR:0.08)
+Epoch 716/800
+----------
+train Loss Extractor: 17.6684
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.55, FAR:0.03, FRR:0.03)
+Epoch 717/800
+----------
+train Loss Extractor: 17.6396
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.65, FAR:0.03, FRR:0.03)
+Epoch 718/800
+----------
+train Loss Extractor: 18.8582
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 719/800
+----------
+train Loss Extractor: 14.0459
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 720/800
+----------
+train Loss Extractor: 14.5071
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.60, FAR:0.05, FRR:0.09)
+Epoch 721/800
+----------
+train Loss Extractor: 15.7351
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 722/800
+----------
+train Loss Extractor: 18.3869
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.54, FAR:0.02, FRR:0.03)
+Epoch 723/800
+----------
+train Loss Extractor: 11.7092
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.54, FAR:0.03, FRR:0.04)
+Epoch 724/800
+----------
+train Loss Extractor: 20.9449
+Centroids: AfP  Verification Input: AfP
+EER : 0.08 (thres:0.58, FAR:0.07, FRR:0.09)
+Epoch 725/800
+----------
+train Loss Extractor: 20.7219
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.60, FAR:0.05, FRR:0.07)
+Epoch 726/800
+----------
+train Loss Extractor: 23.1995
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.52, FAR:0.02, FRR:0.03)
+Epoch 727/800
+----------
+train Loss Extractor: 19.0682
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.62, FAR:0.05, FRR:0.05)
+Epoch 728/800
+----------
+train Loss Extractor: 14.7962
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.53, FAR:0.04, FRR:0.05)
+Epoch 729/800
+----------
+train Loss Extractor: 15.5675
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.61, FAR:0.03, FRR:0.05)
+Epoch 730/800
+----------
+train Loss Extractor: 14.8268
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.59, FAR:0.05, FRR:0.06)
+Epoch 731/800
+----------
+train Loss Extractor: 17.7554
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 732/800
+----------
+train Loss Extractor: 19.2255
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 733/800
+----------
+train Loss Extractor: 19.7013
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.56, FAR:0.01, FRR:0.03)
+Epoch 734/800
+----------
+train Loss Extractor: 18.4404
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 735/800
+----------
+train Loss Extractor: 18.7846
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.61, FAR:0.04, FRR:0.04)
+Epoch 736/800
+----------
+train Loss Extractor: 17.4729
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.52, FAR:0.04, FRR:0.04)
+Epoch 737/800
+----------
+train Loss Extractor: 20.7712
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 738/800
+----------
+train Loss Extractor: 14.3445
+Centroids: AfP  Verification Input: AfP
+EER : 0.11 (thres:0.71, FAR:0.11, FRR:0.11)
+Epoch 739/800
+----------
+train Loss Extractor: 21.7384
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.56, FAR:0.00, FRR:0.00)
+Epoch 740/800
+----------
+train Loss Extractor: 15.7636
+Centroids: AfP  Verification Input: AfP
+EER : 0.12 (thres:0.60, FAR:0.11, FRR:0.13)
+Epoch 741/800
+----------
+train Loss Extractor: 18.9029
+Centroids: AfP  Verification Input: AfP
+EER : 0.10 (thres:0.59, FAR:0.09, FRR:0.11)
+Epoch 742/800
+----------
+train Loss Extractor: 15.2903
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.53, FAR:0.01, FRR:0.04)
+Epoch 743/800
+----------
+train Loss Extractor: 14.3651
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.50, FAR:0.00, FRR:0.07)
+Epoch 744/800
+----------
+train Loss Extractor: 11.7983
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.00, FRR:0.05)
+Epoch 745/800
+----------
+train Loss Extractor: 21.6801
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.56, FAR:0.02, FRR:0.03)
+Epoch 746/800
+----------
+train Loss Extractor: 19.2974
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 747/800
+----------
+train Loss Extractor: 18.0894
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.55, FAR:0.01, FRR:0.02)
+Epoch 748/800
+----------
+train Loss Extractor: 24.6976
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.50, FAR:0.02, FRR:0.04)
+Epoch 749/800
+----------
+train Loss Extractor: 13.0775
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.51, FAR:0.03, FRR:0.03)
+Epoch 750/800
+----------
+train Loss Extractor: 15.4637
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.02)
+Epoch 751/800
+----------
+train Loss Extractor: 20.3922
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.61, FAR:0.05, FRR:0.05)
+Epoch 752/800
+----------
+train Loss Extractor: 17.0395
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.51, FAR:0.00, FRR:0.02)
+Epoch 753/800
+----------
+train Loss Extractor: 15.5231
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.69, FAR:0.07, FRR:0.07)
+Epoch 754/800
+----------
+train Loss Extractor: 16.9275
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 755/800
+----------
+train Loss Extractor: 14.3715
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 756/800
+----------
+train Loss Extractor: 13.8088
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.01, FRR:0.03)
+Epoch 757/800
+----------
+train Loss Extractor: 17.0651
+Centroids: AfP  Verification Input: AfP
+EER : 0.13 (thres:0.74, FAR:0.13, FRR:0.13)
+Epoch 758/800
+----------
+train Loss Extractor: 13.7989
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 759/800
+----------
+train Loss Extractor: 19.1544
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.55, FAR:0.01, FRR:0.03)
+Epoch 760/800
+----------
+train Loss Extractor: 16.7986
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.54, FAR:0.01, FRR:0.03)
+Epoch 761/800
+----------
+train Loss Extractor: 21.7041
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.56, FAR:0.04, FRR:0.05)
+Epoch 762/800
+----------
+train Loss Extractor: 12.5922
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.59, FAR:0.08, FRR:0.11)
+Epoch 763/800
+----------
+train Loss Extractor: 15.7052
+Centroids: AfP  Verification Input: AfP
+EER : 0.09 (thres:0.62, FAR:0.09, FRR:0.09)
+Epoch 764/800
+----------
+train Loss Extractor: 14.6046
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.57, FAR:0.02, FRR:0.04)
+Epoch 765/800
+----------
+train Loss Extractor: 20.5026
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.55, FAR:0.01, FRR:0.01)
+Epoch 766/800
+----------
+train Loss Extractor: 19.1089
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.53, FAR:0.03, FRR:0.04)
+Epoch 767/800
+----------
+train Loss Extractor: 14.2061
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.54, FAR:0.01, FRR:0.03)
+Epoch 768/800
+----------
+train Loss Extractor: 16.4139
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.56, FAR:0.05, FRR:0.06)
+Epoch 769/800
+----------
+train Loss Extractor: 15.9158
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.55, FAR:0.03, FRR:0.03)
+Epoch 770/800
+----------
+train Loss Extractor: 18.4007
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.54, FAR:0.01, FRR:0.01)
+Epoch 771/800
+----------
+train Loss Extractor: 16.0774
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.54, FAR:0.01, FRR:0.01)
+Epoch 772/800
+----------
+train Loss Extractor: 16.3829
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.01, FRR:0.01)
+Epoch 773/800
+----------
+train Loss Extractor: 11.7850
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.54, FAR:0.02, FRR:0.03)
+Epoch 774/800
+----------
+train Loss Extractor: 13.8630
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.59, FAR:0.05, FRR:0.09)
+Epoch 775/800
+----------
+train Loss Extractor: 10.7143
+Centroids: AfP  Verification Input: AfP
+EER : 0.07 (thres:0.61, FAR:0.07, FRR:0.08)
+Epoch 776/800
+----------
+train Loss Extractor: 12.1595
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.63, FAR:0.05, FRR:0.07)
+Epoch 777/800
+----------
+train Loss Extractor: 15.8919
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.64, FAR:0.05, FRR:0.05)
+Epoch 778/800
+----------
+train Loss Extractor: 15.5114
+Centroids: AfP  Verification Input: AfP
+EER : 0.05 (thres:0.54, FAR:0.05, FRR:0.05)
+Epoch 779/800
+----------
+train Loss Extractor: 13.8688
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.00, FRR:0.04)
+Epoch 780/800
+----------
+train Loss Extractor: 10.9564
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.52, FAR:0.02, FRR:0.03)
+Epoch 781/800
+----------
+train Loss Extractor: 17.6816
+Centroids: AfP  Verification Input: AfP
+EER : 0.11 (thres:0.69, FAR:0.11, FRR:0.11)
+Epoch 782/800
+----------
+train Loss Extractor: 14.3577
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.50, FAR:0.01, FRR:0.05)
+Epoch 783/800
+----------
+train Loss Extractor: 13.5943
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.56, FAR:0.02, FRR:0.06)
+Epoch 784/800
+----------
+train Loss Extractor: 17.6480
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.53, FAR:0.01, FRR:0.03)
+Epoch 785/800
+----------
+train Loss Extractor: 22.5654
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.50, FAR:0.00, FRR:0.07)
+Epoch 786/800
+----------
+train Loss Extractor: 16.9514
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.57, FAR:0.04, FRR:0.04)
+Epoch 787/800
+----------
+train Loss Extractor: 12.0906
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.57, FAR:0.04, FRR:0.04)
+Epoch 788/800
+----------
+train Loss Extractor: 20.1669
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.54, FAR:0.01, FRR:0.01)
+Epoch 789/800
+----------
+train Loss Extractor: 17.9946
+Centroids: AfP  Verification Input: AfP
+EER : 0.03 (thres:0.57, FAR:0.03, FRR:0.03)
+Epoch 790/800
+----------
+train Loss Extractor: 9.2954
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.02)
+Epoch 791/800
+----------
+train Loss Extractor: 12.4228
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.52, FAR:0.02, FRR:0.03)
+Epoch 792/800
+----------
+train Loss Extractor: 19.5218
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.01)
+Epoch 793/800
+----------
+train Loss Extractor: 15.6013
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 794/800
+----------
+train Loss Extractor: 16.6092
+Centroids: AfP  Verification Input: AfP
+EER : 0.04 (thres:0.56, FAR:0.04, FRR:0.05)
+Epoch 795/800
+----------
+train Loss Extractor: 13.2850
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.55, FAR:0.01, FRR:0.03)
+Epoch 796/800
+----------
+train Loss Extractor: 17.2132
+Centroids: AfP  Verification Input: AfP
+EER : 0.10 (thres:0.70, FAR:0.10, FRR:0.10)
+Epoch 797/800
+----------
+train Loss Extractor: 16.3010
+Centroids: AfP  Verification Input: AfP
+EER : 0.02 (thres:0.54, FAR:0.01, FRR:0.03)
+Epoch 798/800
+----------
+train Loss Extractor: 12.9405
+Centroids: AfP  Verification Input: AfP
+EER : 0.06 (thres:0.60, FAR:0.05, FRR:0.08)
+Epoch 799/800
+----------
+train Loss Extractor: 12.8876
+Centroids: AfP  Verification Input: AfP
+EER : 0.01 (thres:0.50, FAR:0.00, FRR:0.03)
+Epoch 800/800
+----------
+train Loss Extractor: 12.4118
+Centroids: AfP  Verification Input: AfP
+EER : 0.00 (thres:0.50, FAR:0.00, FRR:0.01)

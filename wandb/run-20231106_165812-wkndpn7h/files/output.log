@@ -1,0 +1,25 @@
+58
+13
+3
+Epoch 1/800
+----------
+Traceback (most recent call last):
+  File "/mnt/ssd/gen/GithubRepo/PiezoBuds/train_verification.py", line 321, in <module>
+    extractor = train_and_test_model(device=device, extractor=extractor, ge2e_loss=ge2e_loss, loss_func=loss_func, data_set=data_set, optimizer=optimizer,
+  File "/mnt/ssd/gen/GithubRepo/PiezoBuds/train_verification.py", line 126, in train_and_test_model
+    for batch_id, (piezo_clips, audio_clips, ids) in enumerate(dataloader):
+  File "/home/gen/miniconda3/envs/pytorch/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 628, in __next__
+    data = self._next_data()
+  File "/home/gen/miniconda3/envs/pytorch/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 671, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "/home/gen/miniconda3/envs/pytorch/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 58, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/home/gen/miniconda3/envs/pytorch/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 58, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/home/gen/miniconda3/envs/pytorch/lib/python3.8/site-packages/torch/utils/data/dataset.py", line 295, in __getitem__
+    return self.dataset[self.indices[idx]]
+  File "/mnt/ssd/gen/GithubRepo/PiezoBuds/dataloader_from_numpy.py", line 290, in __getitem__
+    samples_idx = random.sample(list(range(num_utter)), self.m)
+  File "/home/gen/miniconda3/envs/pytorch/lib/python3.8/random.py", line 363, in sample
+    raise ValueError("Sample larger than population or is negative")
+ValueError: Sample larger than population or is negative

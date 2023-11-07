@@ -12,7 +12,7 @@ import torch
 import torch.autograd as grad
 import torch.nn.functional as F
 
-from hparam import hparam as hp
+# from hparam import hparam as hp
 
 import numpy as np
 import networkx as nx

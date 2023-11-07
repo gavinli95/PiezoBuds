@@ -672,30 +672,22 @@ class SpeechEmbedder(nn.Module):
         return x
 
 
-class CustomMobileNetV3(nn.Module):
-    def __init__(self):
-        super(CustomMobileNetV3, self).__init__()
-        self.mobilenet = torchvision.models.mobilenet_v3_small(pretrained=True)
-        # Replace the initial conv layer
-        self.mobilenet.features[0][0] = nn.Conv2d(2, 16, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
-        # Replace the final classifier layer
-        self.mobilenet.classifier[3] = nn.Linear(self.mobilenet.classifier[3].in_features, 128)
-    
-    def forward(self, x):
-        # Features till second last block
-        x = self.mobilenet.features[:-2](x)
-        output1 = x.clone()
-        
-        # Second last block
-        x = self.mobilenet.features[-2](x)
-        output2 = x.clone()
-        
-        # Last block and classifier
-        x = self.mobilenet.features[-1](x)
-        x = x.mean([2, 3])
-        output3 = self.mobilenet.classifier(x)
-        
-        return output1, output2, output3
+class Conv1dEmbedder(nn.Module):
+    def __init__(self, f_len=2048):
+        super(Conv1dEmbedder, self).__init__()
+        self.f_len = f_len
+        self.encoder = nn.Sequential(
+            nn.Conv1d(in_channels=1, out_channels=128, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv1d(in_channels=128, out_channels=256, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv1d(in_channels=256, out_channels=512, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv1d(in_channels=512, out_channels=1024, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv1d(in_channels=1024, out_channels=f_len, kernel_size=3, stride=1, padding=1),
+            nn.ReLU()
+        )
 
 
 

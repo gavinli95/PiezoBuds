@@ -250,7 +250,7 @@ if __name__ == "__main__":
 
     device = "cuda:1" if torch.cuda.is_available() else "cpu"
     
-    data_file_dir = './processed_data/wav_clips/piezobuds/' # folder where stores the data for training and test
+    data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds/' # folder where stores the data for training and test
     pth_store_dir = './pth_model/'
     os.makedirs(pth_store_dir, exist_ok=True)
 
@@ -264,7 +264,7 @@ if __name__ == "__main__":
     train_ratio = 0.9
     num_of_epoches = 800
     train_batch_size = 4
-    test_batch_size = 2
+    test_batch_size = 4
 
     n_fft = 512  # Size of FFT, affects the frequency granularity
     hop_length = 256  # Typically n_fft // 4 (is None, then hop_length = n_fft // 2 by default)
@@ -313,7 +313,7 @@ if __name__ == "__main__":
     os.makedirs(model_final_path, exist_ok=True)
 
     # load the data 
-    data_set = WavDatasetForVerification('./processed_data/wav_clips/piezobuds/', list(range(n_user)), 50)
+    data_set = WavDatasetForVerification(data_file_dir, list(range(n_user)), 50)
     print(len(data_set))
 
     loss_func = nn.CrossEntropyLoss()

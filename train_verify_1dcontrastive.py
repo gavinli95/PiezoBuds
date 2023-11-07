@@ -173,7 +173,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         loss_a = ge2e_loss_a(embeddings_audio)
                         loss_p = ge2e_loss_p(embeddings_piezo)
                         cos_sim = pairwise_cos_sim(embeddings_conv, embeddings_piezo)
-                        loss_conv = 
+                        loss_conv, _ = softmax_loss(cos_sim, device)
                         
                         loss_extractor = loss_a + loss_p + loss_conv
                         loss_avg_batch_all += loss_extractor.item()
@@ -218,7 +218,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         ], lr=lr)
                         tmp_converter.train()
                         with torch.set_grad_enabled(True) and torch.autograd.set_detect_anomaly(True):
-                            for e in range(1):
+                            for e in range(5):
                                 # embeddings_enroll = torch.cat((embeddings_audio_enroll, embeddings_piezo_enroll), dim=-1)
                                 embeddings_audio_enroll.contiguous()
                                 embeddings_audio_enroll = embeddings_audio_enroll.reshape((batch_size * n_uttr // 2, 1, -1))
@@ -227,9 +227,8 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                                 embeddings_conv_enroll = embeddings_conv_enroll.view(batch_size, n_uttr //2, -1)
                                 embeddings_piezo_enroll.contiguous()
                                 embeddings_piezo_enroll = embeddings_piezo_enroll.view(batch_size, n_uttr // 2, -1)
-                                centroids = get_centroids(embeddings_piezo_enroll)
-                                cos_sim = get_modal_cossim(embeddings_conv_enroll, centroids)
-                                loss_conv, _, _, _ = calc_loss(cos_sim)
+                                cos_sim = pairwise_cos_sim(embeddings_conv_enroll, embeddings_piezo_enroll)
+                                loss_conv, _ = softmax_loss(cos_sim, device)
                                 tmp_optimizer.zero_grad()
                                 loss_conv.backward()
                                 torch.nn.utils.clip_grad_norm_(tmp_converter.parameters(), 5.0)
@@ -243,15 +242,29 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                             embeddings_conv_verify = embeddings_conv_verify.view(batch_size, n_uttr //2, -1)
                             embeddings_piezo_verify.contiguous()
                             embeddings_piezo_verify = embeddings_piezo_verify.view(batch_size, n_uttr // 2, -1)
-                            
-                            centroids_p = get_centroids(embeddings_piezo_verify)
-                            sim_matrix = get_modal_cossim(embeddings_conv_verify, centroids_p)
+                            sim_matrix = pairwise_cos_sim(embeddings_conv_verify, embeddings_piezo_verify)
                         
-                        EER, EER_thresh, EER_FAR, EER_FRR = compute_EER(sim_matrix)
+                        EER, EER_thresh, EER_FAR, EER_FRR = cal_EER_coverter(sim_matrix)
                         EERs[0] += EER
                         EER_FARs[0] += EER_FAR
                         EER_FRRs[0] += EER_FRR
                         EER_threshes[0] += EER_thresh
+
+                        centroids_a = get_centroids(embeddings_audio_enroll)
+                        sim_matrix = get_cossim(embeddings_audio_verify, centroids_a)
+                        EER, EER_thresh, EER_FAR, EER_FRR = compute_EER(sim_matrix)
+                        EERs[1] += EER
+                        EER_FARs[1] += EER_FAR
+                        EER_FRRs[1] += EER_FRR
+                        EER_threshes[1] += EER_thresh
+
+                        centroids_p = get_centroids(embeddings_piezo_enroll)
+                        sim_matrix = get_cossim(embeddings_piezo_verify, centroids_p)
+                        EER, EER_thresh, EER_FAR, EER_FRR = compute_EER(sim_matrix)
+                        EERs[2] += EER
+                        EER_FARs[2] += EER_FAR
+                        EER_FRRs[2] += EER_FRR
+                        EER_threshes[2] += EER_thresh
 
             if phase == 'train':
                 epoch_loss_all = loss_avg_batch_all / len(dataloader)
@@ -270,6 +283,16 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                             "\nEER : %0.2f (thres:%0.2f, FAR:%0.2f, FRR:%0.2f)" % (EERs[0], EER_threshes[0], EER_FARs[0], EER_FRRs[0]))
                 wandb.log({'epoch': epoch, 'EER/C_AfP_VI_AfP': EERs[0], 'FAR/C_AfP_VI_AfP': EER_FARs[0], 'FRR/C_AfP_VI_AfP': EER_FRRs[0]})
                 wandb.log({'epoch': epoch, 'threshold/C_AfP_VI_AfP': EER_threshes[0]})
+
+                print("\nCentroids: A  Verification Input: A "
+                            "\nEER : %0.2f (thres:%0.2f, FAR:%0.2f, FRR:%0.2f)" % (EERs[1], EER_threshes[1], EER_FARs[1], EER_FRRs[1]))
+                wandb.log({'epoch': epoch, 'EER/C_A_VI_A': EERs[1], 'FAR/C_A_VI_A': EER_FARs[1], 'FRR/C_A_VI_A': EER_FRRs[1]})
+                wandb.log({'epoch': epoch, 'threshold/C_A_VI_A': EER_threshes[1]})
+
+                print("\nCentroids: P  Verification Input: P "
+                            "\nEER : %0.2f (thres:%0.2f, FAR:%0.2f, FRR:%0.2f)" % (EERs[2], EER_threshes[2], EER_FARs[2], EER_FRRs[2]))
+                wandb.log({'epoch': epoch, 'EER/C_P_VI_P': EERs[2], 'FAR/C_P_VI_P': EER_FARs[2], 'FRR/C_P_VI_P': EER_FRRs[2]})
+                wandb.log({'epoch': epoch, 'threshold/C_P_VI_P': EER_threshes[2]})
                 
 
     return extractor
@@ -293,7 +316,7 @@ if __name__ == "__main__":
     train_ratio = 0.8
     num_of_epoches = 800
     train_batch_size = 4
-    test_batch_size = 2
+    test_batch_size = 4
 
     n_fft = 512  # Size of FFT, affects the frequency granularity
     hop_length = 256  # Typically n_fft // 4 (is None, then hop_length = n_fft // 2 by default)

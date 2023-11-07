@@ -448,7 +448,7 @@ def random_split_tensor(input_tensor, split_n, device):
     
     return shuffled_tensor, sublist_size
 
-def softmax_loss(input_tensor):
+def softmax_loss(input_tensor, device):
     '''
     Calculate the SoftMax loss of the input tensor
     loss = -Sii + log\sum(\exp(Sij))
@@ -459,12 +459,13 @@ def softmax_loss(input_tensor):
     pos = torch.diag(input_tensor)
 
     # create a mask with ones everywhere except the diagonal elements
-    mask = torch.ones_like(input_tensor) - torch.eye(N, requires_grad=True)
+    mask = torch.ones_like(input_tensor).to(device) - torch.eye(N, requires_grad=True).to(device)
+    mask.to(device)
 
-    masked_tensor = input_tensor * mask
+    masked_tensor = input_tensor * mask.to(device)
     neg = (torch.exp(masked_tensor).sum(dim=1) + 1e-6).log_()
     loss_per_user_utter = -1 * (pos - neg)
-    loss = loss_per_user_utter.sum()
+    loss = loss_per_user_utter.mean()
 
     return loss, loss_per_user_utter
 
@@ -484,13 +485,13 @@ def cal_EER_coverter(sim_matrix):
     EER_FRR = 0.0
 
     # Iterate over potential thresholds
-    for thres in torch.linspace(0.5, 1.0, 501):
+    for thres in torch.linspace(0.01, 1.0, 101):
         sim_matrix_thresh = sim_matrix > thres
 
         # Compute FAR and FRR
-        FRR = 1 - torch.diag(sim_matrix).sum() / N
+        FRR = 1 - torch.diag(sim_matrix_thresh).sum() / N
         
-        FAR = (sim_matrix.sum() - torch.diag(sim_matrix).sum()) / N / (N - 1)
+        FAR = (sim_matrix_thresh.sum() - torch.diag(sim_matrix_thresh).sum()) / N / (N - 1)
 
         # Update if this is the closest FAR and FRR we've seen so far
         if diff > abs(FAR - FRR):
@@ -509,7 +510,7 @@ if __name__ == "__main__":
     # print(c.shape)
     cos = pairwise_cos_sim(tensor_a, tensor_b)
     print(cos.shape)
-    loss, loss_per_user_utter = softmax_loss(cos)
+    loss, loss_per_user_utter = softmax_loss(cos, torch.device('cpu'))
     print(loss)
     print(loss_per_user_utter.shape)
     cal_EER_coverter(cos)

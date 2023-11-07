@@ -172,9 +172,8 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
 
                         loss_a = ge2e_loss_a(embeddings_audio)
                         loss_p = ge2e_loss_p(embeddings_piezo)
-                        centroids_p = get_centroids(embeddings_piezo)
-                        cos_sim = get_modal_cossim(embeddings_conv, centroids_p)
-                        loss_conv, _, _, _ = calc_loss(cos_sim)
+                        cos_sim = pairwise_cos_sim(embeddings_conv, embeddings_piezo)
+                        loss_conv = 
                         
                         loss_extractor = loss_a + loss_p + loss_conv
                         loss_avg_batch_all += loss_extractor.item()
@@ -244,6 +243,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                             embeddings_conv_verify = embeddings_conv_verify.view(batch_size, n_uttr //2, -1)
                             embeddings_piezo_verify.contiguous()
                             embeddings_piezo_verify = embeddings_piezo_verify.view(batch_size, n_uttr // 2, -1)
+                            
                             centroids_p = get_centroids(embeddings_piezo_verify)
                             sim_matrix = get_modal_cossim(embeddings_conv_verify, centroids_p)
                         

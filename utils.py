@@ -410,6 +410,22 @@ def normalize_tensors_based_audio(tensor_p, tensor_a):
     return tensor_p, tensor_a
 
 
+def pairwise_cos_sim(tensor_a, tensor_b):
+    tensor_a.contiguous()
+    b, u, _ = tensor_a.shape
+    tensor_b.contiguous()
+
+    tensor_a = tensor_a.repeat((1, b*u, 1))
+    tensor_b = tensor_b.repeat((b*u, 1, 1))
+
+    tensor_a = tensor_a.view(b * b * u * u, -1)
+    tensor_b = tensor_b.view(b * b * u * u, -1)
+    cos_sim = F.cosine_similarity(tensor_a, tensor_b)
+    cos_sim.contiguous()
+    cos_sim = cos_sim.view(b*u, b*u)
+    return cos_sim
+
+
 def random_split_tensor(input_tensor, split_n, device):
     '''
     Create the sublists of the given tensor with split_n
@@ -433,11 +449,11 @@ def random_split_tensor(input_tensor, split_n, device):
     return shuffled_tensor, sublist_size
 
 
-
-
 if __name__ == "__main__":
-    # tensor_a = torch.randn(10, 20, 192)
-    # tensor_b = torch.randn(10, 20, 192)
+    tensor_a = torch.randn(10, 20, 192)
+    tensor_b = torch.randn(10, 20, 192)
     # c = get_cossim_across_same_user(tensor_a, tensor_b)
     # print(c.shape)
+    cos = pairwise_cos_sim(tensor_a, tensor_b)
+    print(cos.shape)
     pass

@@ -448,7 +448,7 @@ def random_split_tensor(input_tensor, split_n, device):
     
     return shuffled_tensor, sublist_size
 
-def softmax_loss(input_tensor):
+def softmax_loss(input_tensor, device):
     '''
     Calculate the SoftMax loss of the input tensor
     loss = -Sii + log\sum(\exp(Sij))
@@ -461,7 +461,7 @@ def softmax_loss(input_tensor):
     # create a mask with ones everywhere except the diagonal elements
     mask = torch.ones_like(input_tensor) - torch.eye(N, requires_grad=True)
 
-    masked_tensor = input_tensor * mask
+    masked_tensor = input_tensor * mask.to(device)
     neg = (torch.exp(masked_tensor).sum(dim=1) + 1e-6).log_()
     loss_per_user_utter = -1 * (pos - neg)
     loss = loss_per_user_utter.sum()

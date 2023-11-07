@@ -175,10 +175,12 @@ class ECAPA_TDNN(nn.Module):
         self.bn6 = nn.BatchNorm1d(192)
 
 
-    def forward(self, x, aug):
+    def forward(self, x, aug, is_stft=True):
         with torch.no_grad():
-            # x = self.torchfbank(x)+1e-6
-            x = self.amplitude_to_db(self.spectrogram(x).abs()) + 1e-6
+            if is_stft:
+                x = self.amplitude_to_db(self.spectrogram(x).abs()) + 1e-6
+            else:
+                x = self.torchfbank(x)+1e-6
             x = x.log()   
             x = x - torch.mean(x, dim=-1, keepdim=True)
             if aug == True:

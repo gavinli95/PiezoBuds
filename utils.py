@@ -448,6 +448,27 @@ def random_split_tensor(input_tensor, split_n, device):
     
     return shuffled_tensor, sublist_size
 
+def softmax_loss(input_tensor):
+    '''
+    Calculate the SoftMax loss of the input tensor
+    loss = -Sii + log\sum(\exp(Sij))
+    '''
+    N, M = input_tensor.shape
+    if N != M:
+        raise ValueError("The input tensor doesn't have identical length on different dims.")
+    pos = torch.diag(input_tensor)
+
+    # create a mask with ones everywhere except the diagonal elements
+    mask = torch.ones_like(input_tensor) - torch.eye(N, requires_grad=True)
+
+    masked_tensor = input_tensor * mask
+    neg = (torch.exp(masked_tensor).sum(dim=1) + 1e-6).log_()
+    loss_per_user_utter = -1 * (pos - neg)
+    loss = loss_per_user_utter.sum()
+
+    return loss, loss_per_user_utter
+
+
 
 if __name__ == "__main__":
     tensor_a = torch.randn(10, 20, 192)
@@ -456,4 +477,7 @@ if __name__ == "__main__":
     # print(c.shape)
     cos = pairwise_cos_sim(tensor_a, tensor_b)
     print(cos.shape)
+    loss, loss_per_user_utter = softmax_loss(cos)
+    print(loss)
+    print(loss_per_user_utter.shape)
     pass

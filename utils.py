@@ -468,7 +468,39 @@ def softmax_loss(input_tensor):
 
     return loss, loss_per_user_utter
 
+def cal_EER_coverter(sim_matrix):
+    '''
+    Calculate the EER, FAR, FRR of the input tensor
+    '''
+    N, M = sim_matrix.shape
+    if N != M:
+        raise ValueError("The input tensor doesn't have identical length on different dims.")
+    
+    # Initialize values
+    diff = float('inf')
+    EER = 0.0
+    threshold = None
+    EER_FAR = 0.0
+    EER_FRR = 0.0
 
+    # Iterate over potential thresholds
+    for thres in torch.linspace(0.5, 1.0, 501):
+        sim_matrix_thresh = sim_matrix > thres
+
+        # Compute FAR and FRR
+        FRR = 1 - torch.diag(sim_matrix).sum() / N
+        
+        FAR = (sim_matrix.sum() - torch.diag(sim_matrix).sum()) / N / (N - 1)
+
+        # Update if this is the closest FAR and FRR we've seen so far
+        if diff > abs(FAR - FRR):
+            diff = abs(FAR - FRR)
+            EER = ((FAR + FRR) / 2).item()
+            threshold = thres.item()
+            EER_FAR = FAR.item()
+            EER_FRR = FRR.item()
+
+    return EER, threshold, EER_FAR, EER_FRR
 
 if __name__ == "__main__":
     tensor_a = torch.randn(10, 20, 192)
@@ -480,4 +512,5 @@ if __name__ == "__main__":
     loss, loss_per_user_utter = softmax_loss(cos)
     print(loss)
     print(loss_per_user_utter.shape)
+    cal_EER_coverter(cos)
     pass

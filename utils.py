@@ -415,10 +415,8 @@ def pairwise_cos_sim(tensor_a, tensor_b):
     b, u, _ = tensor_a.shape
     tensor_b.contiguous()
 
-    tensor_a.unsqueeze(2)
-    tensor_a = tensor_a.repeat((1, 1, b*u, 1))
-    tensor_b = tensor_b.view(b*u, -1)
-    tensor_b = tensor_b.repeat((b*u, 1))
+    tensor_a = tensor_a.repeat((1, b*u, 1))
+    tensor_b = tensor_b.repeat((b*u, 1, 1))
 
     tensor_a = tensor_a.view(b * b * u * u, -1)
     tensor_b = tensor_b.view(b * b * u * u, -1)
@@ -470,39 +468,6 @@ def softmax_loss(input_tensor, device):
     loss = loss_per_user_utter.mean()
 
     return loss, loss_per_user_utter
-
-def softmax_per_user_loss(input_tensor, device, n_user):
-    '''
-    Calculate the SoftMax loss of the input tensor (per user)
-    loss = SII + log\sum(\exp(SIJ))
-    '''
-    N, M = input_tensor.shape
-    if N != M:
-        raise ValueError("The input tensor doesn't have identical length on different dims.")
-    
-    n_utter = N // n_user
-
-    # Create a list of UxU identity matrix
-    blocks = [torch.ones(n_utter, n_utter) for _ in range(n_user)]
-    block_matrix = torch.block_diag(*blocks)
-    block_matrix = block_matrix.to(device)
-
-    # calculate the pos and neg part
-    pos = input_tensor * block_matrix.to(device)
-    pos_reshaped = pos.view(n_user, n_utter, n_user, n_utter)
-    pos_sums = pos_reshaped.sum(dim=1).sum(dim=2)
-    pos_sums_diag = torch.diag(pos_sums)
-    neg = input_tensor * (torch.ones_like(input_tensor).to(device) - block_matrix)
-    neg_reshaped = neg.view(n_user * n_utter * n_user, n_utter)
-    neg_sums = (torch.exp(neg_reshaped).sum(dim=1) + 1e-6).log_() # get a 1-D tensor with size of n_user * n_utter * n_user
-    neg_sums_reshaped = neg_sums.view(n_user, n_user * n_utter)
-    neg_sums_reshaped = neg_sums_reshaped.sum(dim=1)
-    loss_per_user = -1 * (pos_sums_diag - neg_sums_reshaped) / n_utter
-    loss = loss_per_user.mean()
-
-    return loss, loss_per_user
-
-
 
 def cal_EER_coverter(sim_matrix):
     '''

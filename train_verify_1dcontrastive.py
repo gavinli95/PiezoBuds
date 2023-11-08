@@ -178,9 +178,9 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         loss_a = ge2e_loss_a(embeddings_audio)
                         loss_p = ge2e_loss_p(embeddings_piezo)
                         cos_sim = pairwise_cos_sim(embeddings_conv, embeddings_piezo)
-                        loss_conv, _ = softmax_loss(cos_sim, device)
+                        loss_conv, _ = softmax_per_user_loss(cos_sim, device, batch_size)
                         
-                        loss_extractor = loss_a + loss_p
+                        loss_extractor = loss_a + loss_p + loss_conv
                         loss_avg_batch_all += loss_extractor.item()
                         optimizer.zero_grad()
                         loss_extractor.backward()
@@ -237,7 +237,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                                 embeddings_piezo_enroll.contiguous()
                                 embeddings_piezo_enroll = embeddings_piezo_enroll.view(batch_size, n_uttr // 2, -1)
                                 cos_sim = pairwise_cos_sim(embeddings_conv_enroll, embeddings_piezo_enroll)
-                                loss_conv, _ = softmax_loss(cos_sim, device)
+                                loss_conv, _ = softmax_per_user_loss(cos_sim, device, batch_size)
                                 tmp_optimizer.zero_grad()
                                 loss_conv.backward()
                                 torch.nn.utils.clip_grad_norm_(tmp_converter.parameters(), 5.0)

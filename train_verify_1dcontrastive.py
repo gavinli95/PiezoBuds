@@ -185,9 +185,9 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         # loss_conv, _ = softmax_per_user_loss(cos_sim, device, batch_size)
                         loss_conv = loss_func(embeddings_audio, embeddings_conv)
 
-                        loss_extractor = loss_a + loss_p + loss_conv
-                        # if epoch >= epoch_th:
-                        #     loss_extractor += loss_conv # change it to train the converter only
+                        loss_extractor = loss_a + loss_p
+                        if epoch >= epoch_th:
+                            loss_extractor += loss_conv 
                         loss_avg_batch_all += loss_extractor.item()
                         optimizer.zero_grad()
                         loss_extractor.backward()
@@ -317,7 +317,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
 
 if __name__ == "__main__":
 
-    device = "cuda:1" if torch.cuda.is_available() else "cpu"
+    device = "cuda:0" if torch.cuda.is_available() else "cpu"
     
     data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds/' # folder where stores the data for training and test
     pth_store_dir = './pth_model/'
@@ -340,7 +340,7 @@ if __name__ == "__main__":
     win_length = n_fft  # Typically the same as n_fft
     window_fn = torch.hann_window # Window function
 
-    comment = 'ecapatdnn_w_converter_MSEloss_sync'.format(n_fft, hop_length)
+    comment = 'ecapatdnn_w_converter_MSEloss_async'.format(n_fft, hop_length)
     # comment = 'mobilenetv3large1d_960_hop_256_t_16_class_pwr_spec_49u' # simple descriptions of specifications of this model, for example, 't_f' means we use the model which contains time and frequency nn layers
 
 

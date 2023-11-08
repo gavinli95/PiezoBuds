@@ -497,11 +497,10 @@ def softmax_per_user_loss(input_tensor, device, n_user):
     neg_sums = (torch.exp(neg_reshaped).sum(dim=1) + 1e-6).log_() # get a 1-D tensor with size of n_user * n_utter * n_user
     neg_sums_reshaped = neg_sums.view(n_user, n_user * n_utter)
     neg_sums_reshaped = neg_sums_reshaped.sum(dim=1)
-    loss_per_user = -1 * (pos - neg) / n_utter
+    loss_per_user = -1 * (pos_sums_diag - neg_sums_reshaped) / n_utter
     loss = loss_per_user.mean()
 
     return loss, loss_per_user
-
 
 
 

@@ -186,7 +186,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
 
                         loss_extractor = loss_a + loss_p
                         if epoch >= epoch_th:
-                            loss_extractor += loss_conv
+                            loss_extractor = loss_conv # change it to train the converter only
                         loss_avg_batch_all += loss_extractor.item()
                         optimizer.zero_grad()
                         loss_extractor.backward()
@@ -315,7 +315,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
 
 if __name__ == "__main__":
 
-    device = "cuda:1" if torch.cuda.is_available() else "cpu"
+    device = "cuda:0" if torch.cuda.is_available() else "cpu"
     
     data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds/' # folder where stores the data for training and test
     pth_store_dir = './pth_model/'

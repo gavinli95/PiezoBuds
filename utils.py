@@ -521,9 +521,12 @@ def softmax_per_user_loss(input_tensor, device, n_user):
 
     # calculate the pos and neg part
     pos = input_tensor * block_matrix.to(device)
-    pos_reshaped = pos.view(n_user, n_utter, n_user, n_utter)
-    pos_sums = pos_reshaped.sum(dim=1).sum(dim=2)
-    pos_sums_diag = torch.diag(pos_sums)
+    # pos_reshaped = pos.view(n_user, n_utter, n_user, n_utter)
+    # pos_sums = pos_reshaped.sum(dim=1).sum(dim=2)
+    # pos_sums_diag = torch.diag(pos_sums)
+    pos_diag = torch.diag(pos)
+    pos_reshaped = pos_diag.view(n_user, n_utter)
+    pos_sums_diag = pos_reshaped.sum(dim=1)
     neg = input_tensor * (torch.ones_like(input_tensor).to(device) - block_matrix)
     neg_reshaped = neg.view(n_user * n_utter * n_user, n_utter)
     neg_sums = (torch.exp(neg_reshaped).sum(dim=1) + 1e-6).log_() # get a 1-D tensor with size of n_user * n_utter * n_user

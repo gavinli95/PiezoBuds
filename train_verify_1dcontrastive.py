@@ -101,6 +101,10 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
 
     # initialize torchaudio.
 
+    epoch_th = 250
+    if epoch_th > num_epochs:
+        raise ValueError('The threshold is larger than the epoch set by the user.')
+    
     for epoch in range(num_epochs):
         print(f'Epoch {epoch + 1}/{num_epochs}')
         print('-' * 10)
@@ -179,8 +183,10 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         loss_p = ge2e_loss_p(embeddings_piezo)
                         cos_sim = pairwise_cos_sim(embeddings_conv, embeddings_piezo)
                         loss_conv, _ = softmax_per_user_loss(cos_sim, device, batch_size)
-                        
-                        loss_extractor = loss_a + loss_p + loss_conv
+
+                        loss_extractor = loss_a + loss_p
+                        if epoch >= epoch_th:
+                            loss_extractor += loss_conv
                         loss_avg_batch_all += loss_extractor.item()
                         optimizer.zero_grad()
                         loss_extractor.backward()

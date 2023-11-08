@@ -155,7 +155,7 @@ class ECAPA_TDNN(nn.Module):
 
         self.specaug = FbankAug() # Spec augmentation
 
-        self.conv1  = nn.Conv1d(257, C, kernel_size=5, stride=1, padding=2)
+        self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
         self.relu   = nn.ReLU()
         self.bn1    = nn.BatchNorm1d(C)
         self.layer1 = Bottle2neck(C, C, kernel_size=3, dilation=2, scale=8)

@@ -165,7 +165,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
 
                         embeddings_audio = extractor_a(audio_clips)
                         embeddings_piezo = extractor_p(piezo_clips)
-                        embeddings_conv = torch.clone(embeddings_audio)
+                        embeddings_conv = torch.clone(embeddings_piezo)
                         embeddings_conv = embeddings_conv.contiguous()
                         embeddings_conv = embeddings_conv.view(batch_size * n_uttr, 1, -1)
                         embeddings_conv = converter(embeddings_conv)
@@ -181,12 +181,13 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
 
                         loss_a = ge2e_loss_a(embeddings_audio)
                         loss_p = ge2e_loss_p(embeddings_piezo)
-                        cos_sim = pairwise_cos_sim(embeddings_conv, embeddings_piezo)
-                        loss_conv, _ = softmax_per_user_loss(cos_sim, device, batch_size)
+                        # cos_sim = pairwise_cos_sim(embeddings_conv, embeddings_piezo)
+                        # loss_conv, _ = softmax_per_user_loss(cos_sim, device, batch_size)
+                        loss_conv = loss_func(embeddings_audio, embeddings_conv)
 
-                        loss_extractor = loss_a + loss_p
-                        if epoch >= epoch_th:
-                            loss_extractor = loss_conv # change it to train the converter only
+                        loss_extractor = loss_a + loss_p + loss_conv
+                        # if epoch >= epoch_th:
+                        #     loss_extractor += loss_conv # change it to train the converter only
                         loss_avg_batch_all += loss_extractor.item()
                         optimizer.zero_grad()
                         loss_extractor.backward()
@@ -237,13 +238,14 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                                 # embeddings_enroll = torch.cat((embeddings_audio_enroll, embeddings_piezo_enroll), dim=-1)
                                 embeddings_audio_enroll = embeddings_audio_enroll.contiguous()
                                 embeddings_audio_enroll = embeddings_audio_enroll.reshape((batch_size * n_uttr // 2, 1, -1))
-                                embeddings_conv_enroll = tmp_converter(embeddings_audio_enroll)
+                                embeddings_conv_enroll = tmp_converter(embeddings_piezo_enroll)
                                 embeddings_conv_enroll = embeddings_conv_enroll.contiguous()
                                 embeddings_conv_enroll = embeddings_conv_enroll.view(batch_size, n_uttr //2, -1)
                                 embeddings_piezo_enroll = embeddings_piezo_enroll.contiguous()
                                 embeddings_piezo_enroll = embeddings_piezo_enroll.view(batch_size, n_uttr // 2, -1)
-                                cos_sim = pairwise_cos_sim(embeddings_conv_enroll, embeddings_piezo_enroll)
-                                loss_conv, _ = softmax_per_user_loss(cos_sim, device, batch_size)
+                                # cos_sim = pairwise_cos_sim(embeddings_conv_enroll, embeddings_piezo_enroll)
+                                # loss_conv, _ = softmax_per_user_loss(cos_sim, device, batch_size)
+                                loss_conv = loss_func(embeddings_conv_enroll, embeddings_audio_enroll)
                                 tmp_optimizer.zero_grad()
                                 loss_conv.backward()
                                 torch.nn.utils.clip_grad_norm_(tmp_converter.parameters(), 5.0)
@@ -252,12 +254,12 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         with torch.set_grad_enabled(False) and torch.autograd.set_detect_anomaly(True):
                             embeddings_audio_verify = embeddings_audio_verify.contiguous()
                             embeddings_audio_verify = embeddings_audio_verify.reshape((batch_size * n_uttr // 2, 1, -1))
-                            embeddings_conv_verify = tmp_converter(embeddings_audio_verify)
+                            embeddings_conv_verify = tmp_converter(embeddings_piezo_verify)
                             embeddings_conv_verify = embeddings_conv_verify.contiguous()
                             embeddings_conv_verify = embeddings_conv_verify.view(batch_size, n_uttr //2, -1)
                             embeddings_piezo_verify = embeddings_piezo_verify.contiguous()
                             embeddings_piezo_verify = embeddings_piezo_verify.view(batch_size, n_uttr // 2, -1)
-                            sim_matrix = pairwise_cos_sim(embeddings_conv_verify, embeddings_piezo_verify)
+                            sim_matrix = pairwise_cos_sim(embeddings_conv_verify, embeddings_audio_verify)
                         
                         EER, EER_thresh, EER_FAR, EER_FRR = cal_EER_coverter(sim_matrix)
                         EERs[0] += EER
@@ -315,7 +317,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
 
 if __name__ == "__main__":
 
-    device = "cuda:0" if torch.cuda.is_available() else "cpu"
+    device = "cuda:1" if torch.cuda.is_available() else "cpu"
     
     data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds/' # folder where stores the data for training and test
     pth_store_dir = './pth_model/'
@@ -338,7 +340,7 @@ if __name__ == "__main__":
     win_length = n_fft  # Typically the same as n_fft
     window_fn = torch.hann_window # Window function
 
-    comment = 'ecapatdnn_wo_converter'.format(n_fft, hop_length)
+    comment = 'ecapatdnn_w_converter_MSEloss_sync'.format(n_fft, hop_length)
     # comment = 'mobilenetv3large1d_960_hop_256_t_16_class_pwr_spec_49u' # simple descriptions of specifications of this model, for example, 't_f' means we use the model which contains time and frequency nn layers
 
 
@@ -416,7 +418,7 @@ if __name__ == "__main__":
     data_set = WavDatasetForVerification(data_file_dir, list(range(n_user)), 100)
     print(len(data_set))
 
-    loss_func = nn.CrossEntropyLoss()
+    loss_func = nn.MSELoss()
 
     models = (extractor_a, extractor_p, converter)
     ge2e_loss = (ge2e_loss_a, ge2e_loss_p)

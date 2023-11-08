@@ -415,8 +415,10 @@ def pairwise_cos_sim(tensor_a, tensor_b):
     b, u, _ = tensor_a.shape
     tensor_b.contiguous()
 
-    tensor_a = tensor_a.repeat((1, b*u, 1))
-    tensor_b = tensor_b.repeat((b*u, 1, 1))
+    tensor_a.unsqueeze(2)
+    tensor_a = tensor_a.repeat((1, 1, b*u, 1))
+    tensor_b = tensor_b.view(b*u, -1)
+    tensor_b = tensor_b.repeat((b*u, 1))
 
     tensor_a = tensor_a.view(b * b * u * u, -1)
     tensor_b = tensor_b.view(b * b * u * u, -1)

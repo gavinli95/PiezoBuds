@@ -395,8 +395,8 @@ def normalize_tensors_based_audio(tensor_p, tensor_a):
     return: normalized tensor p, tensor a
     '''
     b, f, t = tensor_a.shape
-    tensor_a.contiguous()
-    tensor_p.contiguous()
+    tensor_a = tensor_a.contiguous()
+    tensor_p = tensor_p.contiguous()
     max_a, _ = torch.max(tensor_a.reshape((b, -1)), dim=1, keepdim=True)
     min_a, _ = torch.min(tensor_a.reshape((b, -1)), dim=1, keepdim=True)
 
@@ -411,9 +411,9 @@ def normalize_tensors_based_audio(tensor_p, tensor_a):
 
 
 def pairwise_cos_sim(tensor_a, tensor_b):
-    tensor_a.contiguous()
+    tensor_a = tensor_a.contiguous()
     b, u, _ = tensor_a.shape
-    tensor_b.contiguous()
+    tensor_b = tensor_b.contiguous()
 
     tensor_a = tensor_a.repeat((1, b*u, 1))
     tensor_b = tensor_b.repeat((b*u, 1, 1))
@@ -421,7 +421,7 @@ def pairwise_cos_sim(tensor_a, tensor_b):
     tensor_a = tensor_a.view(b * b * u * u, -1)
     tensor_b = tensor_b.view(b * b * u * u, -1)
     cos_sim = F.cosine_similarity(tensor_a, tensor_b)
-    cos_sim.contiguous()
+    cos_sim = cos_sim.contiguous()
     cos_sim = cos_sim.view(b*u, b*u)
     return cos_sim
 
@@ -502,6 +502,37 @@ def cal_EER_coverter(sim_matrix):
             EER_FRR = FRR.item()
 
     return EER, threshold, EER_FAR, EER_FRR
+
+def softmax_per_user_loss(input_tensor, device, n_user):
+    '''
+    Calculate the SoftMax loss of the input tensor (per user)
+    loss = SII + log\sum(\exp(SIJ))
+    '''
+    N, M = input_tensor.shape
+    if N != M:
+        raise ValueError("The input tensor doesn't have identical length on different dims.")
+
+    n_utter = N // n_user
+
+    # Create a list of UxU identity matrix
+    blocks = [torch.ones(n_utter, n_utter) for _ in range(n_user)]
+    block_matrix = torch.block_diag(*blocks)
+    block_matrix = block_matrix.to(device)
+
+    # calculate the pos and neg part
+    pos = input_tensor * block_matrix.to(device)
+    pos_reshaped = pos.view(n_user, n_utter, n_user, n_utter)
+    pos_sums = pos_reshaped.sum(dim=1).sum(dim=2)
+    pos_sums_diag = torch.diag(pos_sums)
+    neg = input_tensor * (torch.ones_like(input_tensor).to(device) - block_matrix)
+    neg_reshaped = neg.view(n_user * n_utter * n_user, n_utter)
+    neg_sums = (torch.exp(neg_reshaped).sum(dim=1) + 1e-6).log_() # get a 1-D tensor with size of n_user * n_utter * n_user
+    neg_sums_reshaped = neg_sums.view(n_user, n_user * n_utter)
+    neg_sums_reshaped = neg_sums_reshaped.sum(dim=1)
+    loss_per_user = -1 * (pos_sums_diag - neg_sums_reshaped) / n_utter
+    loss = loss_per_user.mean()
+
+    return loss, loss_per_user
 
 if __name__ == "__main__":
     tensor_a = torch.randn(10, 20, 192)

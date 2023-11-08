@@ -154,25 +154,25 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         audio_clips = audio_clips.to(device)
                         
                         _, n_uttr, _ = piezo_clips.shape
-                        piezo_clips.contiguous()
+                        piezo_clips = piezo_clips.contiguous()
                         piezo_clips = piezo_clips.view(batch_size * n_uttr, -1)
-                        audio_clips.contiguous()
+                        audio_clips = audio_clips.contiguous()
                         audio_clips = audio_clips.view(batch_size * n_uttr, -1)
 
                         embeddings_audio = extractor_a(audio_clips)
                         embeddings_piezo = extractor_p(piezo_clips)
                         embeddings_conv = torch.clone(embeddings_audio)
-                        embeddings_conv.contiguous()
+                        embeddings_conv = embeddings_conv.contiguous()
                         embeddings_conv = embeddings_conv.view(batch_size * n_uttr, 1, -1)
                         embeddings_conv = converter(embeddings_conv)
-                        embeddings_conv.contiguous()
+                        embeddings_conv = embeddings_conv.contiguous()
                         embeddings_conv.squeeze()
 
-                        embeddings_audio.contiguous()
+                        embeddings_audio = embeddings_audio.contiguous()
                         embeddings_audio = embeddings_audio.view(batch_size, n_uttr, -1)
-                        embeddings_piezo.contiguous()
+                        embeddings_piezo = embeddings_piezo.contiguous()
                         embeddings_piezo = embeddings_piezo.view(batch_size, n_uttr, -1)
-                        embeddings_conv.contiguous()
+                        embeddings_conv = embeddings_conv.contiguous()
                         embeddings_conv = embeddings_conv.view(batch_size, n_uttr, -1)
 
                         loss_a = ge2e_loss_a(embeddings_audio)
@@ -201,15 +201,15 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         audio_clips = audio_clips.to(device)
                         
                         _, n_uttr, f_len = piezo_clips.shape
-                        piezo_clips.contiguous()
+                        piezo_clips = piezo_clips.contiguous()
                         piezo_clips = piezo_clips.view(batch_size * n_uttr, -1)
-                        audio_clips.contiguous()
+                        audio_clips = audio_clips.contiguous()
                         audio_clips = audio_clips.view(batch_size * n_uttr, -1)
 
                         embeddings_audio = extractor_a(audio_clips)
                         embeddings_piezo = extractor_p(piezo_clips)
-                        embeddings_audio.contiguous()
-                        embeddings_piezo.contiguous()
+                        embeddings_audio = embeddings_audio.contiguous()
+                        embeddings_piezo = embeddings_piezo.contiguous()
                         embeddings_audio = embeddings_audio.view(batch_size, n_uttr, -1)
                         embeddings_piezo = embeddings_piezo.view(batch_size, n_uttr, -1)
 
@@ -229,12 +229,12 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         with torch.set_grad_enabled(True) and torch.autograd.set_detect_anomaly(True):
                             for e in range(5):
                                 # embeddings_enroll = torch.cat((embeddings_audio_enroll, embeddings_piezo_enroll), dim=-1)
-                                embeddings_audio_enroll.contiguous()
+                                embeddings_audio_enroll = embeddings_audio_enroll.contiguous()
                                 embeddings_audio_enroll = embeddings_audio_enroll.reshape((batch_size * n_uttr // 2, 1, -1))
                                 embeddings_conv_enroll = tmp_converter(embeddings_audio_enroll)
-                                embeddings_conv_enroll.contiguous()
+                                embeddings_conv_enroll = embeddings_conv_enroll.contiguous()
                                 embeddings_conv_enroll = embeddings_conv_enroll.view(batch_size, n_uttr //2, -1)
-                                embeddings_piezo_enroll.contiguous()
+                                embeddings_piezo_enroll = embeddings_piezo_enroll.contiguous()
                                 embeddings_piezo_enroll = embeddings_piezo_enroll.view(batch_size, n_uttr // 2, -1)
                                 cos_sim = pairwise_cos_sim(embeddings_conv_enroll, embeddings_piezo_enroll)
                                 loss_conv, _ = softmax_per_user_loss(cos_sim, device, batch_size)
@@ -244,12 +244,12 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                                 tmp_optimizer.step()
                         tmp_converter.eval()
                         with torch.set_grad_enabled(False) and torch.autograd.set_detect_anomaly(True):
-                            embeddings_audio_verify.contiguous()
+                            embeddings_audio_verify = embeddings_audio_verify.contiguous()
                             embeddings_audio_verify = embeddings_audio_verify.reshape((batch_size * n_uttr // 2, 1, -1))
                             embeddings_conv_verify = tmp_converter(embeddings_audio_verify)
-                            embeddings_conv_verify.contiguous()
+                            embeddings_conv_verify = embeddings_conv_verify.contiguous()
                             embeddings_conv_verify = embeddings_conv_verify.view(batch_size, n_uttr //2, -1)
-                            embeddings_piezo_verify.contiguous()
+                            embeddings_piezo_verify = embeddings_piezo_verify.contiguous()
                             embeddings_piezo_verify = embeddings_piezo_verify.view(batch_size, n_uttr // 2, -1)
                             sim_matrix = pairwise_cos_sim(embeddings_conv_verify, embeddings_piezo_verify)
                         

@@ -60,6 +60,10 @@ class ConditionalRealNVP(nn.Module):
         for layer in reversed(self.coupling_layers):
             z = layer.inverse(z, condition)
         return z
+    
+    def sample_given_condition(self, condition):
+        z = torch.randn_like(condition)
+        return self.inverse(z, condition)
 
 # Define the conditional NLL loss function.
 def conditional_nll_loss(x, y, model):

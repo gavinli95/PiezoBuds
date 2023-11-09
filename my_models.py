@@ -741,6 +741,11 @@ class UNet1D(nn.Module):
         self.dec2 = DecoderBlock(256, 128, 128)
         self.dec1 = DecoderBlock(128, 64, 64)
         self.final = nn.Conv1d(64, out_channels, kernel_size=1)
+        self.fc = nn.Sequential(
+            nn.Linear(in_features=3072, out_features=192),
+            nn.BatchNorm1d(1),
+            nn.ReLU()
+        )
 
     def forward(self, x):
         x, skip1 = self.enc1(x)
@@ -753,12 +758,13 @@ class UNet1D(nn.Module):
         x = self.dec2(x, skip2)
         x = self.dec1(x, skip1)
         x = self.final(x)
+        x = self.fc(x)
         return x
     
 if __name__ == "__main__":
     model = UNet1D(in_channels=1, out_channels=1)
     print(model)
 
-    input_tensor = torch.rand(1, 1, 192)
+    input_tensor = torch.rand(1, 1, 3072)
     output = model(input_tensor)
     print(output.shape)

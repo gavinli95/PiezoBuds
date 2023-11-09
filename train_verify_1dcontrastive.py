@@ -101,7 +101,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
 
     # initialize torchaudio.
 
-    epoch_th = 250
+    epoch_th = 0
     if epoch_th > num_epochs:
         raise ValueError('The threshold is larger than the epoch set by the user.')
     
@@ -163,9 +163,8 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         audio_clips = audio_clips.contiguous()
                         audio_clips = audio_clips.view(batch_size * n_uttr, -1)
 
-                        embeddings_audio = extractor_a(audio_clips)
-                        embeddings_piezo = extractor_p(piezo_clips)
-                        embeddings_conv = torch.clone(embeddings_piezo)
+                        _, embeddings_audio = extractor_a(audio_clips)
+                        embeddings_conv, embeddings_piezo = extractor_p(piezo_clips)
                         embeddings_conv = embeddings_conv.contiguous()
                         embeddings_conv = embeddings_conv.view(batch_size * n_uttr, 1, -1)
                         embeddings_conv = converter(embeddings_conv)
@@ -209,12 +208,15 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         
                         _, n_uttr, f_len = piezo_clips.shape
                         piezo_clips = piezo_clips.contiguous()
-                        piezo_clips = piezo_clips.view(batch_size * n_uttr, -1)
                         audio_clips = audio_clips.contiguous()
+                        piezo_clips_enroll, piezo_clips_verify = torch.split(piezo_clips, n_uttr // 2, dim=1)
+                        audio_clips_enroll, audio_clips_verify = torch.split(audio_clips, n_uttr // 2, dim=1)
+
+                        piezo_clips = piezo_clips.view(batch_size * n_uttr, -1)
                         audio_clips = audio_clips.view(batch_size * n_uttr, -1)
 
-                        embeddings_audio = extractor_a(audio_clips)
-                        embeddings_piezo = extractor_p(piezo_clips)
+                        _, embeddings_audio = extractor_a(audio_clips)
+                        embeddings_conv, embeddings_piezo = extractor_p(piezo_clips)
                         embeddings_audio = embeddings_audio.contiguous()
                         embeddings_piezo = embeddings_piezo.contiguous()
                         embeddings_audio = embeddings_audio.view(batch_size, n_uttr, -1)
@@ -236,13 +238,17 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         with torch.set_grad_enabled(True) and torch.autograd.set_detect_anomaly(True):
                             for e in range(5):
                                 # embeddings_enroll = torch.cat((embeddings_audio_enroll, embeddings_piezo_enroll), dim=-1)
-                                embeddings_piezo_enroll = embeddings_piezo_enroll.contiguous()
-                                embeddings_piezo_enroll = embeddings_piezo_enroll.reshape((batch_size * n_uttr // 2, 1, -1))
-                                embeddings_conv_enroll = tmp_converter(embeddings_piezo_enroll)
+                                audio_clips_enroll = audio_clips_enroll.contiguous()
+                                piezo_clips_enroll = piezo_clips_enroll.contiguous()
+                                audio_clips_enroll = audio_clips_enroll.view(batch_size * n_uttr // 2, -1)
+                                piezo_clips_enroll = piezo_clips_enroll.view(batch_size * n_uttr // 2, -1)
+                                _, embeddings_audio_enroll = extractor_a(audio_clips_enroll)
+                                embeddings_conv_enroll, embeddings_piezo_enroll = extractor_p(piezo_clips_enroll)
                                 embeddings_conv_enroll = embeddings_conv_enroll.contiguous()
-                                embeddings_conv_enroll = embeddings_conv_enroll.view(batch_size, n_uttr //2, -1)
-                                embeddings_audio_enroll = embeddings_audio_enroll.contiguous()
-                                embeddings_audio_enroll = embeddings_audio_enroll.view(batch_size, n_uttr // 2, -1)
+                                embeddings_conv_enroll = embeddings_conv_enroll.view(batch_size * n_uttr // 2, 1, -1)
+                                embeddings_conv_enroll = tmp_converter(embeddings_conv_enroll)
+                                embeddings_conv_enroll = embeddings_conv_enroll.contiguous()
+                                embeddings_conv_enroll.squeeze()
                                 # cos_sim = pairwise_cos_sim(embeddings_conv_enroll, embeddings_piezo_enroll)
                                 # loss_conv, _ = softmax_per_user_loss(cos_sim, device, batch_size)
                                 loss_conv = loss_func(embeddings_conv_enroll, embeddings_audio_enroll)
@@ -252,13 +258,17 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                                 tmp_optimizer.step()
                         tmp_converter.eval()
                         with torch.set_grad_enabled(False) and torch.autograd.set_detect_anomaly(True):
-                            embeddings_piezo_verify = embeddings_piezo_verify.contiguous()
-                            embeddings_piezo_verify = embeddings_piezo_verify.reshape((batch_size * n_uttr // 2, 1, -1))
-                            embeddings_conv_verify = tmp_converter(embeddings_piezo_verify)
+                            audio_clips_verify = audio_clips_verify.contiguous()
+                            piezo_clips_verify = piezo_clips_verify.contiguous()
+                            audio_clips_verify = audio_clips_verify.view(batch_size * n_uttr // 2, -1)
+                            piezo_clips_verify = piezo_clips_verify.view(batch_size * n_uttr // 2, -1)
+                            _, embeddings_audio_verify = extractor_a(audio_clips_verify)
+                            embeddings_conv_verify, embeddings_piezo_verify = extractor_p(piezo_clips_verify)
                             embeddings_conv_verify = embeddings_conv_verify.contiguous()
-                            embeddings_conv_verify = embeddings_conv_verify.view(batch_size, n_uttr //2, -1)
-                            embeddings_audio_verify = embeddings_audio_verify.contiguous()
-                            embeddings_audio_verify = embeddings_audio_verify.view(batch_size, n_uttr // 2, -1)
+                            embeddings_conv_verify = embeddings_conv_verify.view(batch_size * n_uttr // 2, 1, -1)
+                            embeddings_conv_verify = tmp_converter(embeddings_conv_verify)
+                            embeddings_conv_verify = embeddings_conv_verify.contiguous()
+                            embeddings_conv_verify.squeeze()
                             sim_matrix = pairwise_cos_sim(embeddings_conv_verify, embeddings_audio_verify)
                         
                         EER, EER_thresh, EER_FAR, EER_FRR = cal_EER_coverter(sim_matrix)
@@ -340,7 +350,7 @@ if __name__ == "__main__":
     win_length = n_fft  # Typically the same as n_fft
     window_fn = torch.hann_window # Window function
 
-    comment = 'ecapatdnn_w_converter_MSEloss_async'.format(n_fft, hop_length)
+    comment = 'ecapatdnn_w_converter_MSEloss_sync'.format(n_fft, hop_length)
     # comment = 'mobilenetv3large1d_960_hop_256_t_16_class_pwr_spec_49u' # simple descriptions of specifications of this model, for example, 't_f' means we use the model which contains time and frequency nn layers
 
 
@@ -415,7 +425,7 @@ if __name__ == "__main__":
     os.makedirs(model_final_path, exist_ok=True)
 
     # load the data 
-    data_set = WavDatasetForVerification(data_file_dir, list(range(n_user)), 100)
+    data_set = WavDatasetForVerification(data_file_dir, list(range(n_user)), 50)
     print(len(data_set))
 
     loss_func = nn.MSELoss()

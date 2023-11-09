@@ -10,7 +10,7 @@ This model is modified and combined based on the following three projects:
 import math, torch, torchaudio
 import torch.nn as nn
 import torch.nn.functional as F
-
+from h_transformer_1d import HTransformer1D
 
 class SEModule(nn.Module):
     def __init__(self, channels, bottleneck=128):
@@ -154,8 +154,10 @@ class ECAPA_TDNN(nn.Module):
             )
 
         self.specaug = FbankAug() # Spec augmentation
-
-        self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
+        if is_stft:
+            self.conv1  = nn.Conv1d(257, C, kernel_size=5, stride=1, padding=2)
+        else:
+            self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
         self.relu   = nn.ReLU()
         self.bn1    = nn.BatchNorm1d(C)
         self.layer1 = Bottle2neck(C, C, kernel_size=3, dilation=2, scale=8)
@@ -208,14 +210,16 @@ class ECAPA_TDNN(nn.Module):
         sg = torch.sqrt( ( torch.sum((x**2) * w, dim=2) - mu**2 ).clamp(min=1e-4) )
 
         x = torch.cat((mu,sg),1)
-        x = self.bn5(x)
-        x = self.fc6(x)
+        y = self.bn5(x)
+        x = self.fc6(y)
         x = self.bn6(x)
 
-        return x
+        return y, x
     
 if __name__=='__main__':
     model = ECAPA_TDNN(512)
     input = torch.rand(10, 8000)
-    output = model(input, True)
-    print(output.shape)
+    y, x = model(input, True)
+    print(y.shape)
+    print(x.shape)
+

@@ -214,7 +214,7 @@ class ECAPA_TDNN(nn.Module):
         x = self.fc6(y)
         x = self.bn6(x)
 
-        return y, x
+        return x
     
 if __name__=='__main__':
     model = ECAPA_TDNN(512)

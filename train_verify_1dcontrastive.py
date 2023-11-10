@@ -175,13 +175,13 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         loss_p = ge2e_loss_p(embeddings_piezo)
 
                         # cal converter loss
-                        embeddings_audio = embeddings_audio.view(batch_size, n_uttr, 3, 8, 8)
-                        embeddings_piezo = embeddings_piezo.view(batch_size, n_uttr, 3, 8, 8)
-                        log_p_sum, logdet, z_outs = converter(embeddings_piezo)
-
+                        embeddings_piezo = embeddings_piezo.view(batch_size * n_uttr, 3, 8, 8)
+                        embeddings_audio = embeddings_audio.view(batch_size * n_uttr, -1)
+                        log_p_sum, logdet, z_outs, z_target = converter(embeddings_piezo, embeddings_audio)
+                        loss_conv = loss_func(z_target, embeddings_audio)
                         
 
-                        loss_extractor = loss_a + loss_p
+                        loss_extractor = loss_a + loss_p + loss_conv
                         if epoch >= epoch_th:
                             loss_extractor += loss_conv 
                         loss_avg_batch_all += loss_extractor.item()
@@ -226,7 +226,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         tmp_embeddings_piezo_verify = torch.clone(embeddings_piezo_verify).to(device)
                         tmp_embeddings_audio_enroll = torch.clone(embeddings_audio_enroll).to(device)
                         tmp_embeddings_piezo_enroll = torch.clone(embeddings_piezo_enroll).to(device)
-                        tmp_converter = ConditionalRealNVP(input_dim=192, condition_dim=192, num_coupling_layers=6, device=device).to(device)
+                        tmp_converter = Glow(in_channel=3, n_flow=6, n_block=3, condition_size=192).to(device)
                         tmp_converter.load_state_dict(converter.state_dict())
                         tmp_optimizer = torch.optim.Adam([
                             {'params': tmp_converter.parameters()},
@@ -241,8 +241,11 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                                 piezo_clips_enroll = piezo_clips_enroll.view(batch_size * n_uttr // 2, -1)
                                 embeddings_audio_enroll = extractor_a(audio_clips_enroll)
                                 embeddings_piezo_enroll = extractor_p(piezo_clips_enroll)
+                                embeddings_piezo_enroll = embeddings_piezo_enroll.contiguous()
+                                embeddings_piezo_enroll = embeddings_piezo_enroll.view(batch_size * n_uttr // 2, 3, 8, 8)
+                                log_p_sum, logdet, z_outs, z_target = converter(embeddings_piezo_enroll, embeddings_audio_enroll)
 
-                                loss_conv = conditional_nll_loss(embeddings_piezo_enroll, embeddings_audio_enroll, tmp_converter)
+                                loss_conv = loss_func(embeddings_piezo_enroll.view(batch_size * n_uttr // 2, -1), z_target)
                                 tmp_optimizer.zero_grad()
                                 loss_conv.backward()
                                 torch.nn.utils.clip_grad_norm_(tmp_converter.parameters(), 3.0)
@@ -255,9 +258,11 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                             piezo_clips_verify = piezo_clips_verify.view(batch_size * n_uttr // 2, -1)
                             embeddings_audio_verify = extractor_a(audio_clips_verify)
                             embeddings_piezo_verify = extractor_p(piezo_clips_verify)
+                            embeddings_piezo_verify = embeddings_piezo_enroll.contiguous()
+                            embeddings_piezo_verify = embeddings_piezo_enroll.view(batch_size * n_uttr // 2, 3, 8, 8)
 
-                            embeddings_conv_verify, _ = tmp_converter(embeddings_audio_verify, embeddings_piezo_verify)
-                            embeddings_conv_enroll, _ = tmp_converter(embeddings_audio_enroll, embeddings_piezo_enroll)
+                            log_p_sum, logdet, z_outs, embeddings_conv_verify = tmp_converter(embeddings_piezo_verify, embeddings_audio_verify)
+                            log_p_sum, logdet, z_outs, embeddings_conv_enroll = tmp_converter(embeddings_piezo_enroll.view(batch_size * n_uttr // 2, 3, 8, 8), embeddings_audio_enroll)
                             embeddings_conv_verify = embeddings_conv_verify.contiguous()
                             embeddings_conv_verify = embeddings_conv_verify.view(batch_size, n_uttr // 2, -1)
                             embeddings_conv_enroll = embeddings_conv_enroll.contiguous()
@@ -335,7 +340,7 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------------
     
     lr = 0.001
-    n_user = 58
+    n_user = 69
     train_ratio = 0.9
     num_of_epoches = 800
     train_batch_size = 4
@@ -391,7 +396,7 @@ if __name__ == "__main__":
 
     ge2e_loss_a = GE2ELoss_ori(device).to(device)
     ge2e_loss_p = GE2ELoss_ori(device).to(device)
-    converter = Glow(in_channel=3, n_flow=3, n_block=3).to(device)
+    converter = Glow(in_channel=3, n_flow=6, n_block=3, condition_size=192).to(device)
 
     optimizer = torch.optim.Adam([
         {'params': extractor_a.parameters()},

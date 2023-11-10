@@ -198,18 +198,22 @@ class AffineCoupling(nn.Module):
 
         return torch.cat([in_a, out_b], 1), logdet
 
-    def reverse(self, output):
+    def reverse(self, output, condition):
         out_a, out_b = output.chunk(2, 1)
+        # Condition should be a 1D vector per batch, we expand it to match the spatial dimensions of in_a
+        condition = condition.view(condition.size(0), self.condition_size, 1, 1)
+        condition = condition.expand(-1, -1, out_a.size(2), out_a.size(3))
+        out_a_conditioned = torch.cat((out_a, condition), 1)
 
         if self.affine:
-            log_s, t = self.net(out_a).chunk(2, 1)
+            log_s, t = self.net(out_a_conditioned).chunk(2, 1)
             # s = torch.exp(log_s)
             s = F.sigmoid(log_s + 2)
             # in_a = (out_a - t) / s
             in_b = out_b / s - t
 
         else:
-            net_out = self.net(out_a)
+            net_out = self.net(out_a_conditioned)
             in_b = out_b - net_out
 
         return torch.cat([out_a, in_b], 1)
@@ -229,7 +233,7 @@ class Flow(nn.Module):
 
         self.coupling = AffineCoupling(in_channel, affine=affine, condition_size=condition_size)
 
-    def forward(self, input, condition=None):
+    def forward(self, input, condition):
         out, logdet = self.actnorm(input)
         out, det1 = self.invconv(out)
         out, det2 = self.coupling(out, condition)
@@ -240,8 +244,8 @@ class Flow(nn.Module):
 
         return out, logdet
 
-    def reverse(self, output):
-        input = self.coupling.reverse(output)
+    def reverse(self, output, condition):
+        input = self.coupling.reverse(output, condition)
         input = self.invconv.reverse(input)
         input = self.actnorm.reverse(input)
 
@@ -274,7 +278,7 @@ class Block(nn.Module):
         else:
             self.prior = ZeroConv2d(in_channel * 4, in_channel * 8)
 
-    def forward(self, input, condition=None):
+    def forward(self, input, condition):
         b_size, n_channel, height, width = input.shape
         squeezed = input.view(b_size, n_channel, height // 2, 2, width // 2, 2)
         squeezed = squeezed.permute(0, 1, 3, 5, 2, 4)
@@ -305,7 +309,7 @@ class Block(nn.Module):
 
         return out, logdet, log_p, z_new
 
-    def reverse(self, output, eps=None, reconstruct=False):
+    def reverse(self, output, eps=None, condition=None, reconstruct=False):
         input = output
 
         if reconstruct:
@@ -329,7 +333,7 @@ class Block(nn.Module):
                 input = z
 
         for flow in self.flows[::-1]:
-            input = flow.reverse(input)
+            input = flow.reverse(input, condition)
 
         b_size, n_channel, height, width = input.shape
 
@@ -370,29 +374,30 @@ class Glow(nn.Module):
             if log_p is not None:
                 log_p_sum = log_p_sum + log_p
         
-        z_target = z_outs[0].view(10, -1)
+        z_target = z_outs[0].view(batch_size, -1)
         for i in range(1, len(z_outs)):
-            z_target = torch.cat((z_target, z_outs[i].view(10, -1)), dim=-1)
+            z_target = torch.cat((z_target, z_outs[i].view(batch_size, -1)), dim=-1)
 
         return log_p_sum, logdet, z_outs, z_target
 
-    def reverse(self, z_list, reconstruct=False):
+    def reverse(self, z_list, condition=None, reconstruct=False):
         for i, block in enumerate(self.blocks[::-1]):
             if i == 0:
-                input = block.reverse(z_list[-1], z_list[-1], reconstruct=reconstruct)
+                input = block.reverse(z_list[-1], z_list[-1], condition=condition, reconstruct=reconstruct)
 
             else:
-                input = block.reverse(input, z_list[-(i + 1)], reconstruct=reconstruct)
+                input = block.reverse(input, z_list[-(i + 1)], condition=condition, reconstruct=reconstruct)
 
         return input
 
 
 if __name__=='__main__':
-    input = torch.rand((10, 3, 8, 8))
+    input = torch.rand((10, 1, 80, 32))
     target = torch.rand((10, 192))
-    model = Glow(in_channel=3, n_flow=6, n_block=3, condition_size=192)
+    model = Glow(in_channel=1, n_flow=6, n_block=3, condition_size=192)
     log_p_sum, logdet, z_outs, z_target = model(input, condition=target)
+    recons = model.reverse(z_outs, condition=target, reconstruct=False)
     print(model)
-    print(z_target.shape)
+    print(recons.shape)
 
 

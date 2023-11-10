@@ -175,12 +175,15 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         loss_p = ge2e_loss_p(embeddings_piezo)
 
                         # cal converter loss
-                        embeddings_audio = embeddings_audio.view(batch_size * n_uttr, 3, 8, 8)
+                        # embeddings_audio = embeddings_audio.view(batch_size * n_uttr, 3, 8, 8)
+                        embeddings_audio = embeddings_audio.view(batch_size * n_uttr, -1)
                         embeddings_piezo = embeddings_piezo.view(batch_size * n_uttr, 3, 8, 8)
                         pred_audio = converter(embeddings_piezo)
 
+                        pred_audio = pred_audio.contiguous()
+                        pred_audio = pred_audio.view(batch_size * n_uttr, -1)
                         loss_conv = loss_func(pred_audio, embeddings_audio)
-                        loss_extractor = loss_a + loss_p + loss_conv
+                        loss_extractor = loss_a + loss_p + loss_conv.mean()
                         loss_avg_batch_all += loss_extractor.item()
                         optimizer.zero_grad()
                         loss_extractor.backward()
@@ -240,12 +243,15 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                                 embeddings_piezo_enroll = extractor_p(piezo_clips_enroll)
 
                                 embeddings_audio_enroll = embeddings_audio_enroll.contiguous()
-                                embeddings_audio_enroll = embeddings_audio_enroll.view(-1, 3, 8, 8)
+                                # embeddings_audio_enroll = embeddings_audio_enroll.view(-1, 3, 8, 8)
                                 embeddings_piezo_enroll = embeddings_piezo_enroll.contiguous()
                                 embeddings_piezo_enroll = embeddings_piezo_enroll.view(-1, 3, 8, 8)
 
                                 pred_audio_enroll = tmp_converter(embeddings_piezo_enroll)
-                                loss_conv = loss_func(pred_audio_enroll, embeddings_audio_enroll)
+                                pred_audio_enroll = pred_audio_enroll.contiguous()
+                                pred_audio_enroll = pred_audio_enroll.view(-1, 192)
+                                embeddings_audio_enroll = embeddings_audio_enroll.view(-1, 192)
+                                loss_conv = loss_func(pred_audio_enroll, embeddings_audio_enroll).mean()
                                 tmp_optimizer.zero_grad()
                                 loss_conv.backward()
                                 torch.nn.utils.clip_grad_norm_(tmp_converter.parameters(), 3.0)
@@ -348,7 +354,7 @@ if __name__ == "__main__":
     win_length = n_fft  # Typically the same as n_fft
     window_fn = torch.hann_window # Window function
 
-    comment = 'ecapatdnn_w_converter_MSEloss_sync'.format(n_fft, hop_length)
+    comment = 'ecapatdnn_w_converter_cossimloss_sync'.format(n_fft, hop_length)
     # comment = 'mobilenetv3large1d_960_hop_256_t_16_class_pwr_spec_49u' # simple descriptions of specifications of this model, for example, 't_f' means we use the model which contains time and frequency nn layers
 
 
@@ -427,7 +433,7 @@ if __name__ == "__main__":
     data_set = WavDatasetForVerification(data_file_dir, list(range(n_user)), 50)
     print(len(data_set))
 
-    loss_func = nn.HuberLoss()
+    loss_func = nn.CosineSimilarity(dim=1, eps=1e-6)
 
     models = (extractor_a, extractor_p, converter)
     ge2e_loss = (ge2e_loss_a, ge2e_loss_p)

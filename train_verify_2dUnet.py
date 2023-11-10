@@ -175,15 +175,12 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         loss_p = ge2e_loss_p(embeddings_piezo)
 
                         # cal converter loss
-                        embeddings_audio = embeddings_audio.view(batch_size, n_uttr, 3, 8, 8)
-                        embeddings_piezo = embeddings_piezo.view(batch_size, n_uttr, 3, 8, 8)
-                        log_p_sum, logdet, z_outs = converter(embeddings_piezo)
+                        embeddings_audio = embeddings_audio.view(batch_size * n_uttr, 3, 8, 8)
+                        embeddings_piezo = embeddings_piezo.view(batch_size * n_uttr, 3, 8, 8)
+                        pred_audio = converter(embeddings_piezo)
 
-                        
-
-                        loss_extractor = loss_a + loss_p
-                        if epoch >= epoch_th:
-                            loss_extractor += loss_conv 
+                        loss_conv = loss_func(pred_audio, embeddings_audio)
+                        loss_extractor = loss_a + loss_p + loss_conv
                         loss_avg_batch_all += loss_extractor.item()
                         optimizer.zero_grad()
                         loss_extractor.backward()
@@ -226,7 +223,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         tmp_embeddings_piezo_verify = torch.clone(embeddings_piezo_verify).to(device)
                         tmp_embeddings_audio_enroll = torch.clone(embeddings_audio_enroll).to(device)
                         tmp_embeddings_piezo_enroll = torch.clone(embeddings_piezo_enroll).to(device)
-                        tmp_converter = ConditionalRealNVP(input_dim=192, condition_dim=192, num_coupling_layers=6, device=device).to(device)
+                        tmp_converter = UNet2D(in_channels=3, out_channels=3).to(device)
                         tmp_converter.load_state_dict(converter.state_dict())
                         tmp_optimizer = torch.optim.Adam([
                             {'params': tmp_converter.parameters()},
@@ -242,7 +239,13 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                                 embeddings_audio_enroll = extractor_a(audio_clips_enroll)
                                 embeddings_piezo_enroll = extractor_p(piezo_clips_enroll)
 
-                                loss_conv = conditional_nll_loss(embeddings_piezo_enroll, embeddings_audio_enroll, tmp_converter)
+                                embeddings_audio_enroll = embeddings_audio_enroll.contiguous()
+                                embeddings_audio_enroll = embeddings_audio_enroll.view(-1, 3, 8, 8)
+                                embeddings_piezo_enroll = embeddings_piezo_enroll.contiguous()
+                                embeddings_piezo_enroll = embeddings_piezo_enroll.view(-1, 3, 8, 8)
+
+                                pred_audio_enroll = tmp_converter(embeddings_piezo_enroll)
+                                loss_conv = loss_func(pred_audio_enroll, embeddings_audio_enroll)
                                 tmp_optimizer.zero_grad()
                                 loss_conv.backward()
                                 torch.nn.utils.clip_grad_norm_(tmp_converter.parameters(), 3.0)
@@ -256,18 +259,17 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                             embeddings_audio_verify = extractor_a(audio_clips_verify)
                             embeddings_piezo_verify = extractor_p(piezo_clips_verify)
 
-                            embeddings_conv_verify, _ = tmp_converter(embeddings_audio_verify, embeddings_piezo_verify)
-                            embeddings_conv_enroll, _ = tmp_converter(embeddings_audio_enroll, embeddings_piezo_enroll)
-                            embeddings_conv_verify = embeddings_conv_verify.contiguous()
-                            embeddings_conv_verify = embeddings_conv_verify.view(batch_size, n_uttr // 2, -1)
-                            embeddings_conv_enroll = embeddings_conv_enroll.contiguous()
-                            embeddings_conv_enroll = embeddings_conv_enroll.view(batch_size, n_uttr // 2, -1)
+                            embeddings_piezo_verify = embeddings_piezo_verify.contiguous()
+                            embeddings_piezo_verify = embeddings_piezo_verify.view(-1, 3, 8, 8)
+                            pred_audio_verify = tmp_converter(embeddings_piezo_verify)
+                            pred_audio_verify = pred_audio_verify.contiguous()
+                            pred_audio_verify = pred_audio_verify.view(batch_size, -1, 192)
+                            embeddings_audio_verify = embeddings_audio_verify.contiguous()
+                            embeddings_audio_verify = embeddings_audio_verify.view(batch_size, -1, 192)
 
-                            centroids = get_centroids(embeddings_conv_enroll)
-                            
-                            sim_matrix = get_modal_cossim(embeddings_conv_verify, centroids)
+                            sim_matrix = pairwise_cos_sim(pred_audio_verify, embeddings_audio_verify)
                         
-                        EER, EER_thresh, EER_FAR, EER_FRR = compute_EER(sim_matrix)
+                        EER, EER_thresh, EER_FAR, EER_FRR = cal_EER_coverter(sim_matrix)
                         EERs[0] += EER
                         EER_FARs[0] += EER_FAR
                         EER_FRRs[0] += EER_FRR
@@ -323,7 +325,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
 
 if __name__ == "__main__":
 
-    device = "cuda:0" if torch.cuda.is_available() else "cpu"
+    device = "cuda:1" if torch.cuda.is_available() else "cpu"
     
     data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds/' # folder where stores the data for training and test
     pth_store_dir = './pth_model/'
@@ -391,7 +393,8 @@ if __name__ == "__main__":
 
     ge2e_loss_a = GE2ELoss_ori(device).to(device)
     ge2e_loss_p = GE2ELoss_ori(device).to(device)
-    converter = Glow(in_channel=3, n_flow=3, n_block=3).to(device)
+    # converter = Glow(in_channel=3, n_flow=3, n_block=3).to(device)
+    converter = UNet2D(in_channels=3, out_channels=3).to(device)
 
     optimizer = torch.optim.Adam([
         {'params': extractor_a.parameters()},
@@ -424,7 +427,7 @@ if __name__ == "__main__":
     data_set = WavDatasetForVerification(data_file_dir, list(range(n_user)), 50)
     print(len(data_set))
 
-    loss_func = nn.MSELoss()
+    loss_func = nn.HuberLoss()
 
     models = (extractor_a, extractor_p, converter)
     ge2e_loss = (ge2e_loss_a, ge2e_loss_p)

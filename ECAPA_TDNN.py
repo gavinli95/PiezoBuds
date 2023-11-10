@@ -10,7 +10,6 @@ This model is modified and combined based on the following three projects:
 import math, torch, torchaudio
 import torch.nn as nn
 import torch.nn.functional as F
-from h_transformer_1d import HTransformer1D
 
 class SEModule(nn.Module):
     def __init__(self, channels, bottleneck=128):

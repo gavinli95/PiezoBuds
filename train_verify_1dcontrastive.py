@@ -177,13 +177,16 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         # cal converter loss
                         embeddings_piezo = embeddings_piezo.view(batch_size * n_uttr, 3, 8, 8)
                         embeddings_audio = embeddings_audio.view(batch_size * n_uttr, -1)
-                        log_p_sum, logdet, z_outs, z_target = converter(embeddings_piezo, embeddings_audio)
-                        loss_conv = loss_func(z_target, embeddings_audio)
+                        log_p_sum, logdet, z_outs = converter(embeddings_piezo, embeddings_audio)
+                        z_outs = converter.reverse(z_outs, condition=embeddings_audio, reconstruct=True)
+                        z_outs = z_outs.contiguous()
+                        embeddings_conv = z_outs.view(batch_size * n_uttr, -1)
                         
+                        loss_conv = loss_func(embeddings_conv, embeddings_audio)
 
                         loss_extractor = loss_a + loss_p + loss_conv
-                        if epoch >= epoch_th:
-                            loss_extractor += loss_conv 
+                        # if epoch >= epoch_th:
+                        #     loss_extractor += loss_conv 
                         loss_avg_batch_all += loss_extractor.item()
                         optimizer.zero_grad()
                         loss_extractor.backward()
@@ -233,7 +236,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         ], lr=lr)
                         tmp_converter.train()
                         with torch.set_grad_enabled(True) and torch.autograd.set_detect_anomaly(True):
-                            for e in range(5):
+                            for e in range(1):
                                 # embeddings_enroll = torch.cat((embeddings_audio_enroll, embeddings_piezo_enroll), dim=-1)
                                 audio_clips_enroll = audio_clips_enroll.contiguous()
                                 piezo_clips_enroll = piezo_clips_enroll.contiguous()
@@ -243,13 +246,16 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                                 embeddings_piezo_enroll = extractor_p(piezo_clips_enroll)
                                 embeddings_piezo_enroll = embeddings_piezo_enroll.contiguous()
                                 embeddings_piezo_enroll = embeddings_piezo_enroll.view(batch_size * n_uttr // 2, 3, 8, 8)
-                                log_p_sum, logdet, z_outs, z_target = converter(embeddings_piezo_enroll, embeddings_audio_enroll)
+                                log_p_sum, logdet, z_outs = tmp_converter(embeddings_piezo_enroll, embeddings_audio_enroll)
+                                z_outs = tmp_converter.reverse(z_outs, condition=embeddings_audio_enroll, reconstruct=True)
+                                z_outs = z_outs.contiguous()
+                                embedding_conv = z_outs.view(batch_size * n_uttr // 2, -1)
 
-                                loss_conv = loss_func(embeddings_piezo_enroll.view(batch_size * n_uttr // 2, -1), z_target)
-                                tmp_optimizer.zero_grad()
-                                loss_conv.backward()
-                                torch.nn.utils.clip_grad_norm_(tmp_converter.parameters(), 3.0)
-                                tmp_optimizer.step()
+                                loss_conv = loss_func(embeddings_piezo_enroll.view(batch_size * n_uttr // 2, -1), embedding_conv)
+                                # tmp_optimizer.zero_grad()
+                                # loss_conv.backward()
+                                # torch.nn.utils.clip_grad_norm_(tmp_converter.parameters(), 3.0)
+                                # tmp_optimizer.step()
                         tmp_converter.eval()
                         with torch.set_grad_enabled(False) and torch.autograd.set_detect_anomaly(True):
                             audio_clips_verify = audio_clips_verify.contiguous()
@@ -258,15 +264,20 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                             piezo_clips_verify = piezo_clips_verify.view(batch_size * n_uttr // 2, -1)
                             embeddings_audio_verify = extractor_a(audio_clips_verify)
                             embeddings_piezo_verify = extractor_p(piezo_clips_verify)
-                            embeddings_piezo_verify = embeddings_piezo_enroll.contiguous()
-                            embeddings_piezo_verify = embeddings_piezo_enroll.view(batch_size * n_uttr // 2, 3, 8, 8)
+                            embeddings_piezo_verify = embeddings_piezo_verify.contiguous()
+                            embeddings_piezo_verify = embeddings_piezo_verify.view(batch_size * n_uttr // 2, 3, 8, 8)
 
-                            log_p_sum, logdet, z_outs, embeddings_conv_verify = tmp_converter(embeddings_piezo_verify, embeddings_audio_verify)
-                            log_p_sum, logdet, z_outs, embeddings_conv_enroll = tmp_converter(embeddings_piezo_enroll.view(batch_size * n_uttr // 2, 3, 8, 8), embeddings_audio_enroll)
-                            embeddings_conv_verify = embeddings_conv_verify.contiguous()
-                            embeddings_conv_verify = embeddings_conv_verify.view(batch_size, n_uttr // 2, -1)
-                            embeddings_conv_enroll = embeddings_conv_enroll.contiguous()
-                            embeddings_conv_enroll = embeddings_conv_enroll.view(batch_size, n_uttr // 2, -1)
+                            # getting enrollment embeddings
+                            log_p_sum, logdet, z_outs = tmp_converter(embeddings_piezo_enroll, embeddings_audio_enroll)
+                            z_outs = tmp_converter.reverse(z_outs, condition=embeddings_audio_enroll, reconstruct=True)
+                            z_outs = z_outs.contiguous()
+                            embeddings_conv_enroll = z_outs.view(batch_size, n_uttr // 2, -1)
+                        
+                            # getting verify embeddings
+                            log_p_sum, logdet, z_outs = tmp_converter(embeddings_piezo_verify, embeddings_audio_verify)
+                            z_outs = tmp_converter.reverse(z_outs, condition=embeddings_audio_verify, reconstruct=True)
+                            z_outs = z_outs.contiguous()
+                            embeddings_conv_verify = z_outs.view(batch_size, n_uttr // 2, -1)
 
                             centroids = get_centroids(embeddings_conv_enroll)
                             

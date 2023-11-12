@@ -57,7 +57,7 @@ class ActNorm(nn.Module):
             return self.scale * (input + self.loc)
 
     def reverse(self, output):
-        return output / self.scale - self.loc
+        return output / (self.scale - self.loc + 1e-8)
 
 
 class InvConv2d(nn.Module):
@@ -99,8 +99,8 @@ class InvConv2dLU(nn.Module):
 
         w_p = torch.from_numpy(w_p)
         w_l = torch.from_numpy(w_l)
-        w_s = torch.from_numpy(w_s)
-        w_u = torch.from_numpy(w_u)
+        w_s = torch.from_numpy(np.copy(w_s))
+        w_u = torch.from_numpy(np.copy(w_u))
 
         self.register_buffer("w_p", w_p)
         self.register_buffer("u_mask", torch.from_numpy(u_mask))
@@ -185,7 +185,7 @@ class AffineCoupling(nn.Module):
         if self.affine:
             log_s, t = self.net(in_a_conditioned).chunk(2, 1)
             # s = torch.exp(log_s)
-            s = F.sigmoid(log_s + 2)
+            s = torch.sigmoid(log_s + 2)
             # out_a = s * in_a + t
             out_b = (in_b + t) * s
 
@@ -208,9 +208,9 @@ class AffineCoupling(nn.Module):
         if self.affine:
             log_s, t = self.net(out_a_conditioned).chunk(2, 1)
             # s = torch.exp(log_s)
-            s = F.sigmoid(log_s + 2)
+            s = torch.sigmoid(log_s + 2)
             # in_a = (out_a - t) / s
-            in_b = out_b / s - t
+            in_b = out_b / (s - t + 1e-8)
 
         else:
             net_out = self.net(out_a_conditioned)
@@ -373,12 +373,8 @@ class Glow(nn.Module):
 
             if log_p is not None:
                 log_p_sum = log_p_sum + log_p
-        
-        z_target = z_outs[0].view(batch_size, -1)
-        for i in range(1, len(z_outs)):
-            z_target = torch.cat((z_target, z_outs[i].view(batch_size, -1)), dim=-1)
 
-        return log_p_sum, logdet, z_outs, z_target
+        return log_p_sum, logdet, z_outs
 
     def reverse(self, z_list, condition=None, reconstruct=False):
         for i, block in enumerate(self.blocks[::-1]):

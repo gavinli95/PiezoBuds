@@ -797,9 +797,11 @@ class UNet1D(nn.Module):
         self.enc1 = EncoderBlock1D(in_channels, 16)
         self.enc2 = EncoderBlock1D(16, 32)
         self.enc3 = EncoderBlock1D(32, 64)
+        self.enc4 = EncoderBlock1D(64, 128)
 
-        self.bottleneck = ConvBlock1D(64, 128)
+        self.bottleneck = ConvBlock1D(128, 256)
 
+        self.dec4 = DecoderBlock1D(256, 128, 128)
         self.dec3 = DecoderBlock1D(128, 64, 64)
         self.dec2 = DecoderBlock1D(64, 32, 32)
         self.dec1 = DecoderBlock1D(32, 16, 16)
@@ -810,7 +812,9 @@ class UNet1D(nn.Module):
         x, skip1 = self.enc1(x)
         x, skip2 = self.enc2(x)
         x, skip3 = self.enc3(x)
+        x, skip4 = self.enc4(x)
         x = self.bottleneck(x)
+        x = self.dec4(x, skip4)
         x = self.dec3(x, skip3)
         x = self.dec2(x, skip2)
         x = self.dec1(x, skip1)

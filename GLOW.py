@@ -160,13 +160,22 @@ class AffineCoupling(nn.Module):
         self.affine = affine
         self.condition_size = condition_size
 
-        self.net = nn.Sequential(
-            nn.Conv2d(in_channel // 2 + condition_size, filter_size, 3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(filter_size, filter_size, 1),
-            nn.ReLU(inplace=True),
-            ZeroConv2d(filter_size, in_channel if self.affine else in_channel // 2),
-        )
+        if condition_size==None:
+            self.net = nn.Sequential(
+                nn.Conv2d(in_channel // 2, filter_size, 3, padding=1),
+                nn.ReLU(inplace=True),
+                nn.Conv2d(filter_size, filter_size, 1),
+                nn.ReLU(inplace=True),
+                ZeroConv2d(filter_size, in_channel if self.affine else in_channel // 2),
+            )
+        else:
+            self.net = nn.Sequential(
+                nn.Conv2d(in_channel // 2 + condition_size, filter_size, 3, padding=1),
+                nn.ReLU(inplace=True),
+                nn.Conv2d(filter_size, filter_size, 1),
+                nn.ReLU(inplace=True),
+                ZeroConv2d(filter_size, in_channel if self.affine else in_channel // 2),
+            )
 
         self.net[0].weight.data.normal_(0, 0.05)
         self.net[0].bias.data.zero_()
@@ -253,7 +262,7 @@ class Flow(nn.Module):
 
 
 def gaussian_log_p(x, mean, log_sd):
-    return -0.5 * log(2 * pi) - log_sd - 0.5 * (x - mean) ** 2 / torch.exp(2 * log_sd)
+    return -0.5 * log(2 * pi) - log_sd - 0.5 * (x - mean) ** 2 / (torch.exp(2 * log_sd) + 1e-5)
 
 
 def gaussian_sample(eps, mean, log_sd):
@@ -298,6 +307,8 @@ class Block(nn.Module):
             out, z_new = out.chunk(2, 1)
             mean, log_sd = self.prior(out).chunk(2, 1)
             log_p = gaussian_log_p(z_new, mean, log_sd)
+            if torch.isinf(log_p).any().item():
+                raise ValueError("Inf")
             log_p = log_p.view(b_size, -1).sum(1)
 
         else:
@@ -388,9 +399,9 @@ class Glow(nn.Module):
 
 
 if __name__=='__main__':
-    input = torch.rand((10, 1, 80, 32))
+    input = torch.rand((10, 3, 8, 8))
     target = torch.rand((10, 192))
-    model = Glow(in_channel=1, n_flow=6, n_block=3, condition_size=192)
+    model = Glow(in_channel=3, n_flow=6, n_block=3, condition_size=192)
     log_p_sum, logdet, z_outs, z_target = model(input, condition=target)
     recons = model.reverse(z_outs, condition=target, reconstruct=False)
     print(model)

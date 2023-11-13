@@ -703,6 +703,20 @@ class ConvBlock(nn.Module):
         x = self.relu(self.bn2(self.conv2(x)))
         return x
 
+class ConvBlock1D(nn.Module):
+    def __init__(self, in_channels, out_channels, kernerl_size=3, padding=1):
+        super(ConvBlock1D, self).__init__()
+        self.conv1 = nn.Conv1d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernerl_size, padding=padding)
+        self.bn1 = nn.BatchNorm1d(out_channels)
+        self.relu = nn.ReLU(inplace=True)
+        self.conv2 = nn.Conv1d(in_channels=out_channels, out_channels=out_channels, kernel_size=kernerl_size, padding=padding)
+        self.bn2 = nn.BatchNorm1d(out_channels)
+    
+    def forward(self, x):
+        x = self.relu(self.bn1(self.conv1(x)))
+        x = self.relu(self.bn2(self.conv2(x)))
+        return x
+
 
 class EncoderBlock(nn.Module):
     def __init__(self, in_channels, out_channels, use_pooling=True):
@@ -719,12 +733,35 @@ class EncoderBlock(nn.Module):
             x = self.pool(x)
         return x, before_pool
     
+class EncoderBlock1D(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super().__init__()
+        self.conv_block = ConvBlock1D(in_channels=in_channels, out_channels=out_channels)
+        self.pool = nn.MaxPool1d(2)
+
+    def forward(self, x):
+        before_pool = self.conv_block(x)
+        x_ = self.pool(before_pool)
+
+        return x_, before_pool
 
 class DecoderBlock(nn.Module):
     def __init__(self, in_channels, mid_channels, out_channels):
         super(DecoderBlock, self).__init__()
         self.up = nn.ConvTranspose2d(in_channels=in_channels, out_channels=mid_channels, kernel_size=2, stride=2)
         self.conv_block = ConvBlock(mid_channels + out_channels, out_channels)
+
+    def forward(self, x, skip):
+        x = self.up(x)
+        x = torch.cat((x, skip), 1)
+        x = self.conv_block(x)
+        return x
+    
+class DecoderBlock1D(nn.Module):
+    def __init__(self, in_channels, mid_channels, out_channels):
+        super(DecoderBlock1D, self).__init__()
+        self.up = nn.ConvTranspose1d(in_channels=in_channels, out_channels=mid_channels, kernel_size=2, stride=2)
+        self.conv_block = ConvBlock1D(mid_channels+out_channels, out_channels)
 
     def forward(self, x, skip):
         x = self.up(x)
@@ -754,10 +791,47 @@ class UNet2D(nn.Module):
         x = self.final(x)
         return x
     
+class UNet1D(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super(UNet1D, self).__init__()
+        self.enc1 = EncoderBlock1D(in_channels, 16)
+        self.enc2 = EncoderBlock1D(16, 32)
+        self.enc3 = EncoderBlock1D(32, 64)
+        self.enc4 = EncoderBlock1D(64, 128)
+
+        self.bottleneck = ConvBlock1D(128, 256)
+
+        self.dec4 = DecoderBlock1D(256, 128, 128)
+        self.dec3 = DecoderBlock1D(128, 64, 64)
+        self.dec2 = DecoderBlock1D(64, 32, 32)
+        self.dec1 = DecoderBlock1D(32, 16, 16)
+
+        self.final = nn.Conv1d(16, out_channels, kernel_size=1)
+
+    def forward(self, x):
+        x, skip1 = self.enc1(x)
+        x, skip2 = self.enc2(x)
+        x, skip3 = self.enc3(x)
+        x, skip4 = self.enc4(x)
+        x = self.bottleneck(x)
+        x = self.dec4(x, skip4)
+        x = self.dec3(x, skip3)
+        x = self.dec2(x, skip2)
+        x = self.dec1(x, skip1)
+        x = self.final(x)
+
+        return x
+
 if __name__ == "__main__":
     model = UNet2D(in_channels=3, out_channels=3)
     print(model)
 
     input_tensor = torch.rand(10, 3, 8, 8)
     output = model(input_tensor)
+    print(output.shape)
+
+    model1D = UNet1D(in_channels=3, out_channels=3)
+    print(model1D)
+    input_tensor = torch.rand(10, 3, 64)
+    output = model1D(input_tensor)
     print(output.shape)

@@ -402,7 +402,7 @@ if __name__=='__main__':
     input = torch.rand((10, 3, 8, 8))
     target = torch.rand((10, 192))
     model = Glow(in_channel=3, n_flow=6, n_block=3, condition_size=192)
-    log_p_sum, logdet, z_outs, z_target = model(input, condition=target)
+    log_p_sum, logdet, z_outs = model(input, condition=target)
     recons = model.reverse(z_outs, condition=target, reconstruct=False)
     print(model)
     print(recons.shape)

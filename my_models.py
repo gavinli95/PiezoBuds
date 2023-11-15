@@ -885,6 +885,26 @@ class CNN2Dlayer(nn.Module):
 
         return x
 
+class FClayer_last_dim(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.layers = nn.Sequential(
+            nn.Linear(in_features=384, out_features=192),
+            nn.ReLU(),
+            nn.BatchNorm1d(192),
+            nn.Linear(in_features=192, out_features=192),
+        )
+
+    def forward(self, x):
+        x = self.layers(x)
+        
+        x_min = torch.min(x, dim=1, keepdim=True)[0]
+        x_max = torch.max(x, dim=1, keepdim=True)[0]
+        x = (x - x_min) / (x_max - x_min)
+
+        return x
+
+
 if __name__ == "__main__":
     model = CNN1Dlayer()
     print(model)

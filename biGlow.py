@@ -521,7 +521,6 @@ class conditionGlow(nn.Module):
         
         return input
     
-
 class biGlow(nn.Module):
     def __init__(
         self, in_channel, n_flow, n_block, affine=True, conv_lu=True

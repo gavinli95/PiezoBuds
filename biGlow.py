@@ -196,7 +196,11 @@ class AffineCoupling(nn.Module):
             # Condition should be a 1D vector per batch, we expand it to match the spatial dimensions of in_a
             # condition = condition.view(condition.size(0), self.condition_size, 1, 1)
             # condition = condition.expand(-1, -1, in_a.size(2), in_a.size(3))
-            in_a_conditioned = torch.cat((in_a, condition), 1)
+            b, c, h, w = condition.shape
+            condition_reshape = condition.view(b, c, h // 2, 2, w // 2, 2)
+            condition_reshape = condition_reshape.permute(0, 1, 3, 5, 2, 4)
+            condition_final = condition_reshape.contiguous().view(b, self.condition_size, in_a.size(2), in_a.size(3))
+            in_a_conditioned = torch.cat((in_a, condition_final), 1)
 
         if self.affine:
             if self.condition_size != None:
@@ -229,7 +233,11 @@ class AffineCoupling(nn.Module):
             # Condition should be a 1D vector per batch, we expand it to match the spatial dimensions of in_a
             # condition = condition.view(condition.size(0), self.condition_size, 1, 1)
             # condition = condition.expand(-1, -1, out_a.size(2), out_a.size(3))
-            out_a_conditioned = torch.cat((out_a, condition), 1)
+            b, c, h, w = condition.shape
+            condition_reshape = condition.view(b, c, h // 2, 2, w // 2, 2)
+            condition_reshape = condition_reshape.permute(0, 1, 3, 5, 2, 4)
+            condition_final = condition_reshape.contiguous().view(b, self.condition_size, out_a.size(2), out_a.size(3))
+            out_a_conditioned = torch.cat((out_a, condition_final), 1)
 
         if self.affine:
             if self.condition_size != None:
@@ -458,7 +466,7 @@ class Glow(nn.Module):
 
         return input
 
-class biGlow(nn.Module):
+class conditionGlow(nn.Module):
     def __init__(
         self, in_channel, n_flow, n_block, affine=True, conv_lu=True
     ):
@@ -514,12 +522,81 @@ class biGlow(nn.Module):
         return input
     
 
+class biGlow(nn.Module):
+    def __init__(
+        self, in_channel, n_flow, n_block, affine=True, conv_lu=True
+    ):
+        super().__init__()
+        self.blocks_input = nn.ModuleList()
+        self.blocks_condition = nn.ModuleList()
+        self.n_block = n_block
+
+        n_channel = in_channel
+        for i in range(n_block - 1):
+            if i == 0:
+                self.blocks_condition.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=None))
+                self.blocks_input.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=None))
+            else:
+                self.blocks_condition.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=n_channel * 4))
+                self.blocks_input.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=n_channel * 4))
+            n_channel *= 2
+ 
+        self.blocks_condition.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, split=False, condition_size=n_channel * 4))
+        self.blocks_input.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, split=False, condition_size=n_channel * 4))
+
+    def forward(self, input, condition):
+        log_p_sum_i, log_p_sum_c = 0, 0
+        logdet_i, logdet_c = 0, 0
+        z_outs_i, z_outs_c = [], []
+
+        out_i = input
+        out_c = condition
+        for i in range(self.n_block):
+            block_con = self.blocks_condition[i]
+            block_ipt = self.blocks_input[i]
+
+            if i == 0:
+                out_c, det_c, log_p_c, z_new_c_new = block_con(out_c)
+                out_i, det_i, log_p_i, z_new_i_new = block_ipt(out_i)
+            else:
+                out_c, det_c, log_p_c, z_new_c_new = block_con((out_c, z_new_i_old))
+                out_i, det_i, log_p_i, z_new_i_new = block_ipt((out_i, z_new_c_old))
+            
+            z_outs_i.append(z_new_i_new)
+            z_outs_c.append(z_new_c_new)
+            
+            z_new_i_old = z_new_i_new
+            z_new_c_old = z_new_c_new
+
+            logdet_i += det_i
+            logdet_c += det_c
+
+            if log_p_i is not None:
+                log_p_sum_i +=log_p_i
+            if log_p_c is not None:
+                log_p_sum_c +=log_p_c
+
+        return (log_p_sum_i, log_p_sum_c), (logdet_i, logdet_c), (z_outs_i, z_outs_c)
+
+    def reverse(self, z_list, reconstruct=False):
+        z_list, condition_list = z_list
+        for i, block_i in enumerate(self.blocks_input[::-1]):
+            block_c = self.blocks_condition[-(i + 1)]
+            if i == len(condition_list) - 1:
+                input_i = block_i.reverse(z_list[-(i + 1)], z_list[-(i + 1)], reconstruct=reconstruct)
+                input_c = block_c.reverse(condition_list[-(i + 1)], condition_list[-(i + 1)], reconstruct=reconstruct)
+            else:
+                input_i = block_i.reverse((z_list[-(i + 1)], condition_list[-(i + 2)]), z_list[-(i + 1)], reconstruct=reconstruct)
+                input_c = block_c.reverse((condition_list[-(i + 1)], z_list[-(i + 2)]), condition_list[-(i + 1)], reconstruct=reconstruct)
+        
+        return (input_i, input_c)
+
 if __name__=='__main__':
     input = torch.rand((10, 3, 8, 8))
     target = torch.rand((10, 3, 8, 8))
     # model = Glow(in_channel=3, n_flow=6, n_block=3, condition_size=None)
     model = biGlow(in_channel=3, n_flow=4, n_block=3)
     log_p_sum, logdet, z_outs = model(input, target)
-    recons = model.reverse(z_outs, reconstruct=False)
+    recovers = model.reverse(z_outs, reconstruct=False)
     print(model)
-    print(recons.shape)
+    print(recovers[0].shape)

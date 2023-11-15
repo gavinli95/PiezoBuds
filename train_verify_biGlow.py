@@ -200,8 +200,12 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                         log_p_sum, logdet, z_outs = converter(embeddings_piezo, embeddings_audio)
                         logdet_i, logdet_c = logdet
                         z_outs = converter.reverse(z_outs, reconstruct=True)
-                        z_outs = z_outs.contiguous()
-                        embeddings_conv = z_outs.view(batch_size * n_uttr, -1)
+                        # only applicable to biGlow model
+                        z_1, z_2 = z_outs
+                        z_final = torch.cat((z_1, z_2), dim=-1)
+                        # z_outs = z_outs.contiguous()
+                        z_final = z_final.contiguous()
+                        embeddings_conv = z_final.view(batch_size * n_uttr, -1)
                         embeddings_conv = embeddings_conv.contiguous()
                         embeddings_conv = embeddings_conv.view(batch_size, n_uttr, -1)
                         loss_conv = ge2e_loss_c(embeddings_conv)
@@ -274,8 +278,8 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                                 embeddings_audio_enroll = embeddings_audio_enroll.view(batch_size * n_uttr // 2, 3, 8, 8)
                                 log_p_sum, logdet, z_outs = tmp_converter(embeddings_piezo_enroll, embeddings_audio_enroll)
                                 z_outs = tmp_converter.reverse(z_outs, reconstruct=True)
-                                z_outs = z_outs.contiguous()
-                                embedding_conv = z_outs.view(batch_size * n_uttr // 2, -1)
+                                # z_outs = z_outs.contiguous()
+                                # embedding_conv = z_outs.view(batch_size * n_uttr // 2, -1)
 
                                 # loss_conv = loss_func(embeddings_piezo_enroll.view(batch_size * n_uttr // 2, -1), embedding_conv)
                                 # tmp_optimizer.zero_grad()
@@ -306,14 +310,22 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                             # getting enrollment embeddings
                             log_p_sum, logdet, z_outs = tmp_converter(embeddings_piezo_enroll.view(batch_size * n_uttr // 2, 3, 8, 8), embeddings_audio_enroll.view(batch_size * n_uttr // 2, 3, 8, 8))
                             z_outs = tmp_converter.reverse(z_outs, reconstruct=True)
-                            z_outs = z_outs.contiguous()
-                            embeddings_conv_enroll = z_outs.view(batch_size, n_uttr // 2, -1)
+                            # only applicable to biGlow model
+                            z_1, z_2 = z_outs
+                            z_final = torch.cat((z_1, z_2), dim=-1)
+                            # z_outs = z_outs.contiguous()
+                            z_final = z_final.contiguous()
+                            embeddings_conv_enroll = z_final.view(batch_size, n_uttr // 2, -1)
                         
                             # getting verify embeddings
                             log_p_sum, logdet, z_outs = tmp_converter(embeddings_piezo_verify.view(batch_size * n_uttr // 2, 3, 8, 8), embeddings_audio_verify.view(batch_size * n_uttr // 2, 3, 8, 8))
                             z_outs = tmp_converter.reverse(z_outs, reconstruct=True)
-                            z_outs = z_outs.contiguous()
-                            embeddings_conv_verify = z_outs.view(batch_size, n_uttr // 2, -1)
+                            # only applicable to biGlow model
+                            z_1, z_2 = z_outs
+                            z_final = torch.cat((z_1, z_2), dim=-1)
+                            # z_outs = z_outs.contiguous()
+                            z_final = z_final.contiguous()
+                            embeddings_conv_verify = z_final.view(batch_size, n_uttr // 2, -1)
 
                             centroids = get_centroids(embeddings_conv_enroll)
                             

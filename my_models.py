@@ -822,6 +822,28 @@ class UNet1D(nn.Module):
 
         return x
 
+class FClayer(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.layers = nn.Sequential(
+            nn.Linear(in_features=192, out_features=96),
+            nn.ReLU(),
+            nn.BatchNorm1d(96),
+            nn.Linear(in_features=96, out_features=96),
+        )
+    
+    def forward(self, x):
+        b, c, n = x.shape
+        x = x.contiguous().view(b * c, n)
+        x = self.layers(x)
+        x = x.contiguous().view(b, -1)
+        # x = F.normalize(x, 2, -1)
+        x_min = torch.min(x, dim=1, keepdim=True)[0]
+        x_max = torch.max(x, dim=1, keepdim=True)[0]
+        x = (x - x_min) / (x_max - x_min)
+
+        return x
+
 if __name__ == "__main__":
     model = UNet2D(in_channels=3, out_channels=3)
     print(model)

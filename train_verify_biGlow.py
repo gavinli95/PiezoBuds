@@ -114,7 +114,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
     print(len(test_loader))
 
     # load the models and ge2e loss
-    extractor_a, extractor_p, converter = models
+    extractor_a, extractor_p, converter, final_layer = models
     ge2e_loss_a, ge2e_loss_p, ge2e_loss_c = ge2e_loss
 
     for epoch in range(num_epochs):
@@ -129,6 +129,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                 extractor_a.train()
                 extractor_p.train()
                 converter.train()
+                final_layer.train()
                 ge2e_loss_a.train()
                 ge2e_loss_p.train()
                 ge2e_loss_c.train()
@@ -138,6 +139,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                 extractor_a.eval()
                 extractor_p.eval()
                 converter.eval()
+                final_layer.eval()
                 ge2e_loss_a.eval()
                 ge2e_loss_p.eval()
                 ge2e_loss_c.eval()
@@ -202,12 +204,15 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                         z_outs = converter.reverse(z_outs, reconstruct=True)
                         # only applicable to biGlow model
                         z_1, z_2 = z_outs
-                        z_final = torch.cat((z_1, z_2), dim=-1)
+                        z_1 = z_1.contiguous().view(batch_size * n_uttr, 1, -1)
+                        z_2 = z_2.contiguous().view(batch_size * n_uttr, 1, -1)
+                        z_final = torch.cat((z_1, z_2), dim=1) # (B*U, 2, 192)
+                        z_out = final_layer(z_final) # (B*U, 192)
                         # z_outs = z_outs.contiguous()
-                        z_final = z_final.contiguous()
-                        embeddings_conv = z_final.view(batch_size * n_uttr, -1)
-                        embeddings_conv = embeddings_conv.contiguous()
-                        embeddings_conv = embeddings_conv.view(batch_size, n_uttr, -1)
+                        # z_final = z_final.contiguous()
+                        embeddings_conv = z_out.contiguous().view(batch_size, n_uttr, -1)
+                        # embeddings_conv = embeddings_conv.contiguous()
+                        # embeddings_conv = embeddings_conv.view(batch_size, n_uttr, -1)
                         loss_conv = ge2e_loss_c(embeddings_conv)
                         # embeddings_conv = embeddings_conv.view(batch_size * n_uttr, -1)
                         # loss_conv = loss_func(embeddings_conv, embeddings_piezo.view(batch_size * n_uttr, -1))
@@ -260,10 +265,14 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                         tmp_embeddings_piezo_enroll = torch.clone(embeddings_piezo_enroll).to(device)
                         tmp_converter = biGlow(in_channel=3, n_flow=2, n_block=3).to(device)
                         tmp_converter.load_state_dict(converter.state_dict())
+                        tmp_final_layer = FClayer().to(device)
+                        tmp_final_layer.load_state_dict(final_layer.state_dict())
                         tmp_optimizer = torch.optim.Adam([
                             {'params': tmp_converter.parameters()},
+                            {'params': tmp_final_layer.parameters()},
                         ], lr=lr)
                         tmp_converter.train()
+                        tmp_final_layer.train()
                         with torch.set_grad_enabled(True) and torch.autograd.set_detect_anomaly(True):
                             for e in range(1):
                                 # embeddings_enroll = torch.cat((embeddings_audio_enroll, embeddings_piezo_enroll), dim=-1)
@@ -287,6 +296,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                                 # torch.nn.utils.clip_grad_norm_(tmp_converter.parameters(), 3.0)
                                 # tmp_optimizer.step()
                         tmp_converter.eval()
+                        tmp_final_layer.eval()
                         with torch.set_grad_enabled(False) and torch.autograd.set_detect_anomaly(True):
                             audio_clips_verify = audio_clips_verify.contiguous()
                             piezo_clips_verify = piezo_clips_verify.contiguous()
@@ -312,20 +322,32 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                             z_outs = tmp_converter.reverse(z_outs, reconstruct=True)
                             # only applicable to biGlow model
                             z_1, z_2 = z_outs
-                            z_final = torch.cat((z_1, z_2), dim=-1)
+                            z_1 = z_1.contiguous().view(batch_size * n_uttr // 2, 1, -1)
+                            z_2 = z_2.contiguous().view(batch_size * n_uttr // 2, 1, -1)
+                            z_final = torch.cat((z_1, z_2), dim=1)
                             # z_outs = z_outs.contiguous()
-                            z_final = z_final.contiguous()
-                            embeddings_conv_enroll = z_final.view(batch_size, n_uttr // 2, -1)
+                            z_out = tmp_final_layer(z_final) # (B*U, 192)
+                            # z_outs = z_outs.contiguous()
+                            # z_final = z_final.contiguous()
+                            embeddings_conv_enroll = z_out.contiguous().view(batch_size, n_uttr // 2, -1)   
+                            # z_final = z_final.contiguous()
+                            # embeddings_conv_enroll = z_final.view(batch_size, n_uttr // 2, -1)
                         
                             # getting verify embeddings
                             log_p_sum, logdet, z_outs = tmp_converter(embeddings_piezo_verify.view(batch_size * n_uttr // 2, 3, 8, 8), embeddings_audio_verify.view(batch_size * n_uttr // 2, 3, 8, 8))
                             z_outs = tmp_converter.reverse(z_outs, reconstruct=True)
                             # only applicable to biGlow model
                             z_1, z_2 = z_outs
-                            z_final = torch.cat((z_1, z_2), dim=-1)
+                            z_1 = z_1.contiguous().view(batch_size * n_uttr // 2, 1, -1)
+                            z_2 = z_2.contiguous().view(batch_size * n_uttr // 2, 1, -1)
+                            z_final = torch.cat((z_1, z_2), dim=1)
+                            z_out = tmp_final_layer(z_final) # (B*U, 192)
                             # z_outs = z_outs.contiguous()
-                            z_final = z_final.contiguous()
-                            embeddings_conv_verify = z_final.view(batch_size, n_uttr // 2, -1)
+                            # z_final = z_final.contiguous()
+                            embeddings_conv_verify = z_out.contiguous().view(batch_size, n_uttr // 2, -1) 
+                            # z_outs = z_outs.contiguous()
+                            # z_final = z_final.contiguous()
+                            # embeddings_conv_verify = z_final.view(batch_size, n_uttr // 2, -1)
 
                             centroids = get_centroids(embeddings_conv_enroll)
                             
@@ -434,6 +456,7 @@ if __name__ == "__main__":
     ge2e_loss_p = GE2ELoss_ori(device).to(device)
     ge2e_loss_c = GE2ELoss_ori(device).to(device)
     converter = biGlow(in_channel=3, n_flow=2, n_block=3).to(device)
+    final_layer = FClayer().to(device)
 
     optimizer = torch.optim.Adam([
         {'params': extractor_a.parameters()},
@@ -442,6 +465,7 @@ if __name__ == "__main__":
         {'params': ge2e_loss_p.parameters()},
         {'params': ge2e_loss_c.parameters()},
         {'params': converter.parameters()},
+        {'params': final_layer.parameters()},
     ], lr=lr, weight_decay = 2e-5)
 
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size = 5, gamma=0.97)
@@ -469,7 +493,7 @@ if __name__ == "__main__":
 
     loss_func = nn.MSELoss()
 
-    models = (extractor_a, extractor_p, converter)
+    models = (extractor_a, extractor_p, converter, final_layer)
     ge2e_loss = (ge2e_loss_a, ge2e_loss_p, ge2e_loss_c)
     extractor_a, extractor_p, converter = train_and_test_model(device=device, models=models, ge2e_loss=ge2e_loss, loss_func=loss_func, data_set=data_set, optimizer=optimizer, scheduler=lr_scheduler,
                                                        train_batch_size=train_batch_size, test_batch_size=test_batch_size, model_final_path=model_final_path,

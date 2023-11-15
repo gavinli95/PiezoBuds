@@ -367,6 +367,7 @@ class Glow(nn.Module):
         n_channel = in_channel
         for i in range(n_block - 1):
             self.blocks.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=condition_size))
+            # condition_size = condition_size // 2
             n_channel *= 2
         self.blocks.append(Block(n_channel, n_flow, split=False, affine=affine, condition_size=condition_size))
 
@@ -376,34 +377,37 @@ class Glow(nn.Module):
         logdet = 0
         out = input
         z_outs = []
+        conditions = []
 
         for block in self.blocks:
+            conditions.append(condition)
             out, det, log_p, z_new = block(out, condition)
             z_outs.append(z_new)
             logdet = logdet + det
+            # condition = condition[:, condition.size(-1) // 2 :]
 
             if log_p is not None:
                 log_p_sum = log_p_sum + log_p
 
-        return log_p_sum, logdet, z_outs
+        return log_p_sum, logdet, z_outs, conditions
 
-    def reverse(self, z_list, condition=None, reconstruct=False):
+    def reverse(self, z_list, conditions=None, reconstruct=False):
         for i, block in enumerate(self.blocks[::-1]):
             if i == 0:
-                input = block.reverse(z_list[-1], z_list[-1], condition=condition, reconstruct=reconstruct)
+                input = block.reverse(z_list[-1], z_list[-1], condition=conditions[-1], reconstruct=reconstruct)
 
             else:
-                input = block.reverse(input, z_list[-(i + 1)], condition=condition, reconstruct=reconstruct)
+                input = block.reverse(input, z_list[-(i + 1)], condition=conditions[-(i + 1)], reconstruct=reconstruct)
 
         return input
 
 
 if __name__=='__main__':
-    input = torch.rand((10, 3, 8, 8))
+    input = torch.rand((10, 1, 80, 48))
     target = torch.rand((10, 192))
-    model = Glow(in_channel=3, n_flow=6, n_block=3, condition_size=192)
-    log_p_sum, logdet, z_outs, z_target = model(input, condition=target)
-    recons = model.reverse(z_outs, condition=target, reconstruct=False)
+    model = Glow(in_channel=1, n_flow=6, n_block=4, condition_size=192)
+    log_p_sum, logdet, z_outs, conditions = model(input, condition=target)
+    recons = model.reverse(z_outs, conditions=conditions, reconstruct=False)
     print(model)
     print(recons.shape)
 

@@ -1,3 +1,5 @@
 wandb/
 pth_model/
 __pycache__/
+pca_figs/
+frequency_response_fig/

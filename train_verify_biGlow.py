@@ -204,8 +204,8 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                         z_outs = converter.reverse(z_outs, reconstruct=True)
                         # only applicable to biGlow model
                         z_1, z_2 = z_outs
-                        z_1 = z_1.contiguous().view(batch_size * n_uttr, 1, -1)
-                        z_2 = z_2.contiguous().view(batch_size * n_uttr, 1, -1)
+                        # z_1 = z_1.contiguous().view(batch_size * n_uttr, 1, -1)
+                        # z_2 = z_2.contiguous().view(batch_size * n_uttr, 1, -1)
                         z_final = torch.cat((z_1, z_2), dim=1) # (B*U, 2, 192)
                         z_out = final_layer(z_final) # (B*U, 192)
                         # z_outs = z_outs.contiguous()
@@ -265,7 +265,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                         tmp_embeddings_piezo_enroll = torch.clone(embeddings_piezo_enroll).to(device)
                         tmp_converter = biGlow(in_channel=3, n_flow=2, n_block=3).to(device)
                         tmp_converter.load_state_dict(converter.state_dict())
-                        tmp_final_layer = FClayer().to(device)
+                        tmp_final_layer = CNN2Dlayer().to(device)
                         tmp_final_layer.load_state_dict(final_layer.state_dict())
                         tmp_optimizer = torch.optim.Adam([
                             {'params': tmp_converter.parameters()},
@@ -322,8 +322,8 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                             z_outs = tmp_converter.reverse(z_outs, reconstruct=True)
                             # only applicable to biGlow model
                             z_1, z_2 = z_outs
-                            z_1 = z_1.contiguous().view(batch_size * n_uttr // 2, 1, -1)
-                            z_2 = z_2.contiguous().view(batch_size * n_uttr // 2, 1, -1)
+                            # z_1 = z_1.contiguous().view(batch_size * n_uttr // 2, 1, -1)
+                            # z_2 = z_2.contiguous().view(batch_size * n_uttr // 2, 1, -1)
                             z_final = torch.cat((z_1, z_2), dim=1)
                             # z_outs = z_outs.contiguous()
                             z_out = tmp_final_layer(z_final) # (B*U, 192)
@@ -338,8 +338,8 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                             z_outs = tmp_converter.reverse(z_outs, reconstruct=True)
                             # only applicable to biGlow model
                             z_1, z_2 = z_outs
-                            z_1 = z_1.contiguous().view(batch_size * n_uttr // 2, 1, -1)
-                            z_2 = z_2.contiguous().view(batch_size * n_uttr // 2, 1, -1)
+                            # z_1 = z_1.contiguous().view(batch_size * n_uttr // 2, 1, -1)
+                            # z_2 = z_2.contiguous().view(batch_size * n_uttr // 2, 1, -1)
                             z_final = torch.cat((z_1, z_2), dim=1)
                             z_out = tmp_final_layer(z_final) # (B*U, 192)
                             # z_outs = z_outs.contiguous()
@@ -408,7 +408,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
 
 if __name__ == "__main__":
 
-    device = "cuda:1" if torch.cuda.is_available() else "cpu"
+    device = "cuda:0" if torch.cuda.is_available() else "cpu"
     
     data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds/' # folder where stores the data for training and test
     pth_store_dir = './pth_model/'
@@ -431,7 +431,7 @@ if __name__ == "__main__":
     win_length = n_fft  # Typically the same as n_fft
     window_fn = torch.hann_window # Window function
 
-    comment = 'ecapatdnn_w_biGlow_wo_enroll_MSE'
+    comment = 'ecapatdnn_w_biGlow_2dcnn_wo_enroll_ge2e'
 
     extractor_a = ECAPA_TDNN(1024, is_stft=False)
     extractor_p = ECAPA_TDNN(1024, is_stft=False)
@@ -456,7 +456,7 @@ if __name__ == "__main__":
     ge2e_loss_p = GE2ELoss_ori(device).to(device)
     ge2e_loss_c = GE2ELoss_ori(device).to(device)
     converter = biGlow(in_channel=3, n_flow=2, n_block=3).to(device)
-    final_layer = FClayer().to(device)
+    final_layer = CNN2Dlayer().to(device)
 
     optimizer = torch.optim.Adam([
         {'params': extractor_a.parameters()},

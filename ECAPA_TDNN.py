@@ -214,6 +214,19 @@ class ECAPA_TDNN(nn.Module):
         x = self.bn6(x)
 
         return x
+
+    def get_spectrum(self, x, aug=False):
+        with torch.no_grad():
+            if self.is_stft:
+                x = self.amplitude_to_db(self.spectrogram(x).abs()) + 1e-6
+            else:
+                x = self.torchfbank(x) + 1e-6
+                x = x.log()
+            x = x - torch.mean(x, dim=-1, keepdim=True)
+            if aug == True:
+                x = self.specaug(x)
+        return x
+
     
 if __name__=='__main__':
     model = ECAPA_TDNN(512)

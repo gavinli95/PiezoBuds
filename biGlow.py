@@ -156,11 +156,12 @@ class ZeroConv2d(nn.Module):
 
 
 class AffineCoupling(nn.Module):
-    def __init__(self, in_channel, filter_size=512, affine=True, condition_size=None):
+    def __init__(self, in_channel, filter_size=512, affine=True, condition_size=None, use_bi_flow=False):
         super().__init__()
 
         self.affine = affine
         self.condition_size = condition_size
+        self.use_bi_flow = use_bi_flow
 
         if condition_size == None:
             self.net = nn.Sequential(
@@ -196,10 +197,13 @@ class AffineCoupling(nn.Module):
             # Condition should be a 1D vector per batch, we expand it to match the spatial dimensions of in_a
             # condition = condition.view(condition.size(0), self.condition_size, 1, 1)
             # condition = condition.expand(-1, -1, in_a.size(2), in_a.size(3))
-            b, c, h, w = condition.shape
-            condition_reshape = condition.view(b, c, h // 2, 2, w // 2, 2)
-            condition_reshape = condition_reshape.permute(0, 1, 3, 5, 2, 4)
-            condition_final = condition_reshape.contiguous().view(b, self.condition_size, in_a.size(2), in_a.size(3))
+            if self.use_bi_flow:
+                b, c, h, w = condition.shape
+                condition_reshape = condition.view(b, c, h // 2, 2, w // 2, 2)
+                condition_reshape = condition_reshape.permute(0, 1, 3, 5, 2, 4)
+                condition_final = condition_reshape.contiguous().view(b, self.condition_size, in_a.size(2), in_a.size(3))
+            else:
+                condition_final = condition
             in_a_conditioned = torch.cat((in_a, condition_final), 1)
 
         if self.affine:
@@ -233,10 +237,13 @@ class AffineCoupling(nn.Module):
             # Condition should be a 1D vector per batch, we expand it to match the spatial dimensions of in_a
             # condition = condition.view(condition.size(0), self.condition_size, 1, 1)
             # condition = condition.expand(-1, -1, out_a.size(2), out_a.size(3))
-            b, c, h, w = condition.shape
-            condition_reshape = condition.view(b, c, h // 2, 2, w // 2, 2)
-            condition_reshape = condition_reshape.permute(0, 1, 3, 5, 2, 4)
-            condition_final = condition_reshape.contiguous().view(b, self.condition_size, out_a.size(2), out_a.size(3))
+            if self.use_bi_flow:
+                b, c, h, w = condition.shape
+                condition_reshape = condition.view(b, c, h // 2, 2, w // 2, 2)
+                condition_reshape = condition_reshape.permute(0, 1, 3, 5, 2, 4)
+                condition_final = condition_reshape.contiguous().view(b, self.condition_size, out_a.size(2), out_a.size(3))
+            else:
+                condition_final = condition
             out_a_conditioned = torch.cat((out_a, condition_final), 1)
 
         if self.affine:
@@ -260,10 +267,11 @@ class AffineCoupling(nn.Module):
 
 
 class Flow(nn.Module):
-    def __init__(self, in_channel, affine=True, conv_lu=True, condition_size=None):
+    def __init__(self, in_channel, affine=True, conv_lu=True, condition_size=None, use_bi_flow=True):
         super().__init__()
 
         self.condition_size = condition_size
+        self.use_bi_flow = use_bi_flow
 
         self.actnorm = ActNorm(in_channel)
 
@@ -273,7 +281,7 @@ class Flow(nn.Module):
         else:
             self.invconv = InvConv2d(in_channel)
 
-        self.coupling = AffineCoupling(in_channel, affine=affine, condition_size=condition_size)
+        self.coupling = AffineCoupling(in_channel, affine=affine, condition_size=condition_size, use_bi_flow=use_bi_flow)
 
     def forward(self, input):
         # if we use condition here, input should be a tuple of original input and condition
@@ -316,15 +324,16 @@ def gaussian_sample(eps, mean, log_sd):
 
 
 class Block(nn.Module):
-    def __init__(self, in_channel, n_flow, split=True, affine=True, conv_lu=True, condition_size=None):
+    def __init__(self, in_channel, n_flow, split=True, affine=True, conv_lu=True, condition_size=None, use_bi_flow=True):
         super().__init__()
 
         squeeze_dim = in_channel * 4
         self.condition_size = condition_size
+        self.use_bi_flow = use_bi_flow
 
         self.flows = nn.ModuleList()
         for i in range(n_flow):
-            self.flows.append(Flow(squeeze_dim, affine=affine, conv_lu=conv_lu, condition_size=condition_size))
+            self.flows.append(Flow(squeeze_dim, affine=affine, conv_lu=conv_lu, condition_size=condition_size, use_bi_flow=use_bi_flow))
 
         self.split = split
 
@@ -407,68 +416,9 @@ class Block(nn.Module):
 
         return unsqueezed
 
-
-class Glow(nn.Module):
-    def __init__(
-        self, in_channel, n_flow, n_block, affine=True, conv_lu=True, condition_size=None
-    ):
-        super().__init__()
-
-        self.condition_size = condition_size
-        self.blocks = nn.ModuleList()
-        n_channel = in_channel
-        for i in range(n_block - 1):
-            self.blocks.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=condition_size))
-            n_channel *= 2
-        self.blocks.append(Block(n_channel, n_flow, split=False, affine=affine, condition_size=condition_size))
-
-    def forward(self, input):
-        # batch_size = input.shape[0]
-        log_p_sum = 0
-        logdet = 0
-        z_outs = []
-
-        if self.condition_size != None:
-            input, condition = input
-        
-        out = input
-
-        for block in self.blocks:
-            if self.condition_size != None:
-                out, det, log_p, z_new = block((out, condition))
-            else:
-                out, det, log_p, z_new = block(out)
-            
-            z_outs.append(z_new)
-            logdet = logdet + det
-
-            if log_p is not None:
-                log_p_sum = log_p_sum + log_p
-
-        return log_p_sum, logdet, z_outs
-
-    def reverse(self, z_list, reconstruct=False):
-        if self.condition_size != None:
-            z_list, condition_list = z_list
-        
-        for i, block in enumerate(self.blocks[::-1]):
-            if i == 0:
-                if self.condition_size != None:
-                    input = block.reverse((z_list[-1], condition_list[-1]), z_list[-1], reconstruct=reconstruct)
-                else:
-                    input = block.reverse(z_list[-1], z_list[-1], reconstruct=reconstruct)
-
-            else:
-                if self.condition_size != None:
-                    input = block.reverse((input, condition_list[-(i + 1)]), z_list[-(i + 1)], reconstruct=reconstruct)
-                else:
-                    input = block.reverse(input, z_list[-(i + 1)], reconstruct=reconstruct)
-
-        return input
-
 class conditionGlow(nn.Module):
     def __init__(
-        self, in_channel, n_flow, n_block, affine=True, conv_lu=True
+        self, in_channel, n_flow, n_block, affine=True, conv_lu=True, use_bi_flow=False
     ):
         super().__init__()
         self.blocks_input = nn.ModuleList()
@@ -477,12 +427,12 @@ class conditionGlow(nn.Module):
 
         n_channel = in_channel
         for i in range(n_block - 1):
-            self.blocks_condition.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=None))
-            self.blocks_input.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=n_channel * 2))
+            self.blocks_condition.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=None, use_bi_flow=use_bi_flow))
+            self.blocks_input.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=n_channel * 2, use_bi_flow=use_bi_flow))
             n_channel *= 2
  
-        self.blocks_condition.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, split=False, condition_size=None))
-        self.blocks_input.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, split=False, condition_size=n_channel * 4))
+        self.blocks_condition.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, split=False, condition_size=None, use_bi_flow=use_bi_flow))
+        self.blocks_input.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, split=False, condition_size=n_channel * 4, use_bi_flow=use_bi_flow))
 
     def forward(self, input, condition):
         log_p_sum_i, log_p_sum_c = 0, 0
@@ -523,7 +473,7 @@ class conditionGlow(nn.Module):
     
 class biGlow(nn.Module):
     def __init__(
-        self, in_channel, n_flow, n_block, affine=True, conv_lu=True
+        self, in_channel, n_flow, n_block, affine=True, conv_lu=True, use_bi_flow=True
     ):
         super().__init__()
         self.blocks_input = nn.ModuleList()
@@ -533,15 +483,15 @@ class biGlow(nn.Module):
         n_channel = in_channel
         for i in range(n_block - 1):
             if i == 0:
-                self.blocks_condition.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=None))
-                self.blocks_input.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=None))
+                self.blocks_condition.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=None, use_bi_flow=use_bi_flow))
+                self.blocks_input.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=None, use_bi_flow=use_bi_flow))
             else:
-                self.blocks_condition.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=n_channel * 4))
-                self.blocks_input.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=n_channel * 4))
+                self.blocks_condition.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=n_channel * 4, use_bi_flow=use_bi_flow))
+                self.blocks_input.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, condition_size=n_channel * 4, use_bi_flow=use_bi_flow))
             n_channel *= 2
  
-        self.blocks_condition.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, split=False, condition_size=n_channel * 4))
-        self.blocks_input.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, split=False, condition_size=n_channel * 4))
+        self.blocks_condition.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, split=False, condition_size=n_channel * 4, use_bi_flow=use_bi_flow))
+        self.blocks_input.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, split=False, condition_size=n_channel * 4, use_bi_flow=use_bi_flow))
 
     def forward(self, input, condition):
         log_p_sum_i, log_p_sum_c = 0, 0
@@ -593,9 +543,8 @@ class biGlow(nn.Module):
 if __name__=='__main__':
     input = torch.rand((10, 3, 8, 8))
     target = torch.rand((10, 3, 8, 8))
-    # model = Glow(in_channel=3, n_flow=6, n_block=3, condition_size=None)
-    model = biGlow(in_channel=3, n_flow=4, n_block=3)
+    model = conditionGlow(in_channel=3, n_flow=4, n_block=3)
     log_p_sum, logdet, z_outs = model(input, target)
     recovers = model.reverse(z_outs, reconstruct=False)
     print(model)
-    print(recovers[0].shape)
+    print(recovers.shape)

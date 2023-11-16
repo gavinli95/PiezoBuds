@@ -185,43 +185,42 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         _, n_uttr, _ = piezo_clips.shape
                         piezo_clips = piezo_clips.contiguous()
                         piezo_clips = piezo_clips.view(batch_size * n_uttr, -1)
-                        piezo_mels = extractor_p.get_spectrum(piezo_clips, aug=True)
-                        piezo_mels = piezo_mels[:, :, :48]
+                        # piezo_mels = extractor_p.get_spectrum(piezo_clips, aug=True)
+                        # piezo_mels = piezo_mels[:, :, :48]
+
                         audio_clips = audio_clips.contiguous()
                         audio_clips = audio_clips.view(batch_size * n_uttr, -1)
+                        audio_mels = extractor_a.get_spectrum(audio_clips, aug=True)
+                        audio_mels = audio_mels[:, :, :48]
 
-                        embeddings_audio = extractor_a(audio_clips)
-                        embeddings_audio = embeddings_audio.contiguous()
-                        embeddings_audio = embeddings_audio.view(batch_size, n_uttr, -1)
+                        # embeddings_audio = extractor_a(audio_clips)
+                        # embeddings_audio = embeddings_audio.contiguous()
+                        # embeddings_audio = embeddings_audio.view(batch_size, n_uttr, -1)
+                        embeddings_piezo = extractor_p(piezo_clips)
+                        embeddings_piezo = embeddings_piezo.contiguous()
+                        embeddings_piezo = embeddings_piezo.view(batch_size, n_uttr, -1)
 
-                        loss_a = ge2e_loss_a(embeddings_audio)
+
+                        loss_p = ge2e_loss_p(embeddings_piezo)
 
                         # cal converter loss
-                        piezo_mels = piezo_mels.unsqueeze(1)
-
-                        piezo_mels = (piezo_mels - torch.min(piezo_mels, dim=1, keepdim=True).values) / (
-                                            torch.max(piezo_mels, dim=1, keepdim=True).values - torch.min(piezo_mels, dim=1, keepdim=True).values)
-
-                        embeddings_audio = (embeddings_audio - torch.min(embeddings_audio, dim=1, keepdim=True).values) / (
-                                            torch.max(embeddings_audio, dim=1, keepdim=True).values - torch.min(embeddings_audio, dim=1, keepdim=True).values)
+                        audio_mels = audio_mels.unsqueeze(1)
+                        # embeddings_piezo = (embeddings_audio - torch.min(embeddings_audio, dim=1, keepdim=True).values) / (
+                        #                     torch.max(embeddings_audio, dim=1, keepdim=True).values - torch.min(embeddings_audio, dim=1, keepdim=True).values)
                         
-                        log_p_sum, logdet, z_outs, conditions = converter(embeddings_piezo, embeddings_audio)
-                        loss_ge2e_conv = 0.0
-                        for z_out in z_outs:
-                            loss_ge2e_conv += ge2e_loss_c(z_out.view(batch_size, n_uttr, -1))
+                        log_p_sum, logdet, z_outs, conditions = converter(audio_mels, embeddings_piezo.view(batch_size * n_uttr, -1))
+                        
                         z_outs = converter.reverse(z_outs, conditions=conditions, reconstruct=True)
                         z_outs = z_outs.contiguous()
-                        embeddings_conv = z_outs.view(batch_size * n_uttr, -1)
-                        # loss_conv, _, _ = calc_loss_glow(log_p_sum, logdet, 8, 255)
-                        
-                        # loss_conv = loss_func(embeddings_conv, embeddings_audio)
-                        loss_conv = loss_func(embeddings_conv, embeddings_piezo.view(batch_size * n_uttr, -1))
+                        embeddings_glow = extractor_a.mel_forward(z_outs)
+                        embeddings_glow = embeddings_glow.view(batch_size, n_uttr, -1)
+                        loss_conv = ge2e_loss_c(embeddings_glow)
 
                         # embeddings_conv = embeddings_conv.contiguous()
                         # embeddings_conv = embeddings_conv.view(batch_size, n_uttr, -1)
                         # loss_conv = ge2e_loss_c(embeddings_conv)
 
-                        loss_extractor = loss_a + loss_p + loss_conv + loss_ge2e_conv
+                        loss_extractor = loss_conv + loss_p
                         # if epoch >= epoch_th:
                         #     loss_extractor += loss_conv 
                         loss_avg_batch_all += loss_extractor.item()
@@ -247,111 +246,47 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         _, n_uttr, f_len = piezo_clips.shape
                         piezo_clips = piezo_clips.contiguous()
                         audio_clips = audio_clips.contiguous()
-                        piezo_clips_enroll, piezo_clips_verify = torch.split(piezo_clips, n_uttr // 2, dim=1)
-                        audio_clips_enroll, audio_clips_verify = torch.split(audio_clips, n_uttr // 2, dim=1)
 
                         piezo_clips = piezo_clips.view(batch_size * n_uttr, -1)
                         audio_clips = audio_clips.view(batch_size * n_uttr, -1)
 
-                        embeddings_audio = extractor_a(audio_clips)
-                        embeddings_piezo = extractor_p(piezo_clips)
-                        embeddings_audio = embeddings_audio.contiguous()
+                        # embeddings_audio = extractor_a(audio_clips)
+                        # embeddings_audio = embeddings_audio.contiguous()
+                        # embeddings_audio = embeddings_audio.view(batch_size, n_uttr, -1)
+                        # piezo_mels = extractor_p.get_spectrum(piezo_clips)
+                        # piezo_mels = piezo_mels[:, :, :48]
+                        # piezo_mels = piezo_mels.unsqueeze(1)
+                        embeddings_piezo = extractor_p(audio_clips)
                         embeddings_piezo = embeddings_piezo.contiguous()
-                        embeddings_audio = embeddings_audio.view(batch_size, n_uttr, -1)
                         embeddings_piezo = embeddings_piezo.view(batch_size, n_uttr, -1)
-
-                        # split data to enroll and verify
-                        embeddings_audio_enroll, embeddings_audio_verify = torch.split(embeddings_audio, n_uttr // 2, dim=1)
+                        audio_mels = extractor_a.get_spectrum(audio_clips)
+                        audio_mels = audio_mels[:, :, :48]
+                        audio_mels = audio_mels.unsqueeze(1)
+                        
+                        log_p_sum, logdet, z_outs, conditions = converter(audio_mels, embeddings_piezo.view(batch_size * n_uttr, -1))
+                        
+                        z_outs = converter.reverse(z_outs, conditions=conditions, reconstruct=True)
+                        z_outs = z_outs.contiguous()
+                        embeddings_glow = extractor_a.mel_forward(z_outs)
+                        embeddings_glow = embeddings_glow.view(batch_size, n_uttr, -1)
+                        embeddings_glow_enroll, embeddings_glow_verify = torch.split(embeddings_glow, n_uttr // 2, dim=1)
                         embeddings_piezo_enroll, embeddings_piezo_verify = torch.split(embeddings_piezo, n_uttr // 2, dim=1)
-                        tmp_embeddings_audio_verify = torch.clone(embeddings_audio_verify).to(device)
-                        tmp_embeddings_piezo_verify = torch.clone(embeddings_piezo_verify).to(device)
-                        tmp_embeddings_audio_enroll = torch.clone(embeddings_audio_enroll).to(device)
-                        tmp_embeddings_piezo_enroll = torch.clone(embeddings_piezo_enroll).to(device)
-                        tmp_converter = Glow(in_channel=3, n_flow=4, n_block=3, condition_size=192).to(device)
-                        tmp_converter.load_state_dict(converter.state_dict())
-                        tmp_optimizer = torch.optim.Adam([
-                            {'params': tmp_converter.parameters()},
-                        ], lr=lr)
-                        tmp_converter.train()
-                        with torch.set_grad_enabled(True) and torch.autograd.set_detect_anomaly(True):
-                            for e in range(1):
-                                # embeddings_enroll = torch.cat((embeddings_audio_enroll, embeddings_piezo_enroll), dim=-1)
-                                audio_clips_enroll = audio_clips_enroll.contiguous()
-                                piezo_clips_enroll = piezo_clips_enroll.contiguous()
-                                audio_clips_enroll = audio_clips_enroll.view(batch_size * n_uttr // 2, -1)
-                                piezo_clips_enroll = piezo_clips_enroll.view(batch_size * n_uttr // 2, -1)
-                                embeddings_audio_enroll = extractor_a(audio_clips_enroll)
-                                embeddings_piezo_enroll = extractor_p(piezo_clips_enroll)
-                                embeddings_piezo_enroll = embeddings_piezo_enroll.contiguous()
-                                embeddings_piezo_enroll = embeddings_piezo_enroll.view(batch_size * n_uttr // 2, 3, 8, 8)
-                                log_p_sum, logdet, z_outs, conditions = tmp_converter(embeddings_piezo_enroll, embeddings_audio_enroll)
-                                z_outs = tmp_converter.reverse(z_outs, conditions=conditions, reconstruct=True)
-                                z_outs = z_outs.contiguous()
-                                embedding_conv = z_outs.view(batch_size * n_uttr // 2, -1)
-
-                                loss_conv = loss_func(embeddings_piezo_enroll.view(batch_size * n_uttr // 2, -1), embedding_conv)
-                                # tmp_optimizer.zero_grad()
-                                # loss_conv.backward()
-                                # torch.nn.utils.clip_grad_norm_(tmp_converter.parameters(), 3.0)
-                                # tmp_optimizer.step()
-                        tmp_converter.eval()
-                        with torch.set_grad_enabled(False) and torch.autograd.set_detect_anomaly(True):
-                            audio_clips_verify = audio_clips_verify.contiguous()
-                            piezo_clips_verify = piezo_clips_verify.contiguous()
-                            audio_clips_verify = audio_clips_verify.view(batch_size * n_uttr // 2, -1)
-                            piezo_clips_verify = piezo_clips_verify.view(batch_size * n_uttr // 2, -1)
-                            embeddings_audio_verify = extractor_a(audio_clips_verify)
-                            embeddings_piezo_verify = extractor_p(piezo_clips_verify)
-                            embeddings_piezo_verify = embeddings_piezo_verify.contiguous()
-                            embeddings_piezo_verify = embeddings_piezo_verify.view(batch_size * n_uttr // 2, 3, 8, 8)
-
-                            embeddings_piezo_verify = (embeddings_piezo_verify - torch.min(embeddings_piezo_verify, dim=1, keepdim=True).values) / (
-                                                       torch.max(embeddings_piezo_verify, dim=1, keepdim=True).values - torch.min(embeddings_piezo_verify, dim=1, keepdim=True).values)
-                            embeddings_audio_verify = (embeddings_audio_verify - torch.min(embeddings_audio_verify, dim=1, keepdim=True).values) / (
-                                                       torch.max(embeddings_audio_verify, dim=1, keepdim=True).values - torch.min(embeddings_audio_verify, dim=1, keepdim=True).values)
-
-                            embeddings_piezo_enroll = (embeddings_piezo_enroll - torch.min(embeddings_piezo_enroll, dim=1, keepdim=True).values) / (
-                                                       torch.max(embeddings_piezo_enroll, dim=1, keepdim=True).values - torch.min(embeddings_piezo_enroll, dim=1, keepdim=True).values)
-                            embeddings_audio_enroll = (embeddings_audio_enroll - torch.min(embeddings_audio_enroll, dim=1, keepdim=True).values) / (
-                                                       torch.max(embeddings_audio_enroll, dim=1, keepdim=True).values - torch.min(embeddings_audio_enroll, dim=1, keepdim=True).values)
-
-                            # getting enrollment embeddings
-                            log_p_sum, logdet, z_outs, conditions = tmp_converter(embeddings_piezo_enroll, embeddings_audio_enroll)
-                            z_outs = tmp_converter.reverse(z_outs, conditions=conditions, reconstruct=True)
-                            z_outs = z_outs.contiguous()
-                            embeddings_conv_enroll = z_outs.view(batch_size, n_uttr // 2, -1)
                         
-                            # getting verify embeddings
-                            log_p_sum, logdet, z_outs, conditions = tmp_converter(embeddings_piezo_verify, embeddings_audio_verify)
-                            z_outs = tmp_converter.reverse(z_outs, conditions=conditions, reconstruct=True)
-                            z_outs = z_outs.contiguous()
-                            embeddings_conv_verify = z_outs.view(batch_size, n_uttr // 2, -1)
-
-                            centroids = get_centroids(embeddings_conv_enroll)
-                            
-                            sim_matrix = get_modal_cossim(embeddings_conv_verify, centroids)
-                        
+                        centroids = get_centroids(embeddings_glow_enroll)
+                        sim_matrix = get_cossim(embeddings_glow_verify.contiguous(), centroids.contiguous())
                         EER, EER_thresh, EER_FAR, EER_FRR = compute_EER(sim_matrix)
                         EERs[0] += EER
                         EER_FARs[0] += EER_FAR
                         EER_FRRs[0] += EER_FRR
                         EER_threshes[0] += EER_thresh
 
-                        centroids_a = get_centroids(tmp_embeddings_audio_enroll)
-                        sim_matrix = get_cossim(tmp_embeddings_audio_verify, centroids_a)
+                        centroids_a = get_centroids(embeddings_piezo_enroll)
+                        sim_matrix = get_cossim(embeddings_piezo_verify.contiguous(), centroids_a.contiguous())
                         EER, EER_thresh, EER_FAR, EER_FRR = compute_EER(sim_matrix)
                         EERs[1] += EER
                         EER_FARs[1] += EER_FAR
                         EER_FRRs[1] += EER_FRR
                         EER_threshes[1] += EER_thresh
-
-                        centroids_p = get_centroids(tmp_embeddings_piezo_enroll)
-                        sim_matrix = get_cossim(tmp_embeddings_piezo_verify, centroids_p)
-                        EER, EER_thresh, EER_FAR, EER_FRR = compute_EER(sim_matrix)
-                        EERs[2] += EER
-                        EER_FARs[2] += EER_FAR
-                        EER_FRRs[2] += EER_FRR
-                        EER_threshes[2] += EER_thresh
 
             if phase == 'train':
                 epoch_loss_all = loss_avg_batch_all / len(dataloader)
@@ -371,15 +306,10 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                 wandb.log({'epoch': epoch, 'EER/C_AfP_VI_AfP': EERs[0], 'FAR/C_AfP_VI_AfP': EER_FARs[0], 'FRR/C_AfP_VI_AfP': EER_FRRs[0]})
                 wandb.log({'epoch': epoch, 'threshold/C_AfP_VI_AfP': EER_threshes[0]})
 
-                print("\nCentroids: A  Verification Input: A "
-                            "\nEER : %0.2f (thres:%0.2f, FAR:%0.2f, FRR:%0.2f)" % (EERs[1], EER_threshes[1], EER_FARs[1], EER_FRRs[1]))
-                wandb.log({'epoch': epoch, 'EER/C_A_VI_A': EERs[1], 'FAR/C_A_VI_A': EER_FARs[1], 'FRR/C_A_VI_A': EER_FRRs[1]})
-                wandb.log({'epoch': epoch, 'threshold/C_A_VI_A': EER_threshes[1]})
-
                 print("\nCentroids: P  Verification Input: P "
-                            "\nEER : %0.2f (thres:%0.2f, FAR:%0.2f, FRR:%0.2f)" % (EERs[2], EER_threshes[2], EER_FARs[2], EER_FRRs[2]))
-                wandb.log({'epoch': epoch, 'EER/C_P_VI_P': EERs[2], 'FAR/C_P_VI_P': EER_FARs[2], 'FRR/C_P_VI_P': EER_FRRs[2]})
-                wandb.log({'epoch': epoch, 'threshold/C_P_VI_P': EER_threshes[2]})
+                            "\nEER : %0.2f (thres:%0.2f, FAR:%0.2f, FRR:%0.2f)" % (EERs[1], EER_threshes[1], EER_FARs[1], EER_FRRs[1]))
+                wandb.log({'epoch': epoch, 'EER/C_P_VI_P': EERs[1], 'FAR/C_P_VI_P': EER_FARs[1], 'FRR/C_P_VI_P': EER_FRRs[1]})
+                wandb.log({'epoch': epoch, 'threshold/C_P_VI_P': EER_threshes[1]})
                 
 
     return (extractor_a, extractor_p, converter)
@@ -410,7 +340,7 @@ if __name__ == "__main__":
     win_length = n_fft  # Typically the same as n_fft
     window_fn = torch.hann_window # Window function
 
-    comment = 'ecapatdnn_w_converter_MSEloss_sync'.format(n_fft, hop_length)
+    comment = 'ecapatdnn_w_mel_glow_amel'.format(n_fft, hop_length)
     # comment = 'mobilenetv3large1d_960_hop_256_t_16_class_pwr_spec_49u' # simple descriptions of specifications of this model, for example, 't_f' means we use the model which contains time and frequency nn layers
 
 
@@ -465,9 +395,9 @@ if __name__ == "__main__":
         {'params': ge2e_loss_p.parameters()},
         {'params': ge2e_loss_c.parameters()},
         {'params': converter.parameters()},
-    ], lr=lr, weight_decay = 2e-5)
+    ], lr=lr, weight_decay=1e-5)
 
-    lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size = 5, gamma=0.97)
+    lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size = 2, gamma=0.99)
     
     # create the folder to store the model
     model_struct = 'model_' + comment
@@ -487,7 +417,7 @@ if __name__ == "__main__":
     os.makedirs(model_final_path, exist_ok=True)
 
     # load the data 
-    data_set = WavDatasetForVerification(data_file_dir, list(range(n_user)), 50)
+    data_set = WavDatasetForVerification(data_file_dir, list(range(n_user)), 20)
     print(len(data_set))
 
     loss_func = nn.MSELoss()

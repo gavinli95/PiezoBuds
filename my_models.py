@@ -844,16 +844,76 @@ class FClayer(nn.Module):
 
         return x
 
+class CNN1Dlayer(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.layers = nn.Sequential(
+            nn.Conv1d(in_channels=2, out_channels=1, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm1d(1),
+            # nn.MaxPool1d(2),
+            nn.Conv1d(in_channels=1, out_channels=1, kernel_size=3, padding=1),
+        )
+
+    def forward(self, x):
+        b, c, n = x.shape
+        x = self.layers(x)
+        x = x.contiguous().squeeze() 
+        x_min = torch.min(x, dim=1, keepdim=True)[0]
+        x_max = torch.max(x, dim=1, keepdim=True)[0]
+        x = (x - x_min) / (x_max - x_min)
+
+        return x
+
+class CNN2Dlayer(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.layers = nn.Sequential(
+            nn.Conv2d(in_channels=6, out_channels=3, padding=1, kernel_size=3),
+            nn.ReLU(),
+            nn.BatchNorm2d(3),
+            nn.Conv2d(in_channels=3, out_channels=3, kernel_size=3, padding=1)
+        )
+
+    def forward(self, x):
+        b, c, h, w = x.shape
+        x = self.layers(x)
+        x = x.contiguous().view(b, -1)
+        x_min = torch.min(x, dim=1, keepdim=True)[0]
+        x_max = torch.max(x, dim=1, keepdim=True)[0]
+        x = (x - x_min) / (x_max - x_min)
+
+        return x
+
+class FClayer_last_dim(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.layers = nn.Sequential(
+            nn.Linear(in_features=384, out_features=192),
+            nn.ReLU(),
+            nn.BatchNorm1d(192),
+            nn.Linear(in_features=192, out_features=192),
+        )
+
+    def forward(self, x):
+        x = self.layers(x)
+        
+        x_min = torch.min(x, dim=1, keepdim=True)[0]
+        x_max = torch.max(x, dim=1, keepdim=True)[0]
+        x = (x - x_min) / (x_max - x_min)
+
+        return x
+
+
 if __name__ == "__main__":
-    model = UNet2D(in_channels=3, out_channels=3)
+    model = CNN1Dlayer()
     print(model)
+    x = torch.rand(50, 2, 192)
+    x = model(x)
+    print(x.shape)
 
-    input_tensor = torch.rand(10, 3, 8, 8)
-    output = model(input_tensor)
-    print(output.shape)
-
-    model1D = UNet1D(in_channels=3, out_channels=3)
-    print(model1D)
-    input_tensor = torch.rand(10, 3, 64)
-    output = model1D(input_tensor)
-    print(output.shape)
+    model = CNN2Dlayer()
+    print(model)
+    x = torch.rand(50, 6, 8, 8)
+    x = model(x)
+    print(x.shape)

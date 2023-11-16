@@ -130,7 +130,7 @@ class FbankAug(nn.Module):
 
 class ECAPA_TDNN(nn.Module):
 
-    def __init__(self, C, is_stft=True):
+    def __init__(self, C, is_stft=False, is_audio=True):
 
         super(ECAPA_TDNN, self).__init__()
         self.is_stft  = is_stft
@@ -146,17 +146,27 @@ class ECAPA_TDNN(nn.Module):
                                                 )
         self.amplitude_to_db = torchaudio.transforms.AmplitudeToDB(stype='magnitude', top_db=80)
 
-        self.torchfbank = torch.nn.Sequential(
-            PreEmphasis(),            
-            torchaudio.transforms.MelSpectrogram(sample_rate=16000, n_fft=512, win_length=400, hop_length=160, \
-                                                 f_min = 100, f_max = 7800, window_fn=torch.hamming_window, n_mels=80),
-            )
+        if is_audio:
+            self.torchfbank = torch.nn.Sequential(
+                PreEmphasis(),            
+                torchaudio.transforms.MelSpectrogram(sample_rate=16000, n_fft=512, win_length=400, hop_length=160, \
+                                                    f_min = 100, f_max = 7800, window_fn=torch.hamming_window, n_mels=80),
+                )
+        else:
+            self.torchfbank = torch.nn.Sequential(
+                PreEmphasis(),            
+                torchaudio.transforms.MelSpectrogram(sample_rate=16000, n_fft=512, win_length=400, hop_length=160, \
+                                                    f_min = 100, f_max = 2000, window_fn=torch.hamming_window, n_mels=80),
+                )
 
         self.specaug = FbankAug() # Spec augmentation
         if is_stft:
             self.conv1  = nn.Conv1d(257, C, kernel_size=5, stride=1, padding=2)
         else:
-            self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
+            if is_audio:
+                self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
+            else:
+                self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
         self.relu   = nn.ReLU()
         self.bn1    = nn.BatchNorm1d(C)
         self.layer1 = Bottle2neck(C, C, kernel_size=3, dilation=2, scale=8)

@@ -258,7 +258,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                         tmp_embeddings_piezo_verify = torch.clone(embeddings_piezo_verify).to(device)
                         tmp_embeddings_audio_enroll = torch.clone(embeddings_audio_enroll).to(device)
                         tmp_embeddings_piezo_enroll = torch.clone(embeddings_piezo_enroll).to(device)
-                        tmp_converter = biGlow(in_channel=3, n_flow=1, n_block=3).to(device)
+                        tmp_converter = biGlow(in_channel=3, n_flow=2, n_block=3).to(device)
                         tmp_converter.load_state_dict(converter.state_dict())
                         tmp_final_layer = FClayer().to(device)
                         tmp_final_layer.load_state_dict(final_layer.state_dict())
@@ -426,7 +426,7 @@ if __name__ == "__main__":
     win_length = n_fft  # Typically the same as n_fft
     window_fn = torch.hann_window # Window function
 
-    comment = 'ecapatdnn_w_biGlow_f1_fc_wo_enroll_ge2e'
+    comment = 'ecapatdnn_w_biGlow_f2_fc_wo_enroll_MSE'
 
     extractor_a = ECAPA_TDNN(1024, is_stft=False)
     extractor_p = ECAPA_TDNN(1024, is_stft=False)
@@ -450,7 +450,7 @@ if __name__ == "__main__":
     ge2e_loss_a = GE2ELoss_ori(device).to(device)
     ge2e_loss_p = GE2ELoss_ori(device).to(device)
     ge2e_loss_c = GE2ELoss_ori(device).to(device)
-    converter = biGlow(in_channel=3, n_flow=1, n_block=3).to(device)
+    converter = biGlow(in_channel=3, n_flow=2, n_block=3).to(device)
     final_layer = FClayer().to(device)
 
     optimizer = torch.optim.Adam([
@@ -483,7 +483,7 @@ if __name__ == "__main__":
     os.makedirs(model_final_path, exist_ok=True)
 
     # load the data 
-    data_set = WavDatasetForVerification(data_file_dir, list(range(n_user)), 50)
+    data_set = WavDatasetForVerification(data_file_dir, list(range(n_user)), 100)
     print(len(data_set))
 
     loss_func = nn.MSELoss()

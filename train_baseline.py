@@ -14,7 +14,7 @@ import torchvision
 from mobile_net_v3 import *
 from SincNet import SincConv_fast
 import torchaudio
-from ECAPA_TDNN import *
+from ECAPA_TDNN_w_Modality import *
 from RealNVP import *
 from GLOW import Glow
 from math import log, sqrt, pi
@@ -343,8 +343,8 @@ if __name__ == "__main__":
     n_user = 69
     train_ratio = 0.9
     num_of_epoches = 800
-    train_batch_size = 10
-    test_batch_size = 3
+    train_batch_size = 8
+    test_batch_size = 4
 
     n_fft = 512  # Size of FFT, affects the frequency granularity
     hop_length = 256  # Typically n_fft // 4 (is None, then hop_length = n_fft // 2 by default)
@@ -354,7 +354,7 @@ if __name__ == "__main__":
     comment = 'ECAPA_w_fusion_baseline'
 
     extractor_a = ECAPA_TDNN(1024, is_stft=False)
-    extractor_p = ECAPA_TDNN(1024, is_stft=False)
+    extractor_p = ECAPA_TDNN(1024, is_stft=False, is_audio=False)
 
     loaded_state = torch.load(pth_store_dir + 'pretrain_ecapa_tdnn.model')
     state_a = extractor_a.state_dict()
@@ -365,6 +365,7 @@ if __name__ == "__main__":
         if name in state_a:
             if state_a[name].size() == loaded_state[origname].size():
                 state_a[name].copy_(loaded_state[origname])
+            if state_p[name].size() == loaded_state[origname].size():
                 state_p[name].copy_(loaded_state[origname])
     extractor_a.load_state_dict(state_a)
     extractor_p.load_state_dict(state_p)

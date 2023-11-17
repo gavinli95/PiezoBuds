@@ -23,11 +23,11 @@ class EmbeddingFusionModel(nn.Module):
     def __init__(self, embedding_dim_1, embedding_dim_2, output_dim):
         super(EmbeddingFusionModel, self).__init__()
         # Define the architecture
-        self.fc1 = nn.Linear(embedding_dim_1 + embedding_dim_2, 128)  # Fusion layer
-        self.bn1 = nn.BatchNorm1d(128)         # Batch normalization
-        self.fc2 = nn.Linear(128, 64)          # Intermediate layer
-        self.bn2 = nn.BatchNorm1d(64)          # Batch normalization
-        self.fc3 = nn.Linear(64, output_dim)   # Output layer
+        self.fc1 = nn.Linear(embedding_dim_1 + embedding_dim_2, 256)  # Fusion layer
+        self.bn1 = nn.BatchNorm1d(256)         # Batch normalization
+        self.fc2 = nn.Linear(256, 192)          # Intermediate layer
+        self.bn2 = nn.BatchNorm1d(192)          # Batch normalization
+        self.fc3 = nn.Linear(192, output_dim)   # Output layer
 
     def forward(self, embedding_1, embedding_2):
         # Concatenate the two embeddings along the feature dimension

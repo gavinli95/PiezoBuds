@@ -201,6 +201,9 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         loss_a = ge2e_loss_a(embeddings_audio)
                         loss_p = ge2e_loss_p(embeddings_piezo)
 
+                        embeddings_audio = embeddings_audio.detach()
+                        embeddings_piezo = embeddings_piezo.detach()
+
                         # cal converter loss
                         centroids_piezo = get_centroids(embeddings_piezo)
                         centroids_piezo = centroids_piezo.unsqueeze(1)
@@ -241,11 +244,11 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         # embeddings_conv = embeddings_conv.view(batch_size, n_uttr, -1)
                         # loss_conv = ge2e_loss_c(embeddings_conv)
 
-                        loss_extractor = loss_a + loss_p + (1 - loss_conv).sum()
+                        loss_extractor = loss_a + loss_p + loss_conv
                         # if epoch >= epoch_th:
                         #     loss_extractor += loss_conv 
                         loss_avg_batch_all += loss_extractor.item()
-                        loss_avg_conv_all += ((1 - loss_conv).sum()).item()
+                        loss_avg_conv_all += loss_conv.item()
                         optimizer.zero_grad()
                         loss_extractor.backward()
                         torch.nn.utils.clip_grad_norm_(extractor_a.parameters(), 3.0)
@@ -354,15 +357,15 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                             z_outs = z_outs.contiguous()
                             embeddings_conv_verify = z_outs.view(batch_size, n_uttr // 2, -1)
 
-                            centroids = get_centroids(embeddings_conv_enroll)
-                            centroids = get_centroids(torch.cat((embeddings_conv_enroll - centroids_piezo_enroll.view(batch_size, n_uttr // 2, -1), 
+                            # centroids = get_centroids(embeddings_conv_enroll)
+                            centroids = get_centroids(torch.cat((embeddings_conv_enroll, 
                                                                  embeddings_piezo_enroll.view(batch_size, n_uttr // 2, -1)), dim=-1))
                             
-                            sim_matrix = get_modal_cossim(torch.cat((embeddings_conv_verify - centroids_piezo_enroll.view(batch_size, n_uttr // 2, -1), 
+                            sim_matrix = get_modal_cossim(torch.cat((embeddings_conv_verify, 
                                                                      embeddings_piezo_enroll.view(batch_size, n_uttr // 2, -1)), dim=-1), centroids)
-                            centroids = get_centroids(embeddings_conv_enroll)
+                            # centroids = get_centroids(embeddings_conv_enroll)
                             
-                            sim_matrix = get_modal_cossim(embeddings_conv_verify, centroids)
+                            # sim_matrix = get_modal_cossim(embeddings_conv_verify, centroids)
                             # sim_matrix = pairwise_cos_sim(embeddings_conv_verify - centroids_piezo_enroll.view(batch_size, n_uttr // 2, -1),
                             #                               embeddings_piezo_verify - centroids_piezo_enroll.view(batch_size, n_uttr // 2, -1))
 
@@ -440,7 +443,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
 
 if __name__ == "__main__":
 
-    device = "cuda:0" if torch.cuda.is_available() else "cpu"
+    device = "cuda:1" if torch.cuda.is_available() else "cpu"
     
     data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds/' # folder where stores the data for training and test
     pth_store_dir = './pth_model/'
@@ -456,7 +459,7 @@ if __name__ == "__main__":
     train_ratio = 0.9
     num_of_epoches = 800
     train_batch_size = 10
-    test_batch_size = 3
+    test_batch_size = 2
 
     n_fft = 512  # Size of FFT, affects the frequency granularity
     hop_length = 256  # Typically n_fft // 4 (is None, then hop_length = n_fft // 2 by default)
@@ -521,7 +524,7 @@ if __name__ == "__main__":
     data_set = WavDatasetForVerification(data_file_dir, list(range(n_user)), 40)
     print(len(data_set))
 
-    loss_func = nn.CosineSimilarity(dim=-1)
+    loss_func = nn.MSELoss()
 
     models = (extractor_a, extractor_p, converter)
     ge2e_loss = (ge2e_loss_a, ge2e_loss_p)

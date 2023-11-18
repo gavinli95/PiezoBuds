@@ -214,8 +214,8 @@ def test_model(device, models, data_set, test_batch_size,
             piezo_clips = piezo_clips.to(device)
             audio_clips = audio_clips.to(device)
 
-            n_uttr_enroll = n_uttr - n_uttr // 4
-            n_uttr_verify = n_uttr // 4
+            n_uttr_enroll = n_uttr - n_uttr // 5
+            n_uttr_verify = n_uttr // 5
             
             _, n_uttr, f_len = piezo_clips.shape
             piezo_clips = piezo_clips.contiguous()
@@ -227,12 +227,12 @@ def test_model(device, models, data_set, test_batch_size,
             centroids_conv_enroll, centroids_audio_enroll, centroids_piezo_enroll = get_conv_centroids(
                 piezo_clips_enroll, audio_clips_enroll, extractor_a, extractor_p, converter
             )
-            embeddings_conv_verify, embedings_audio_verify, emebeddings_piezo_verify = get_embeddings_verify(
+            embeddings_conv_verify, embeddings_audio_verify, emebeddings_piezo_verify = get_embeddings_verify(
                 centroids_conv_enroll, piezo_clips_verify, audio_clips_verify, extractor_a, extractor_p, converter
             )
             
             # test replay attack
-            # C-A-P, verify change piezo to white noise
+            # C-A-P, verify: change piezo to white noise
             white_noise = torch.rand(piezo_clips_verify.shape) * 2 - 1
             white_noise = white_noise.to(device)
             white_noise = white_noise.contiguous()
@@ -241,19 +241,30 @@ def test_model(device, models, data_set, test_batch_size,
             embeddings_noise = embeddings_noise.contiguous()
             embeddings_noise = embeddings_noise.view(batch_size, n_uttr_verify, -1)
             sim_matrix = get_cossim(
-                torch.cat((embeddings_conv_verify, embedings_audio_verify, embeddings_noise), dim=-1),
+                torch.cat((embeddings_conv_verify, embeddings_audio_verify, embeddings_noise), dim=-1),
                 torch.cat((centroids_conv_enroll, centroids_audio_enroll, centroids_piezo_enroll), dim=-1)
             )
             ASR = compute_ASR(sim_matrix, threshold=threshold)
             ASR_within_epoch[0] += ASR.item()
+
+            # test mimic attack
+            # C-A-P, verify: change piezo to audio
+            sim_matrix = get_cossim(
+                torch.cat((embeddings_conv_verify, embeddings_audio_verify, embeddings_audio_verify), dim=-1),
+                torch.cat((centroids_conv_enroll, centroids_audio_enroll, centroids_piezo_enroll), dim=-1)
+            )
+            ASR = compute_ASR(sim_matrix, threshold=threshold)
+            ASR_within_epoch[1] += ASR.item()
         
         ASR_within_epoch /= len(dataloader)
-        print("ASR of Replayattack within epoch %d: %.4f" % (epoch, ASR_within_epoch[0]))
+        print("ASR of Replay attack within epoch %d: %.4f" % (epoch, ASR_within_epoch[0]))
+        print("ASR of Mimic attack within epoch %d: %.4f" % (epoch, ASR_within_epoch[1]))
 
         ASR_across_epoch += ASR_within_epoch
 
     ASR_across_epoch /= num_epochs
-    print("ASR of Replayattack across %d epochs: %.8f" % (num_epochs, ASR_within_epoch[0]))
+    print("ASR of Replay attack across %d epochs: %.8f" % (num_epochs, ASR_within_epoch[0]))
+    print("ASR of Mimic attack across %d epochs: %.8f" % (num_epochs, ASR_within_epoch[1]))
 
     return None
 
@@ -315,7 +326,7 @@ if __name__ == "__main__":
     with open(test_user_id_files, 'r') as file:
         test_user_ids = json.load(file)
 
-    data_set = WavDatasetForVerification(data_file_dir, test_user_ids, 40)
+    data_set = WavDatasetForVerification(data_file_dir, test_user_ids, 100)
     print(len(data_set))
 
     models = (extractor_a, extractor_p, converter)

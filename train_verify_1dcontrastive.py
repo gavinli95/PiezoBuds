@@ -271,8 +271,12 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         _, n_uttr, f_len = piezo_clips.shape
                         piezo_clips = piezo_clips.contiguous()
                         audio_clips = audio_clips.contiguous()
-                        piezo_clips_enroll, piezo_clips_verify = torch.split(piezo_clips, n_uttr // 2, dim=1)
-                        audio_clips_enroll, audio_clips_verify = torch.split(audio_clips, n_uttr // 2, dim=1)
+
+                        n_uttr_enroll = n_uttr - n_uttr // 4
+                        n_uttr_verify = n_uttr // 4
+
+                        piezo_clips_enroll, piezo_clips_verify = torch.split(piezo_clips, [n_uttr_enroll, n_uttr_verify], dim=1)
+                        audio_clips_enroll, audio_clips_verify = torch.split(audio_clips, [n_uttr_enroll, n_uttr_verify], dim=1)
 
                         piezo_clips = piezo_clips.view(batch_size * n_uttr, -1)
                         audio_clips = audio_clips.view(batch_size * n_uttr, -1)
@@ -302,8 +306,8 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                                 # embeddings_enroll = torch.cat((embeddings_audio_enroll, embeddings_piezo_enroll), dim=-1)
                                 audio_clips_enroll = audio_clips_enroll.contiguous()
                                 piezo_clips_enroll = piezo_clips_enroll.contiguous()
-                                audio_clips_enroll = audio_clips_enroll.view(batch_size * n_uttr // 2, -1)
-                                piezo_clips_enroll = piezo_clips_enroll.view(batch_size * n_uttr // 2, -1)
+                                audio_clips_enroll = audio_clips_enroll.view(batch_size * n_uttr_enroll, -1)
+                                piezo_clips_enroll = piezo_clips_enroll.view(batch_size * n_uttr_enroll, -1)
                                 embeddings_audio_enroll = extractor_a(audio_clips_enroll, aug=True)
                                 embeddings_piezo_enroll = extractor_p(piezo_clips_enroll, aug=True)
                                 embeddings_piezo_enroll = embeddings_piezo_enroll.contiguous()
@@ -322,12 +326,12 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                         with torch.set_grad_enabled(False) and torch.autograd.set_detect_anomaly(True):
                             audio_clips_verify = audio_clips_verify.contiguous()
                             piezo_clips_verify = piezo_clips_verify.contiguous()
-                            audio_clips_verify = audio_clips_verify.view(batch_size * n_uttr // 2, -1)
-                            piezo_clips_verify = piezo_clips_verify.view(batch_size * n_uttr // 2, -1)
+                            audio_clips_verify = audio_clips_verify.view(batch_size * n_uttr_verify, -1)
+                            piezo_clips_verify = piezo_clips_verify.view(batch_size * n_uttr_verify, -1)
                             embeddings_audio_verify = extractor_a(audio_clips_verify, aug=True)
                             embeddings_piezo_verify = extractor_p(piezo_clips_verify, aug=True)
                             embeddings_piezo_verify = embeddings_piezo_verify.contiguous()
-                            embeddings_piezo_verify = embeddings_piezo_verify.view(batch_size, n_uttr // 2, -1)
+                            embeddings_piezo_verify = embeddings_piezo_verify.view(batch_size, n_uttr_verify, -1)
 
                             # embeddings_piezo_verify = (embeddings_piezo_verify - torch.min(embeddings_piezo_verify, dim=1, keepdim=True).values) / (
                             #                            torch.max(embeddings_piezo_verify, dim=1, keepdim=True).values - torch.min(embeddings_piezo_verify, dim=1, keepdim=True).values)
@@ -339,30 +343,34 @@ def train_and_test_model(device, models, ge2e_loss, loss_func, data_set, optimiz
                             # embeddings_audio_enroll = (embeddings_audio_enroll - torch.min(embeddings_audio_enroll, dim=1, keepdim=True).values) / (
                             #                            torch.max(embeddings_audio_enroll, dim=1, keepdim=True).values - torch.min(embeddings_audio_enroll, dim=1, keepdim=True).values)
 
-                            centroids_piezo_enroll = get_centroids(embeddings_piezo_enroll.view(batch_size, n_uttr // 2, -1))
+                            centroids_piezo_enroll = get_centroids(embeddings_piezo_enroll.view(batch_size, n_uttr_enroll, -1))
                             centroids_piezo_enroll = centroids_piezo_enroll.contiguous()
                             centroids_piezo_enroll = centroids_piezo_enroll.unsqueeze(1)
-                            centroids_piezo_enroll = centroids_piezo_enroll.expand(-1, n_uttr // 2, -1)
-                            centroids_piezo_enroll = centroids_piezo_enroll.contiguous()
-                            centroids_piezo_enroll = centroids_piezo_enroll.view(batch_size * n_uttr // 2, 3, 8, 8)
+
+                            centroids_piezo_enroll_expand = centroids_piezo_enroll.expand(-1, n_uttr_enroll, -1)
+                            centroids_piezo_enroll_expand = centroids_piezo_enroll_expand.contiguous()
+                            centroids_piezo_enroll_expand = centroids_piezo_enroll_expand.view(batch_size * n_uttr_enroll, 3, 8, 8)
                             # getting enrollment embeddings
-                            log_p_sum, logdet, z_outs, conditions = tmp_converter(centroids_piezo_enroll, embeddings_audio_enroll)
+                            log_p_sum, logdet, z_outs, conditions = tmp_converter(centroids_piezo_enroll_expand, embeddings_audio_enroll)
                             z_outs = tmp_converter.reverse(z_outs, conditions=conditions, reconstruct=True)
                             z_outs = z_outs.contiguous()
-                            embeddings_conv_enroll = z_outs.view(batch_size, n_uttr // 2, -1)
+                            embeddings_conv_enroll = z_outs.view(batch_size, n_uttr_enroll, -1)
                         
+                            centroids_piezo_enroll_expand = centroids_piezo_enroll.expand(-1, n_uttr_verify, -1)
+                            centroids_piezo_enroll_expand = centroids_piezo_enroll_expand.contiguous()
+                            centroids_piezo_enroll_expand = centroids_piezo_enroll_expand.view(batch_size * n_uttr_verify, 3, 8, 8)
                             # getting verify embeddings
-                            log_p_sum, logdet, z_outs, conditions = tmp_converter(centroids_piezo_enroll, embeddings_audio_verify)
+                            log_p_sum, logdet, z_outs, conditions = tmp_converter(centroids_piezo_enroll_expand, embeddings_audio_verify)
                             z_outs = tmp_converter.reverse(z_outs, conditions=conditions, reconstruct=True)
                             z_outs = z_outs.contiguous()
-                            embeddings_conv_verify = z_outs.view(batch_size, n_uttr // 2, -1)
+                            embeddings_conv_verify = z_outs.view(batch_size, n_uttr_verify, -1)
 
                             # centroids = get_centroids(embeddings_conv_enroll)
-                            centroids = get_centroids(torch.cat((embeddings_conv_enroll, 
-                                                                 embeddings_piezo_enroll.view(batch_size, n_uttr // 2, -1)), dim=-1))
+                            centroids = get_centroids(torch.cat((embeddings_conv_enroll,
+                                                                 embeddings_piezo_enroll.view(batch_size, n_uttr_enroll, -1)), dim=-1))
                             
                             sim_matrix = get_modal_cossim(torch.cat((embeddings_conv_verify, 
-                                                                     embeddings_piezo_enroll.view(batch_size, n_uttr // 2, -1)), dim=-1), centroids)
+                                                                     embeddings_piezo_verify.view(batch_size, n_uttr_verify, -1)), dim=-1), centroids)
                             # centroids = get_centroids(embeddings_conv_enroll)
                             
                             # sim_matrix = get_modal_cossim(embeddings_conv_verify, centroids)
@@ -445,7 +453,7 @@ if __name__ == "__main__":
 
     device = "cuda:1" if torch.cuda.is_available() else "cpu"
     
-    data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds/' # folder where stores the data for training and test
+    data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips_750ms/piezobuds/' # folder where stores the data for training and test
     pth_store_dir = './pth_model/'
     os.makedirs(pth_store_dir, exist_ok=True)
 
@@ -459,7 +467,7 @@ if __name__ == "__main__":
     train_ratio = 0.9
     num_of_epoches = 800
     train_batch_size = 10
-    test_batch_size = 2
+    test_batch_size = 3
 
     n_fft = 512  # Size of FFT, affects the frequency granularity
     hop_length = 256  # Typically n_fft // 4 (is None, then hop_length = n_fft // 2 by default)

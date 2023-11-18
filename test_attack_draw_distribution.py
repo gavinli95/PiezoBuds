@@ -16,13 +16,14 @@ from SincNet import SincConv_fast
 import torchaudio
 from ECAPA_TDNN import *
 from RealNVP import *
-from GLOW import Glow
 from math import log, sqrt, pi
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
+import json
+from biGlow import *
 
 
 def remove_prefix(text, prefix):
@@ -296,8 +297,9 @@ if __name__ == "__main__":
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     
     data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds/' # folder where stores the data for training and test
-    model_pth = 'model_ecapatdnn_w_converter_MSEloss_sync/2023_11_13_12_49/'
-    pth_store_dir = './pth_model/' + model_pth
+    model_pth = 'model_ecapatdnn_w_conGlow_cap_wo_enroll_Huberloss_no_detach/2023_11_17_14_43/'
+    pth_store_dir = '/mnt/ssd/huaili/PiezoBuds/pth_model/' + model_pth
+    test_user_id_files = '/mnt/ssd/huaili/PiezoBuds/pth_model/' + model_pth + 'test_users.json'
     fig_store_path = './pca_figs/' + model_pth
     os.makedirs(fig_store_path, exist_ok=True)
 
@@ -326,7 +328,7 @@ if __name__ == "__main__":
     extractor_a.to(device)
     extractor_p.to(device)
 
-    converter = Glow(in_channel=3, n_flow=4, n_block=3, condition_size=192)
+    converter = conditionGlow(in_channel=3, n_flow=2, n_block=3)
     converter.load_state_dict(torch.load(pth_store_dir + 'converter.pth'))
     converter.to(device)
 
@@ -334,17 +336,19 @@ if __name__ == "__main__":
     model_struct = 'model_' + comment
     # initialize the wandb configuration
     time_stamp = time.strftime("%Y_%m_%d_%H_%M", time.localtime())
-    wandb.init(
-        # team name
-        entity="piezobuds",
-        # set the project name
-        project="PiezoBuds",
-        # params of the task
-        name=model_struct+'_'+time_stamp
-    )
+    # wandb.init(
+    #     # team name
+    #     entity="piezobuds",
+    #     # set the project name
+    #     project="PiezoBuds",
+    #     # params of the task
+    #     name=model_struct+'_'+time_stamp
+    # )
 
-    # load the data 
-    test_user_ids = [2, 6, 8, 10, 31, 32, 45, 61]
+    # load the test user list
+    with open(test_user_id_files, 'r') as file:
+        test_user_ids = json.load(file)
+
     data_set = WavDatasetForVerification(data_file_dir, test_user_ids, 50)
     print(len(data_set))
 

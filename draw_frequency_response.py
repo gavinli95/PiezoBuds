@@ -176,7 +176,7 @@ if __name__ == "__main__":
 
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     
-    data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds/' # folder where stores the data for training and test
+    data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips_400ms/piezobuds/' # folder where stores the data for training and test
     pth_store_dir = './pth_model/'
     os.makedirs(pth_store_dir, exist_ok=True)
 

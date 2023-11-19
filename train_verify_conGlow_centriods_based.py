@@ -183,8 +183,8 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                         loss_a = ge2e_loss_a(embeddings_audio)
                         loss_p = ge2e_loss_p(embeddings_piezo)
 
-                        embeddings_audio = embeddings_audio.detach()
-                        embeddings_piezo = embeddings_piezo.detach()
+                        # embeddings_audio = embeddings_audio.detach()
+                        # embeddings_piezo = embeddings_piezo.detach()
 
                         # cal converter loss
                         # normalize the data of different modalities
@@ -343,9 +343,9 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                             embeddings_conv_verify = z_out.contiguous().view(batch_size, n_uttr_verify, -1)   
                             embeddings_audio_verify = embeddings_audio_verify.contiguous().view(batch_size, n_uttr_verify, -1)
 
-                            embeddings_conv_verify_w_piezo_audio = torch.cat((embeddings_conv_verify, embeddings_piezo_verify, embeddings_audio_verify), dim=-1)
-                            embeddings_conv_enroll_w_piezo_audio_centriods = torch.cat((embeddings_conv_enroll_centriods, embeddings_piezo_enroll_centriods, embeddings_audio_enroll_centriods), dim=-1)
-                            sim_matrix = get_modal_cossim(embeddings_conv_verify_w_piezo_audio, embeddings_conv_enroll_w_piezo_audio_centriods)
+                            embeddings_final_verify = torch.cat((embeddings_conv_verify, embeddings_audio_verify, embeddings_piezo_verify), dim=-1)
+                            embeddings_final_enroll_centroids = torch.cat((embeddings_conv_enroll_centriods, embeddings_audio_enroll_centriods, embeddings_piezo_enroll_centriods), dim=-1)
+                            sim_matrix = get_modal_cossim(embeddings_final_verify, embeddings_final_enroll_centroids)
 
                         
                         EER, EER_thresh, EER_FAR, EER_FRR = compute_EER(sim_matrix)
@@ -442,7 +442,7 @@ if __name__ == "__main__":
     win_length = n_fft  # Typically the same as n_fft
     window_fn = torch.hann_window # Window function
 
-    comment = 'ecapatdnn_w_conGlow_cap_wo_enroll_Huberloss'
+    comment = 'ecapatdnn_w_conGlow_cap_wo_enroll_Huberloss_no_detach'
 
     extractor_a = ECAPA_TDNN(1024, is_stft=False)
     extractor_p = ECAPA_TDNN(1024, is_stft=False)

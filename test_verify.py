@@ -16,13 +16,14 @@ from SincNet import SincConv_fast
 import torchaudio
 from ECAPA_TDNN import *
 from RealNVP import *
-from GLOW import Glow
 from math import log, sqrt, pi
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
+import json
+from biGlow import *
 
 
 def remove_prefix(text, prefix):
@@ -128,26 +129,18 @@ def draw_pca(tensor, save_path=None):
 
 def test_model(device, models, data_set, test_batch_size,
                n_fft=512, hop_length=256, win_length=512, window_fn = torch.hann_window, power=None,
-               num_epochs=20, fig_store_path=None):
+               num_epochs=10, fig_store_path=None):
     
     test_loader = DataLoader(data_set, batch_size=test_batch_size, shuffle=True, drop_last=False)
     print(len(test_loader))
 
-    spectrogram = torchaudio.transforms.Spectrogram(
-                                                    n_fft=n_fft,
-                                                    win_length=win_length,
-                                                    hop_length=hop_length,
-                                                    window_fn=window_fn,
-                                                    power=power,  # For power spectrogram, use 2. For complex spectrogram, use None.
-                                                    # batch_first=True,
-                                                    # sample_rate=16000
-                                                ).to(device)
-    amplitude_to_db = torchaudio.transforms.AmplitudeToDB(stype='magnitude', top_db=80).to(device)
-
     (extractor_a, extractor_p, converter) = models
 
-    # initialize torchaudio.
-    
+    EERs_across_epoch = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]).astype(float)
+    EERs_FRR_across_epoch = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]).astype(float)
+    EERs_FAR_across_epoch = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]).astype(float)
+    EERs_threshold_across_epoch = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]).astype(float)
+
     for epoch in range(num_epochs):
         print(f'Epoch {epoch + 1}/{num_epochs}')
         print('-' * 10)
@@ -169,12 +162,15 @@ def test_model(device, models, data_set, test_batch_size,
             # prepare testing data
             piezo_clips = piezo_clips.to(device)
             audio_clips = audio_clips.to(device)
+
+            n_uttr_enroll = n_uttr - n_uttr // 4
+            n_uttr_verify = n_uttr // 4
             
             _, n_uttr, f_len = piezo_clips.shape
             piezo_clips = piezo_clips.contiguous()
             audio_clips = audio_clips.contiguous()
-            piezo_clips_enroll, piezo_clips_verify = torch.split(piezo_clips, n_uttr // 2, dim=1)
-            audio_clips_enroll, audio_clips_verify = torch.split(audio_clips, n_uttr // 2, dim=1)
+            piezo_clips_enroll, piezo_clips_verify = torch.split(piezo_clips, [n_uttr_enroll, n_uttr_verify], dim=1)
+            audio_clips_enroll, audio_clips_verify = torch.split(audio_clips, [n_uttr_enroll, n_uttr_verify], dim=1)
 
             piezo_clips = piezo_clips.view(batch_size * n_uttr, -1)
             audio_clips = audio_clips.view(batch_size * n_uttr, -1)
@@ -212,54 +208,60 @@ def test_model(device, models, data_set, test_batch_size,
             EER_FRRs[2] += EER_FRR
             EER_threshes[2] += EER_thresh
 
-            # test EEGLOW
-            audio_clips_enroll = audio_clips_enroll.contiguous()
-            piezo_clips_enroll = piezo_clips_enroll.contiguous()
-            audio_clips_enroll = audio_clips_enroll.view(batch_size * n_uttr // 2, -1)
-            piezo_clips_enroll = piezo_clips_enroll.view(batch_size * n_uttr // 2, -1)
+            # test conGlow
+
+            audio_clips_enroll = audio_clips_enroll.contiguous().view(batch_size * n_uttr_enroll, -1)
+            piezo_clips_enroll = piezo_clips_enroll.contiguous().view(batch_size * n_uttr_enroll, -1)
+
             embeddings_audio_enroll = extractor_a(audio_clips_enroll)
             embeddings_piezo_enroll = extractor_p(piezo_clips_enroll)
-            embeddings_piezo_enroll = embeddings_piezo_enroll.contiguous()
-            embeddings_piezo_enroll = embeddings_piezo_enroll.view(batch_size * n_uttr // 2, 3, 8, 8)
+            
+            embeddings_audio_enroll = embeddings_audio_enroll.contiguous().view(batch_size, n_uttr_enroll, -1)
+            embeddings_piezo_enroll = embeddings_piezo_enroll.contiguous().view(batch_size, n_uttr_enroll, -1)
 
-            audio_clips_verify = audio_clips_verify.contiguous()
-            piezo_clips_verify = piezo_clips_verify.contiguous()
-            audio_clips_verify = audio_clips_verify.view(batch_size * n_uttr // 2, -1)
-            piezo_clips_verify = piezo_clips_verify.view(batch_size * n_uttr // 2, -1)
+            audio_clips_verify = audio_clips_verify.contiguous().view(batch_size * n_uttr_verify, -1)
+            piezo_clips_verify = piezo_clips_verify.contiguous().view(batch_size * n_uttr_verify, -1)
+
             embeddings_audio_verify = extractor_a(audio_clips_verify)
             embeddings_piezo_verify = extractor_p(piezo_clips_verify)
-            embeddings_piezo_verify = embeddings_piezo_verify.contiguous()
-            embeddings_piezo_verify = embeddings_piezo_verify.view(batch_size * n_uttr // 2, 3, 8, 8)
+            
+            embeddings_audio_verify = embeddings_audio_verify.contiguous().view(batch_size, n_uttr_verify, -1)
+            embeddings_piezo_verify = embeddings_piezo_verify.contiguous().view(batch_size, n_uttr_verify, -1)
+            
+            # normalize
+            # embeddings_piezo_verify = (embeddings_piezo_verify - torch.min(embeddings_piezo_verify, dim=1, keepdim=True).values) / (
+            #                            torch.max(embeddings_piezo_verify, dim=1, keepdim=True).values - torch.min(embeddings_piezo_verify, dim=1, keepdim=True).values)
+            # embeddings_audio_verify = (embeddings_audio_verify - torch.min(embeddings_audio_verify, dim=1, keepdim=True).values) / (
+            #                            torch.max(embeddings_audio_verify, dim=1, keepdim=True).values - torch.min(embeddings_audio_verify, dim=1, keepdim=True).values)
 
-            embeddings_piezo_verify = (embeddings_piezo_verify - torch.min(embeddings_piezo_verify, dim=1, keepdim=True).values) / (
-                                        torch.max(embeddings_piezo_verify, dim=1, keepdim=True).values - torch.min(embeddings_piezo_verify, dim=1, keepdim=True).values)
-            embeddings_audio_verify = (embeddings_audio_verify - torch.min(embeddings_audio_verify, dim=1, keepdim=True).values) / (
-                                        torch.max(embeddings_audio_verify, dim=1, keepdim=True).values - torch.min(embeddings_audio_verify, dim=1, keepdim=True).values)
+            # embeddings_piezo_enroll = (embeddings_piezo_enroll - torch.min(embeddings_piezo_enroll, dim=1, keepdim=True).values) / (
+            #                            torch.max(embeddings_piezo_enroll, dim=1, keepdim=True).values - torch.min(embeddings_piezo_enroll, dim=1, keepdim=True).values)
+            # embeddings_audio_enroll = (embeddings_audio_enroll - torch.min(embeddings_audio_enroll, dim=1, keepdim=True).values) / (
+            #                            torch.max(embeddings_audio_enroll, dim=1, keepdim=True).values - torch.min(embeddings_audio_enroll, dim=1, keepdim=True).values)
 
-            embeddings_piezo_enroll = (embeddings_piezo_enroll - torch.min(embeddings_piezo_enroll, dim=1, keepdim=True).values) / (
-                                        torch.max(embeddings_piezo_enroll, dim=1, keepdim=True).values - torch.min(embeddings_piezo_enroll, dim=1, keepdim=True).values)
-            embeddings_audio_enroll = (embeddings_audio_enroll - torch.min(embeddings_audio_enroll, dim=1, keepdim=True).values) / (
-                                        torch.max(embeddings_audio_enroll, dim=1, keepdim=True).values - torch.min(embeddings_audio_enroll, dim=1, keepdim=True).values)
+            # getting enrollment embeddings
+            embeddings_piezo_enroll_centriods = get_centroids(embeddings_piezo_enroll)
+            embeddings_audio_enroll_centriods = get_centroids(embeddings_audio_enroll)
 
-            draw_pca(embeddings_audio_verify.view(batch_size, n_uttr // 2, -1), fig_store_path + '{}_{}_audio.png'.format(epoch, batch_id))
-            draw_pca(embeddings_piezo_verify.view(batch_size, n_uttr // 2, -1), fig_store_path + '{}_{}_piezo.png'.format(epoch, batch_id))
+            embeddings_piezo_enroll_centriods_expand = embeddings_piezo_enroll_centriods.unsqueeze(1).expand(batch_size, n_uttr_enroll, -1)
+            embeddings_piezo_enroll_centriods_expand = embeddings_piezo_enroll_centriods_expand.contiguous().view(batch_size * n_uttr_enroll, 3, 8, 8)
+            embeddings_audio_enroll = embeddings_audio_enroll.contiguous().view(batch_size * n_uttr_enroll, 3, 8, 8)
+            log_p_sum, logdet, z_outs = converter(embeddings_piezo_enroll_centriods_expand, embeddings_audio_enroll)
+            z_out = converter.reverse(z_outs, reconstruct=True)
+            embeddings_conv_enroll = z_out.contiguous().view(batch_size, n_uttr_enroll, -1)
+            embeddings_conv_enroll_centriods = get_centroids(embeddings_conv_enroll)
 
-            log_p_sum, logdet, z_outs, conditions = converter(embeddings_piezo_enroll, embeddings_audio_enroll)
-            z_outs = converter.reverse(z_outs, conditions=conditions, reconstruct=False)
-            z_outs = z_outs.contiguous()
-            embeddings_conv_enroll = z_outs.view(batch_size, n_uttr // 2, -1)
-        
-            # getting verify embeddings
-            log_p_sum, logdet, z_outs, conditions = converter(embeddings_piezo_verify, embeddings_audio_verify)
-            for z in range(len(z_outs)):
-                draw_pca(z_outs[z].view(batch_size, n_uttr // 2, -1), fig_store_path + '{}_{}_zout{}.png'.format(epoch, batch_id, z))
-            z_outs = converter.reverse(z_outs, conditions=conditions, reconstruct=False)
-            z_outs = z_outs.contiguous()
-            embeddings_conv_verify = z_outs.view(batch_size, n_uttr // 2, -1)
-            draw_pca(embeddings_conv_verify.view(batch_size, n_uttr // 2, -1), fig_store_path + '{}_{}_conv.png'.format(epoch, batch_id))
+            embeddings_piezo_enroll_centriods_expand = embeddings_piezo_enroll_centriods.unsqueeze(1).expand(batch_size, n_uttr_verify, -1)
+            embeddings_piezo_enroll_centriods_expand = embeddings_piezo_enroll_centriods_expand.contiguous().view(batch_size * n_uttr_verify, 3, 8, 8)
+            embeddings_audio_verify = embeddings_audio_verify.contiguous().view(batch_size * n_uttr_verify, 3, 8, 8)
+            log_p_sum, logdet, z_outs = converter(embeddings_piezo_enroll_centriods_expand, embeddings_audio_verify)
+            z_out = converter.reverse(z_outs, reconstruct=True)
+            embeddings_conv_verify = z_out.contiguous().view(batch_size, n_uttr_verify, -1)   
+            embeddings_audio_verify = embeddings_audio_verify.contiguous().view(batch_size, n_uttr_verify, -1)
 
-            centroids = get_centroids(embeddings_conv_enroll)         
-            sim_matrix = get_modal_cossim(embeddings_conv_verify, centroids)
+            embeddings_conv_verify_w_piezo_audio = torch.cat((embeddings_conv_verify, embeddings_piezo_verify, embeddings_audio_verify), dim=-1)
+            embeddings_conv_enroll_w_piezo_audio_centriods = torch.cat((embeddings_conv_enroll_centriods, embeddings_piezo_enroll_centriods, embeddings_audio_enroll_centriods), dim=-1)
+            sim_matrix = get_modal_cossim(embeddings_conv_verify_w_piezo_audio, embeddings_conv_enroll_w_piezo_audio_centriods)
             
             EER, EER_thresh, EER_FAR, EER_FRR = compute_EER(sim_matrix)
             EERs[0] += EER
@@ -271,6 +273,11 @@ def test_model(device, models, data_set, test_batch_size,
         EER_FARs /= len(dataloader)
         EER_FRRs /= len(dataloader)
         EER_threshes /= len(dataloader)
+
+        EERs_across_epoch += EERs
+        EERs_FAR_across_epoch += EER_FARs
+        EERs_FRR_across_epoch += EER_FRRs
+        EERs_threshold_across_epoch += EER_threshes
 
         print("\nCentroids: AfP  Verification Input: AfP "
                     "\nEER : %0.2f (thres:%0.2f, FAR:%0.2f, FRR:%0.2f)" % (EERs[0], EER_threshes[0], EER_FARs[0], EER_FRRs[0]))
@@ -286,7 +293,24 @@ def test_model(device, models, data_set, test_batch_size,
                     "\nEER : %0.2f (thres:%0.2f, FAR:%0.2f, FRR:%0.2f)" % (EERs[2], EER_threshes[2], EER_FARs[2], EER_FRRs[2]))
         wandb.log({'epoch': epoch, 'EER/C_P_VI_P': EERs[2], 'FAR/C_P_VI_P': EER_FARs[2], 'FRR/C_P_VI_P': EER_FRRs[2]})
         wandb.log({'epoch': epoch, 'threshold/C_P_VI_P': EER_threshes[2]})
-                
+    
+    EERs_across_epoch /= num_epochs
+    EERs_FAR_across_epoch /= num_epochs
+    EERs_FRR_across_epoch /= num_epochs
+    EERs_threshold_across_epoch /= num_epochs
+
+    print('Performance across {} epochs'.format(num_epochs))
+    print('Modality: CAP')
+    print('EER: %.4f, FAR: %.4f, FRR: %.4f, Threshold: %.4f' % (EERs_across_epoch[0], EERs_FAR_across_epoch[0], 
+                                                            EERs_FRR_across_epoch[0], EERs_threshold_across_epoch[0]))
+    print('Modality: A')
+    print('EER: %.4f, FAR: %.4f, FRR: %.4f, Threshold: %.4f' % (EERs_across_epoch[1], EERs_FAR_across_epoch[1], 
+                                                            EERs_FRR_across_epoch[1], EERs_threshold_across_epoch[1]))
+    print('Modality: P')
+    print('EER: %.4f, FAR: %.4f, FRR: %.4f, Threshold: %.4f' % (EERs_across_epoch[2], EERs_FAR_across_epoch[2], 
+                                                            EERs_FRR_across_epoch[2], EERs_threshold_across_epoch[2]))
+     
+
 
     return (extractor_a, extractor_p, converter)
 
@@ -296,8 +320,9 @@ if __name__ == "__main__":
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     
     data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds/' # folder where stores the data for training and test
-    model_pth = 'model_ecapatdnn_w_converter_MSEloss_sync/2023_11_13_12_49/'
-    pth_store_dir = './pth_model/' + model_pth
+    model_pth = 'model_ecapatdnn_w_conGlow_cap_wo_enroll_Huberloss_no_detach/2023_11_17_14_43/'
+    pth_store_dir = '/mnt/ssd/huaili/PiezoBuds/pth_model/' + model_pth
+    test_user_id_files = '/mnt/ssd/huaili/PiezoBuds/pth_model/' + model_pth + 'test_users.json'
     fig_store_path = './pca_figs/' + model_pth
     os.makedirs(fig_store_path, exist_ok=True)
 
@@ -307,7 +332,7 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------------
     
     n_user = 69
-    num_of_epoches = 800
+    num_of_epoches = 20
     train_batch_size = 4
     test_batch_size = 3
 
@@ -316,7 +341,7 @@ if __name__ == "__main__":
     win_length = n_fft  # Typically the same as n_fft
     window_fn = torch.hann_window # Window function
 
-    comment = 'ecapatdnn_w_converter_MSEloss_sync'.format(n_fft, hop_length)
+    comment = 'conGlow_centroids_based_test'
 
     extractor_a = ECAPA_TDNN(1024, is_stft=False)
     extractor_p = ECAPA_TDNN(1024, is_stft=False)
@@ -326,7 +351,7 @@ if __name__ == "__main__":
     extractor_a.to(device)
     extractor_p.to(device)
 
-    converter = Glow(in_channel=3, n_flow=4, n_block=3, condition_size=192)
+    converter = conditionGlow(in_channel=3, n_flow=2, n_block=3)
     converter.load_state_dict(torch.load(pth_store_dir + 'converter.pth'))
     converter.to(device)
 
@@ -343,13 +368,15 @@ if __name__ == "__main__":
         name=model_struct+'_'+time_stamp
     )
 
-    # load the data 
-    test_user_ids = [2, 6, 8, 10, 31, 32, 45, 61]
-    data_set = WavDatasetForVerification(data_file_dir, test_user_ids, 50)
+    # load the test user list
+    with open(test_user_id_files, 'r') as file:
+        test_user_ids = json.load(file)
+
+    data_set = WavDatasetForVerification(data_file_dir, test_user_ids, 40)
     print(len(data_set))
 
     models = (extractor_a, extractor_p, converter)
-    test_model(device=device, models=models, data_set=data_set, test_batch_size=4, fig_store_path=fig_store_path)
+    test_model(device=device, models=models, data_set=data_set, test_batch_size=4, fig_store_path=fig_store_path, num_epochs=num_of_epoches)
 
 
     

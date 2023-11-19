@@ -220,8 +220,11 @@ class ECAPA_TDNN(nn.Module):
             if self.is_stft:
                 x = self.amplitude_to_db(self.spectrogram(x).abs()) + 1e-6
             else:
-                x = self.torchfbank(x) + 1e-6
-                x = x.log()
+                x = self.torchfbank(x)+1e-6
+                x = x.log()   
+            x = x - torch.mean(x, dim=-1, keepdim=True)
+            if aug == True:
+                x = self.specaug(x)
         return x
     
     def mel_forward(self, x, aug=False):

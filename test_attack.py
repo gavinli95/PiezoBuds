@@ -287,7 +287,7 @@ if __name__ == "__main__":
     
     n_user = 69
     num_of_epoches = 20
-    test_batch_size = 3
+    test_batch_size = 7
     threshold = 0.5036
 
     n_fft = 512  # Size of FFT, affects the frequency granularity

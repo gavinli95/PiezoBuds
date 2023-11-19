@@ -334,7 +334,7 @@ if __name__ == "__main__":
     n_user = 69
     num_of_epoches = 20
     train_batch_size = 4
-    test_batch_size = 3
+    test_batch_size = 7
 
     n_fft = 512  # Size of FFT, affects the frequency granularity
     hop_length = 256  # Typically n_fft // 4 (is None, then hop_length = n_fft // 2 by default)

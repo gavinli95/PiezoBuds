@@ -3,3 +3,6 @@ pth_model/
 __pycache__/
 pca_figs/
 frequency_response_fig/
+exps/
+EER_curve/
+ECAPA-TDNN-main/exps

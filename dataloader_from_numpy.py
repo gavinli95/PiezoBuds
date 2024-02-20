@@ -308,3 +308,41 @@ class WavDatasetForVerification(Dataset):
 
             return (piezos, audios, ids)
 
+
+class Voxceleb1Dataset(Dataset):
+    # dataset_dir example
+    # ./processed_data/wav_clips/piezobuds/
+    # if is_multi_moda, return (piezo, audio, id)
+    # else if is_audio, return (audio, id)
+    # else return (piezo, id)
+    def __init__(self, dataset_dir, n_user_list, m, device):
+        super().__init__()
+
+        self.n_user_list = n_user_list
+        self.m = m
+        self.device = device
+
+        self.dir_audio = dataset_dir
+
+    def __len__(self):
+        return len(self.n_user_list)
+    
+    def __getitem__(self, idx):
+        user = self.n_user_list[idx]
+        root = self.dir_audio + '{}/'.format(user)
+        file_list = find_all_files(root, '.wav')
+
+        num_utter = len(file_list)
+        samples_idx = random.sample(list(range(num_utter)), self.m)
+
+        audios = []
+        ids = []
+        for sid in samples_idx:
+            _, audio = scipy.io.wavfile.read(root + '{}.wav'.format(sid))
+            audios.append(audio)
+            ids.append(idx)
+        audios = np.array(audios)
+        ids = np.array(ids)
+        audios = torch.from_numpy(audios).float()
+        ids = torch.from_numpy(ids)
+        return (audios.to(self.device), ids.to(self.device))

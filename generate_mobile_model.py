@@ -24,6 +24,9 @@ import matplotlib.pyplot as plt
 import matplotlib
 import json
 from biGlow import *
+from torch.utils.mobile_optimizer import optimize_for_mobile
+from ptflops import get_model_complexity_info
+from fvcore.nn import FlopCountAnalysis
 
 
 def remove_prefix(text, prefix):
@@ -52,7 +55,7 @@ def calc_loss_glow(log_p, logdet, image_size, n_bins):
     )
 
 
-def compute_EER(sim_matrix, is_piezo=False):
+def compute_EER(sim_matrix):
     """
     Compute EER, FAR, FRR and the threshold at which EER occurs.
 
@@ -74,12 +77,9 @@ def compute_EER(sim_matrix, is_piezo=False):
     threshold = 0.5
     EER_FAR = 0.0
     EER_FRR = 0.0
-    FARs = []
-    FRRs = []
-    threses = []
 
     # Iterate over potential thresholds
-    for thres in torch.linspace(0.0, 1.0, 501):
+    for thres in torch.linspace(0.5, 1.0, 501):
         sim_matrix_thresh = sim_matrix > thres
 
         # Compute FAR and FRR
@@ -88,10 +88,6 @@ def compute_EER(sim_matrix, is_piezo=False):
 
         FRR = sum([(num_of_utters - sim_matrix_thresh[i, :, i].sum()).float()
                    for i in range(num_of_speakers)]) / (num_of_utters) / num_of_speakers
-        
-        threses.append(thres)
-        FARs.append(FAR.item())
-        FRRs.append(FRR.item())
 
         # Update if this is the closest FAR and FRR we've seen so far
         if diff > abs(FAR - FRR):
@@ -100,14 +96,8 @@ def compute_EER(sim_matrix, is_piezo=False):
             threshold = thres.item()
             EER_FAR = FAR.item()
             EER_FRR = FRR.item()
-    
-    threses = np.array(threses)
-    FARs = np.array(FARs)
-    FRRs = np.array(FRRs)
-    if is_piezo:
-        return EER, threshold, EER_FAR, EER_FRR, FARs, FRRs
-    else:
-        return EER, threshold, EER_FAR, EER_FRR
+
+    return EER, threshold, EER_FAR, EER_FRR
 
 def draw_pca(tensor, save_path=None):
     '''
@@ -140,13 +130,14 @@ def draw_pca(tensor, save_path=None):
     plt.close()
 
 
+def count_parameters(model):
+    return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+
 def test_model(device, models, data_set, test_batch_size,
                n_fft=512, hop_length=256, win_length=512, window_fn = torch.hann_window, power=None,
-               num_epochs=1, fig_store_path=None, noise_type=0, motion_type=0):
+               num_epochs=10, fig_store_path=None, noise_type=0, motion_type=0):
     
-    m_FAR = []
-    m_FRR = []
-
     test_loader = DataLoader(data_set, batch_size=test_batch_size, shuffle=True, drop_last=False)
     print(len(test_loader))
 
@@ -202,7 +193,7 @@ def test_model(device, models, data_set, test_batch_size,
             if noise_type != 0:
                 noise_expand = noise.expand(batch_size, n_uttr, -1)
                 audio_clips = audio_clips + noise_expand
-            if motion_type != 0:
+            if noise_type != 0:
                 motion_expand = motion.expand(batch_size, n_uttr, -1)
                 piezo_clips = piezo_clips + motion_expand
 
@@ -297,7 +288,7 @@ def test_model(device, models, data_set, test_batch_size,
             embeddings_piezo_enroll_centriods_expand = embeddings_piezo_enroll_centriods.unsqueeze(1).expand(batch_size, n_uttr_verify, -1)
             embeddings_piezo_enroll_centriods_expand = embeddings_piezo_enroll_centriods_expand.contiguous().view(batch_size * n_uttr_verify, 3, 8, 8)
             embeddings_audio_verify = embeddings_audio_verify.contiguous().view(batch_size * n_uttr_verify, 3, 8, 8)
-            log_p_sum, logdet, z_outs = converter(embeddings_piezo_verify.contiguous().view(batch_size * n_uttr_verify, 3, 8, 8), embeddings_audio_verify)
+            log_p_sum, logdet, z_outs = converter(embeddings_piezo_enroll_centriods_expand, embeddings_audio_verify)
             z_out = converter.reverse(z_outs, reconstruct=True)
             embeddings_conv_verify = z_out.contiguous().view(batch_size, n_uttr_verify, -1)   
             embeddings_audio_verify = embeddings_audio_verify.contiguous().view(batch_size, n_uttr_verify, -1)
@@ -306,12 +297,7 @@ def test_model(device, models, data_set, test_batch_size,
             embeddings_conv_enroll_w_piezo_audio_centriods = torch.cat((embeddings_conv_enroll_centriods, embeddings_piezo_enroll_centriods, embeddings_audio_enroll_centriods), dim=-1)
             sim_matrix = get_modal_cossim(embeddings_conv_verify_w_piezo_audio, embeddings_conv_enroll_w_piezo_audio_centriods)
             
-            EER, EER_thresh, EER_FAR, EER_FRR, FARs, FRRs = compute_EER(sim_matrix, True)
-            if np.any(np.isnan(FARs)) or np.any(np.isnan(FRRs)):
-                pass
-            else:
-                m_FAR.append(FARs)
-                m_FRR.append(FRRs)
+            EER, EER_thresh, EER_FAR, EER_FRR = compute_EER(sim_matrix)
             EERs[0] += EER
             EER_FARs[0] += EER_FAR
             EER_FRRs[0] += EER_FRR
@@ -358,19 +344,14 @@ def test_model(device, models, data_set, test_batch_size,
     print('EER: %.4f, FAR: %.4f, FRR: %.4f, Threshold: %.4f' % (EERs_across_epoch[2], EERs_FAR_across_epoch[2], 
                                                             EERs_FRR_across_epoch[2], EERs_threshold_across_epoch[2]))
      
-    m_FAR = np.array(m_FAR)
-    m_FAR = np.mean(m_FAR, axis=0)
-    m_FRR = np.array(m_FRR)
-    m_FRR = np.mean(m_FRR, axis=0)
-    np.save('./EER_curve/FARs.npy', m_FAR)
-    np.save('./EER_curve/FRRs.npy', m_FRR)
+
 
     return (extractor_a, extractor_p, converter)
 
 
 if __name__ == "__main__":
 
-    device = "cuda:1" if torch.cuda.is_available() else "cpu"
+    device = "cuda:0" if torch.cuda.is_available() else "cpu"
     
     data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds_new/test/' # folder where stores the data for training and test
     model_pth = 'model_ecapatdnn_w_conGlow_cap_wo_enroll_Huberloss_no_detach/2023_11_20_16_42/'
@@ -385,7 +366,7 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------------
     
     n_user = 70
-    num_of_epoches = 10
+    num_of_epoches = 20
     train_batch_size = 4
     test_batch_size = 7
 
@@ -401,64 +382,46 @@ if __name__ == "__main__":
 
     extractor_a.load_state_dict(torch.load(pth_store_dir + 'extractor_a.pth'))
     extractor_p.load_state_dict(torch.load(pth_store_dir + 'extractor_p.pth'))
-    extractor_a.to(device)
-    extractor_p.to(device)
 
     converter = conditionGlow(in_channel=3, n_flow=2, n_block=3)
     converter.load_state_dict(torch.load(pth_store_dir + 'converter.pth'))
-    converter.to(device)
 
-    # create the folder to store the model
-    model_struct = 'model_' + comment
-    # initialize the wandb configuration
-    time_stamp = time.strftime("%Y_%m_%d_%H_%M", time.localtime())
-    wandb.init(
-        # team name
-        entity="piezobuds",
-        # set the project name
-        project="PiezoBuds",
-        # params of the task
-        name=model_struct+'_'+time_stamp
-    )
+    extractor_a.eval()
+    extractor_p.eval()
+    converter.eval()
 
-    # load the test user list
-    with open(test_user_id_files, 'r') as file:
-        test_user_ids = json.load(file)
+    example_e = torch.rand(1, 8000)
+    example_c = torch.rand(2, 3, 8, 8)
 
-    # enrollment time = (n_uttr - 10) * 0.5
-    # n_uttr  enrolltime
-    #   20        5s
-    #   30        10s
-    #   40        15s
-    #   50        20s
-    #   60        25s
-    #   70        30s
-    n_uttr = 40
-    n_user = 69
+    traced_script_extractor_a = torch.jit.trace(extractor_a, (example_e))
+    traced_script_extractor_a = optimize_for_mobile(traced_script_extractor_a)
+    traced_script_extractor_a._save_for_lite_interpreter(pth_store_dir + 'extractor_a_m.ptl')
 
-    # 0: no noise
-    # 1: white noise
-    # 2: conversation
-    # 3: cafe
-    # 4: restaurant
-    # 5: construction
-    noise_type = 0
+    traced_script_extractor_p = torch.jit.trace(extractor_p, (example_e))
+    traced_script_extractor_p = optimize_for_mobile(traced_script_extractor_p)
+    traced_script_extractor_p._save_for_lite_interpreter(pth_store_dir + 'extractor_p_m.ptl')
 
-    # 0: No motion
-    # 1: turn
-    # 2: tap
-    # 3: clap
-    # 4: walk
-    motion_type = 0
+    traced_script_converter = torch.jit.trace(converter, example_c)
+    traced_script_converter = optimize_for_mobile(traced_script_converter)
+    traced_script_converter._save_for_lite_interpreter(pth_store_dir + 'converter_m.ptl')
 
-    test_user_ids = random.sample(test_user_ids, n_user)
-    data_set = WavDatasetForVerification(data_file_dir, test_user_ids, n_uttr)
-    print(len(data_set))
+    flop_counter = FlopCountAnalysis(extractor_a, example_e)
+    print(f"FLOPs for Extractor: {flop_counter.total()}")
+    pnum = count_parameters(extractor_a)
+    print('Params of Extractor: {}'.format(pnum))
 
-    models = (extractor_a, extractor_p, converter)
-    test_model(device=device, models=models, data_set=data_set, test_batch_size=4, 
-               fig_store_path=fig_store_path, num_epochs=num_of_epoches, 
-               noise_type=noise_type, motion_type=motion_type)
+    flop_counter = FlopCountAnalysis(converter, example_c)
+    print(f"FLOPs for Converter: {flop_counter.total()}")
+    pnum = count_parameters(converter)
+    print('Params of Converter: {}'.format(pnum))
 
+    # macs, params = get_model_complexity_info(extractor_a, (1, 8000), as_strings=True, print_per_layer_stat=False)
+    # print('Extractor')
+    # print('{:<30}  {:<8}'.format('Computational complexity: ', macs))
+    # print('{:<30}  {:<8}'.format('Number of parameters: ', params))
 
-    
+    # macs, params = get_model_complexity_info(converter, (2, 3, 8, 8), as_strings=True, print_per_layer_stat=False)
+    # print('Extractor')
+    # print('{:<30}  {:<8}'.format('Computational complexity: ', macs))
+    # print('{:<30}  {:<8}'.format('Number of parameters: ', params))
+

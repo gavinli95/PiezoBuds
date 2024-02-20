@@ -228,12 +228,12 @@ def test_model(device, models, data_set, test_batch_size,
                 piezo_clips_enroll, audio_clips_enroll, extractor_a, extractor_p, converter
             )
             embeddings_conv_verify, embeddings_audio_verify, emebeddings_piezo_verify = get_embeddings_verify(
-                centroids_conv_enroll, piezo_clips_verify, audio_clips_verify, extractor_a, extractor_p, converter
+                centroids_piezo_enroll, piezo_clips_verify, audio_clips_verify, extractor_a, extractor_p, converter
             )
             
             # test replay attack
             # C-A-P, verify: change piezo to white noise
-            white_noise = torch.rand(piezo_clips_verify.shape) * 2 - 1
+            white_noise = torch.rand(piezo_clips_verify.shape)
             white_noise = white_noise.to(device)
             white_noise = white_noise.contiguous()
             white_noise = white_noise.view(batch_size * n_uttr_verify, -1)
@@ -245,7 +245,8 @@ def test_model(device, models, data_set, test_batch_size,
                 torch.cat((centroids_conv_enroll, centroids_audio_enroll, centroids_piezo_enroll), dim=-1)
             )
             ASR = compute_ASR(sim_matrix, threshold=threshold)
-            ASR_within_epoch[0] += ASR.item()
+            if not math.isnan(ASR.item()):
+                ASR_within_epoch[0] += ASR.item()
 
             # test mimic attack
             # C-A-P, verify: change piezo to audio
@@ -254,17 +255,39 @@ def test_model(device, models, data_set, test_batch_size,
                 torch.cat((centroids_conv_enroll, centroids_audio_enroll, centroids_piezo_enroll), dim=-1)
             )
             ASR = compute_ASR(sim_matrix, threshold=threshold)
-            ASR_within_epoch[1] += ASR.item()
+            if not math.isnan(ASR.item()):
+                ASR_within_epoch[1] += ASR.item()
+
+            # test concurrent attack 
+            # C-A-P, verify: 
+            audio_clips_verify_copy = torch.clone(audio_clips_verify)
+            indices = torch.randperm(audio_clips_verify.size(1)).to(device)
+            # Shuffle the tensor along the specified dimension
+            shuffled_tensor = audio_clips_verify.index_select(1, indices)
+            shuffled_tensor = shuffled_tensor.to(device)
+            audio_clips_verify_copy = audio_clips_verify_copy + shuffled_tensor
+            embeddings_conv_verify, embeddings_audio_verify, emebeddings_piezo_verify = get_embeddings_verify(
+                centroids_piezo_enroll, piezo_clips_verify, audio_clips_verify_copy, extractor_a, extractor_p, converter
+            )
+            sim_matrix = get_cossim(
+                torch.cat((embeddings_conv_verify, embeddings_audio_verify, emebeddings_piezo_verify), dim=-1),
+                torch.cat((centroids_conv_enroll, centroids_audio_enroll, centroids_piezo_enroll), dim=-1)
+            )
+            ASR = compute_ASR(sim_matrix, threshold=threshold)
+            if not math.isnan(ASR.item()):
+                ASR_within_epoch[2] += ASR.item()
         
         ASR_within_epoch /= len(dataloader)
         print("ASR of Replay attack within epoch %d: %.4f" % (epoch, ASR_within_epoch[0]))
         print("ASR of Mimic attack within epoch %d: %.4f" % (epoch, ASR_within_epoch[1]))
+        print("ASR of Concurrent attack within epoch %d: %.4f" % (epoch, ASR_within_epoch[2]))
 
         ASR_across_epoch += ASR_within_epoch
 
     ASR_across_epoch /= num_epochs
     print("ASR of Replay attack across %d epochs: %.8f" % (num_epochs, ASR_within_epoch[0]))
     print("ASR of Mimic attack across %d epochs: %.8f" % (num_epochs, ASR_within_epoch[1]))
+    print("ASR of Concurrent attack across %d epochs: %.8f" % (num_epochs, ASR_within_epoch[2]))
 
     return None
 
@@ -273,10 +296,10 @@ if __name__ == "__main__":
 
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     
-    data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds/' # folder where stores the data for training and test
-    model_pth = 'model_ecapatdnn_w_conGlow_cap_wo_enroll_Huberloss_no_detach/2023_11_17_14_43/'
-    pth_store_dir = '/mnt/ssd/huaili/PiezoBuds/pth_model/' + model_pth
-    test_user_id_files = '/mnt/ssd/huaili/PiezoBuds/pth_model/' + model_pth + 'test_users.json'
+    data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds_new/test/' # folder where stores the data for training and test
+    model_pth = 'model_ecapatdnn_w_conGlow_cap_wo_enroll_Huberloss_no_detach/2023_11_20_16_42/'
+    pth_store_dir = '/mnt/ssd/gen/GithubRepo/PiezoBuds/pth_model/' + model_pth
+    test_user_id_files = '/mnt/ssd/gen/GithubRepo/PiezoBuds/pth_model/' + model_pth + 'test_users.json'
     fig_store_path = './pca_figs/' + model_pth
     os.makedirs(fig_store_path, exist_ok=True)
 
@@ -288,7 +311,7 @@ if __name__ == "__main__":
     n_user = 69
     num_of_epoches = 20
     test_batch_size = 7
-    threshold = 0.5036
+    threshold = 0.5436
 
     n_fft = 512  # Size of FFT, affects the frequency granularity
     hop_length = 256  # Typically n_fft // 4 (is None, then hop_length = n_fft // 2 by default)
@@ -326,7 +349,7 @@ if __name__ == "__main__":
     with open(test_user_id_files, 'r') as file:
         test_user_ids = json.load(file)
 
-    data_set = WavDatasetForVerification(data_file_dir, test_user_ids, 100)
+    data_set = WavDatasetForVerification(data_file_dir, test_user_ids, 50)
     print(len(data_set))
 
     models = (extractor_a, extractor_p, converter)

@@ -130,20 +130,10 @@ class FbankAug(nn.Module):
 
 class ECAPA_TDNN(nn.Module):
 
-    def __init__(self, C, is_stft=True):
+    def __init__(self, C):
 
         super(ECAPA_TDNN, self).__init__()
-        self.is_stft  = is_stft
 
-        self.spectrogram = torchaudio.transforms.Spectrogram(
-                                                    n_fft=512,
-                                                    win_length=400,
-                                                    hop_length=160,
-                                                    window_fn=torch.hamming_window,
-                                                    power=None,  # For power spectrogram, use 2. For complex spectrogram, use None.
-                                                    # batch_first=True,
-                                                    # sample_rate=16000
-                                                )
         self.amplitude_to_db = torchaudio.transforms.AmplitudeToDB(stype='magnitude', top_db=80)
 
         self.torchfbank = torch.nn.Sequential(
@@ -153,10 +143,8 @@ class ECAPA_TDNN(nn.Module):
             )
 
         self.specaug = FbankAug() # Spec augmentation
-        if is_stft:
-            self.conv1  = nn.Conv1d(257, C, kernel_size=5, stride=1, padding=2)
-        else:
-            self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
+        
+        self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
         self.relu   = nn.ReLU()
         self.bn1    = nn.BatchNorm1d(C)
         self.layer1 = Bottle2neck(C, C, kernel_size=3, dilation=2, scale=8)
@@ -177,16 +165,13 @@ class ECAPA_TDNN(nn.Module):
         self.bn6 = nn.BatchNorm1d(192)
 
 
-    def forward(self, x, aug=False):
+    def forward(self, x, _w=None, aug=False):
     # def forward(self, inputs):
        # (x) = inputs
         aug=False
         with torch.no_grad():
-            if self.is_stft:
-                x = self.amplitude_to_db(self.spectrogram(x).abs()) + 1e-6
-            else:
-                x = self.torchfbank(x)+1e-6
-                x = x.log()   
+            x = self.torchfbank(x)+1e-6
+            x = x.log()   
             x = x - torch.mean(x, dim=-1, keepdim=True)
             if aug == True:
                 x = self.specaug(x)
@@ -207,6 +192,8 @@ class ECAPA_TDNN(nn.Module):
         global_x = torch.cat((x,torch.mean(x,dim=2,keepdim=True).repeat(1,1,t), torch.sqrt(torch.var(x,dim=2,keepdim=True).clamp(min=1e-4)).repeat(1,1,t)), dim=1)
         
         w = self.attention(global_x)
+        if _w is not None:
+            w = w * _w
 
         mu = torch.sum(x * w, dim=2)
         sg = torch.sqrt( ( torch.sum((x**2) * w, dim=2) - mu**2 ).clamp(min=1e-4) )
@@ -216,7 +203,7 @@ class ECAPA_TDNN(nn.Module):
         x = self.fc6(y)
         x = self.bn6(x)
 
-        return x
+        return x, w
 
     def get_spectrum(self, x, aug=False):
         with torch.no_grad():

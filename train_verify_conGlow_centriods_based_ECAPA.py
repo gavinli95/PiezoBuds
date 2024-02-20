@@ -450,18 +450,18 @@ if __name__ == "__main__":
     extractor_a = ECAPA_TDNN(1024, is_stft=False)
     extractor_p = ECAPA_TDNN(1024, is_stft=False)
 
-    loaded_state = torch.load(pth_store_dir + 'pretrain_ecapa_tdnn.model')
-    state_a = extractor_a.state_dict()
-    state_p = extractor_p.state_dict()
-    for name, param in loaded_state.items():
-        origname = name
-        name = remove_prefix(origname, 'speaker_encoder.')
-        if name in state_a:
-            if state_a[name].size() == loaded_state[origname].size():
-                state_a[name].copy_(loaded_state[origname])
-                state_p[name].copy_(loaded_state[origname])
-    extractor_a.load_state_dict(state_a)
-    extractor_p.load_state_dict(state_p)
+    # loaded_state = torch.load(pth_store_dir + 'pretrain_ecapa_tdnn.model')
+    # state_a = extractor_a.state_dict()
+    # state_p = extractor_p.state_dict()
+    # for name, param in loaded_state.items():
+    #     origname = name
+    #     name = remove_prefix(origname, 'speaker_encoder.')
+    #     if name in state_a:
+    #         if state_a[name].size() == loaded_state[origname].size():
+    #             state_a[name].copy_(loaded_state[origname])
+    #             state_p[name].copy_(loaded_state[origname])
+    # extractor_a.load_state_dict(state_a)
+    # extractor_p.load_state_dict(state_p)
     extractor_a.to(device)
     extractor_p.to(device)
 

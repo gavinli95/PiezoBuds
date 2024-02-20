@@ -203,8 +203,8 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                         
                         # expand the centriods to the same size of condition
                         embeddings_piezo_centriods_expand = embeddings_piezo_centriods.unsqueeze(1).expand(batch_size, n_uttr, -1)
-                        embeddings_piezo_centriods_expand = embeddings_piezo_centriods_expand.contiguous().view(batch_size * n_uttr, 3, 8, 8)
-                        embeddings_audio = embeddings_audio.view(batch_size * n_uttr, 3, 8, 8)
+                        embeddings_piezo_centriods_expand = embeddings_piezo_centriods_expand.contiguous().view(batch_size * n_uttr, 1, 16, 16)
+                        embeddings_audio = embeddings_audio.view(batch_size * n_uttr, 1, 16, 16)
 
                         log_p_sum, logdet, z_outs = converter(embeddings_piezo_centriods_expand, embeddings_audio)
                         z_out = converter.reverse(z_outs, reconstruct=True)
@@ -253,7 +253,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                         tmp_embeddings_piezo_enroll, tmp_embeddings_piezo_verify = embeddings_piezo.chunk(2, 1)
                         
                         # create a temporary converter along with its following trainable structures for the enrollment
-                        tmp_converter = conditionGlow(in_channel=3, n_flow=2, n_block=3).to(device)
+                        tmp_converter = conditionGlow(in_channel=1, n_flow=2, n_block=4).to(device)
                         tmp_converter.load_state_dict(converter.state_dict())
                         tmp_final_layer = FClayer().to(device)
                         tmp_final_layer.load_state_dict(final_layer.state_dict())
@@ -290,8 +290,8 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                                 embeddings_piezo_enroll_centriods = get_centroids(embeddings_piezo_enroll)
                                 embeddings_piezo_enroll_centriods_expand = embeddings_piezo_enroll_centriods.unsqueeze(1).expand(batch_size, n_uttr_enroll, -1)
 
-                                embeddings_piezo_enroll_centriods_expand = embeddings_piezo_enroll_centriods_expand.contiguous().view(batch_size * n_uttr_enroll, 3, 8, 8)
-                                embeddings_audio_enroll = embeddings_audio_enroll.view(batch_size * n_uttr_enroll, 3, 8, 8)
+                                embeddings_piezo_enroll_centriods_expand = embeddings_piezo_enroll_centriods_expand.contiguous().view(batch_size * n_uttr_enroll, 1, 16, 16)
+                                embeddings_audio_enroll = embeddings_audio_enroll.view(batch_size * n_uttr_enroll, 1, 16, 16)
                                 log_p_sum, logdet, z_outs = tmp_converter(embeddings_piezo_enroll_centriods_expand, embeddings_audio_enroll)
                                 z_out = tmp_converter.reverse(z_outs, reconstruct=True)
                                 embeddings_conv = z_out.contiguous().view(batch_size, n_uttr_enroll -1)
@@ -345,16 +345,16 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                             embeddings_audio_enroll_centriods = get_centroids(embeddings_audio_enroll)
 
                             embeddings_piezo_enroll_centriods_expand = embeddings_piezo_enroll_centriods.unsqueeze(1).expand(batch_size, n_uttr_enroll, -1)
-                            embeddings_piezo_enroll_centriods_expand = embeddings_piezo_enroll_centriods_expand.contiguous().view(batch_size * n_uttr_enroll, 3, 8, 8)
-                            embeddings_audio_enroll = embeddings_audio_enroll.contiguous().view(batch_size * n_uttr_enroll, 3, 8, 8)
+                            embeddings_piezo_enroll_centriods_expand = embeddings_piezo_enroll_centriods_expand.contiguous().view(batch_size * n_uttr_enroll, 1, 16, 16)
+                            embeddings_audio_enroll = embeddings_audio_enroll.contiguous().view(batch_size * n_uttr_enroll, 1, 16, 16)
                             log_p_sum, logdet, z_outs = tmp_converter(embeddings_piezo_enroll_centriods_expand, embeddings_audio_enroll)
                             z_out = tmp_converter.reverse(z_outs, reconstruct=True)
                             embeddings_conv_enroll = z_out.contiguous().view(batch_size, n_uttr_enroll, -1)
                             embeddings_conv_enroll_centriods = get_centroids(embeddings_conv_enroll)
 
                             embeddings_piezo_enroll_centriods_expand = embeddings_piezo_enroll_centriods.unsqueeze(1).expand(batch_size, n_uttr_verify, -1)
-                            embeddings_piezo_enroll_centriods_expand = embeddings_piezo_enroll_centriods_expand.contiguous().view(batch_size * n_uttr_verify, 3, 8, 8)
-                            embeddings_audio_verify = embeddings_audio_verify.contiguous().view(batch_size * n_uttr_verify, 3, 8, 8)
+                            embeddings_piezo_enroll_centriods_expand = embeddings_piezo_enroll_centriods_expand.contiguous().view(batch_size * n_uttr_verify, 1, 16, 16)
+                            embeddings_audio_verify = embeddings_audio_verify.contiguous().view(batch_size * n_uttr_verify, 1, 16, 16)
                             log_p_sum, logdet, z_outs = tmp_converter(embeddings_piezo_enroll_centriods_expand, embeddings_audio_verify)
                             z_out = tmp_converter.reverse(z_outs, reconstruct=True)
                             embeddings_conv_verify = z_out.contiguous().view(batch_size, n_uttr_verify, -1)   
@@ -462,8 +462,8 @@ if __name__ == "__main__":
     window_fn = torch.hann_window # Window function
 
     comment = 'ARET_w_conGlow_cap_wo_enroll_Huberloss'
-    extractor_a = RET_v2(embedding_size=192, input_dim=80)
-    extractor_p = RET_v2(embedding_size=192, input_dim=80)
+    extractor_a = RET_v2(embedding_size=256, input_dim=80)
+    extractor_p = RET_v2(embedding_size=256, input_dim=80)
 
     loaded_state = torch.load(pth_store_dir + 'pre_trained_model/aert_70.pth')
     state_a = extractor_a.state_dict()
@@ -515,7 +515,7 @@ if __name__ == "__main__":
     ge2e_loss_a = GE2ELoss_ori(device).to(device)
     ge2e_loss_p = GE2ELoss_ori(device).to(device)
     ge2e_loss_c = GE2ELoss_ori(device).to(device)
-    converter = conditionGlow(in_channel=3, n_flow=2, n_block=3).to(device)
+    converter = conditionGlow(in_channel=1, n_flow=2, n_block=4).to(device)
     final_layer = FClayer().to(device)
 
     optimizer = torch.optim.Adam([

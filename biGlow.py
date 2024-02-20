@@ -435,6 +435,9 @@ class conditionGlow(nn.Module):
         self.blocks_input.append(Block(n_channel, n_flow, affine=affine, conv_lu=conv_lu, split=False, condition_size=n_channel * 4, use_bi_flow=use_bi_flow))
 
     def forward(self, input, condition):
+    # def forward(self, inputs):
+        # n, _, _, _ = inputs.shape
+        # input, condition = torch.split(inputs, n // 2, dim=0)
         log_p_sum_i, log_p_sum_c = 0, 0
         logdet_i, logdet_c = 0, 0
         z_outs_i, z_outs_c = [], []
@@ -459,7 +462,7 @@ class conditionGlow(nn.Module):
             if log_p_c is not None:
                 log_p_sum_c +=log_p_c
 
-        return (log_p_sum_i, log_p_sum_c), (logdet_i, logdet_c), (z_outs_i, z_outs_c)
+        return ((log_p_sum_i, log_p_sum_c), (logdet_i, logdet_c), (z_outs_i, z_outs_c))
 
     def reverse(self, z_list, reconstruct=False):
         z_list, condition_list = z_list

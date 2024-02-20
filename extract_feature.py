@@ -5,7 +5,7 @@ from speech_split import split_audio_to_utterances, apply_vad
 from matplotlib import pyplot as plt
 import scipy.signal as signal
 from scipy.fftpack import fft
-import librosa.display
+# import librosa.display
 import scipy
 from scipy.signal import butter, filtfilt
 import noisereduce as nr
@@ -214,7 +214,7 @@ if __name__ == "__main__":
 
     labels = []
 
-    for i in range(0, 51):
+    for i in range(0, 70):
         dir_wav_piezo = dir_wav + data_set + 'piezo/' + '{}/'.format(i)
         dir_wav_audio = dir_wav + data_set + 'audio/' + '{}/'.format(i)             
         os.makedirs(dir_wav_audio, exist_ok=True)
@@ -233,13 +233,13 @@ if __name__ == "__main__":
             piezo = data[:, 0]
             piezo = piezo[24000:len(piezo) - 3000]
             audio = data[24000 + 3000:, 1]
-            piezo = butter_highpass_filter(piezo, 10, sr, order=5)
+            piezo = butter_highpass_filter(piezo, 100, sr, order=5)
             piezo = nr.reduce_noise(piezo, sr)
         else:
             piezo = data[:, 0]
             piezo = piezo[16000:len(piezo) - 1500]
             audio = data[16000 + 1500:, 1]
-            piezo = butter_highpass_filter(piezo, 10, sr, order=5)
+            piezo = butter_highpass_filter(piezo, 100, sr, order=5)
             piezo = nr.reduce_noise(piezo, sr, y_noise=raw_noise)
             # piezo = piezo[24000:len(piezo) - 3000]
             # audio = data[24000 + 3000:, 1]

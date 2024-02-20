@@ -27,10 +27,53 @@ class SEModule(nn.Module):
         x = self.se(input)
         return input * x
 
+class ChannelFeatureBranch(nn.Module):
+    """
+    A branch for capturing and enhancing channel features.
+    """
+    def __init__(self, channels, reduction=16):
+        super(ChannelFeatureBranch, self).__init__()
+        self.global_pool = nn.AdaptiveAvgPool1d(1)
+        self.fc = nn.Sequential(
+            nn.Linear(channels, channels // reduction, bias=False),
+            nn.ReLU(inplace=True),
+            nn.Linear(channels // reduction, channels, bias=False),
+            nn.Sigmoid()
+        )
+
+    def forward(self, x):
+        b, c, _ = x.size()
+        y = self.global_pool(x).view(b, c)
+        y = self.fc(y).view(b, c, 1)
+        return x * y.expand_as(x)
+    
+class TimeFrequencyFeatureBranch(nn.Module):
+    def __init__(self, scale=8):
+        super(TimeFrequencyFeatureBranch, self).__init__()
+        self.conv = nn.Sequential(
+            nn.Conv2d(1, scale, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)),
+            nn.BatchNorm2d(scale),
+            nn.ReLU(),
+            nn.Conv2d(scale, scale, kernel_size=(3, 3), padding=(1, 1)),
+            nn.BatchNorm2d(scale),
+            nn.ReLU(),
+            nn.Conv2d(scale, 1, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)),
+            nn.BatchNorm2d(1),
+            nn.ReLU()
+        )
+    def forward(self, x):
+        b, c, _ = x.shape
+        x = x.unsqueeze(1)
+        x = self.conv(x)
+        x = x.squeeze()
+        return x
+
 class Bottle2neck(nn.Module):
 
-    def __init__(self, inplanes, planes, kernel_size=None, dilation=None, scale = 8):
+    def __init__(self, inplanes, planes, kernel_size=None, dilation=None, scale = 8, add_f=False, add_tf=False):
         super(Bottle2neck, self).__init__()
+        self.add_f = add_f
+        self.add_tf = add_tf
         width       = int(math.floor(planes / scale))
         self.conv1  = nn.Conv1d(inplanes, width*scale, kernel_size=1)
         self.bn1    = nn.BatchNorm1d(width*scale)
@@ -43,17 +86,41 @@ class Bottle2neck(nn.Module):
             bns.append(nn.BatchNorm1d(width))
         self.convs  = nn.ModuleList(convs)
         self.bns    = nn.ModuleList(bns)
+
+        if add_f:
+            self.channel_attention = ChannelFeatureBranch(width*scale, scale)
+            # self.se_f   = SEModule(planes)
+
+        if add_tf:
+            self.tf_branch = TimeFrequencyFeatureBranch(scale)
+            # self.se_tf  = SEModule(planes)
+
         self.conv3  = nn.Conv1d(width*scale, planes, kernel_size=1)
         self.bn3    = nn.BatchNorm1d(planes)
         self.relu   = nn.ReLU()
         self.width  = width
         self.se     = SEModule(planes)
 
+        self.bn4 = nn.BatchNorm1d(planes)
+
     def forward(self, x):
         residual = x
+
         out = self.conv1(x)
         out = self.relu(out)
         out = self.bn1(out)
+
+        # frequency branch
+        if self.add_f:
+            channel_features = self.channel_attention(out)
+            # channel_features = self.se_f(out)
+
+        # TF branch
+        if self.add_tf:
+            tf_features = self.tf_branch(out)
+            # tf_features = self.se_tf(out)
+
+        # time branch
 
         spx = torch.split(out, self.width, 1)
         for i in range(self.nums):
@@ -68,15 +135,23 @@ class Bottle2neck(nn.Module):
             out = sp
           else:
             out = torch.cat((out, sp), 1)
-        out = torch.cat((out, spx[self.nums]),1)
+        if self.nums != 0:
+            out = torch.cat((out, spx[self.nums]),1)
 
         out = self.conv3(out)
         out = self.relu(out)
         out = self.bn3(out)
         
         out = self.se(out)
-        out += residual
-        return out 
+
+        # out = out + residual + residual_channel_features + channel_features
+        out = out + residual
+        if self.add_f:
+            out = out + channel_features
+        if self.add_tf:
+            out = out + tf_features
+        # out = self.bn4(out)
+        return out
 
 class PreEmphasis(torch.nn.Module):
 
@@ -130,21 +205,9 @@ class FbankAug(nn.Module):
 
 class ECAPA_TDNN(nn.Module):
 
-    def __init__(self, C, is_stft=True):
+    def __init__(self, C, add_f=False, add_tf=False):
 
         super(ECAPA_TDNN, self).__init__()
-        self.is_stft  = is_stft
-
-        self.spectrogram = torchaudio.transforms.Spectrogram(
-                                                    n_fft=512,
-                                                    win_length=400,
-                                                    hop_length=160,
-                                                    window_fn=torch.hamming_window,
-                                                    power=None,  # For power spectrogram, use 2. For complex spectrogram, use None.
-                                                    # batch_first=True,
-                                                    # sample_rate=16000
-                                                )
-        self.amplitude_to_db = torchaudio.transforms.AmplitudeToDB(stype='magnitude', top_db=80)
 
         self.torchfbank = torch.nn.Sequential(
             PreEmphasis(),            
@@ -153,17 +216,23 @@ class ECAPA_TDNN(nn.Module):
             )
 
         self.specaug = FbankAug() # Spec augmentation
-        if is_stft:
-            self.conv1  = nn.Conv1d(257, C, kernel_size=5, stride=1, padding=2)
-        else:
-            self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
+        
+        self.conv0  = nn.Conv1d(101, 64, kernel_size=1)
+        self.bn0    = nn.BatchNorm1d(64)
+        
+        self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
         self.relu   = nn.ReLU()
         self.bn1    = nn.BatchNorm1d(C)
-        self.layer1 = Bottle2neck(C, C, kernel_size=3, dilation=2, scale=8)
-        self.layer2 = Bottle2neck(C, C, kernel_size=3, dilation=3, scale=8)
-        self.layer3 = Bottle2neck(C, C, kernel_size=3, dilation=4, scale=8)
+
+        # self.conv2 = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
+        # self.bn2 = nn.BatchNorm1d(C)
+
+        self.layer1 = Bottle2neck(C, C, kernel_size=3, dilation=1, scale=8, add_f=add_f, add_tf=add_tf)
+        self.layer2 = Bottle2neck(C, C, kernel_size=3, dilation=2, scale=4, add_f=add_f, add_tf=add_tf)
+        self.layer3 = Bottle2neck(C, C, kernel_size=3, dilation=3, scale=2, add_f=add_f, add_tf=add_tf)
+        self.layer4 = Bottle2neck(C, C, kernel_size=3, dilation=4, scale=1, add_f=add_f, add_tf=add_tf)
         # I fixed the shape of the output from MFA layer, that is close to the setting from ECAPA paper.
-        self.layer4 = nn.Conv1d(3*C, 1536, kernel_size=1)
+        self.layer5 = nn.Conv1d(4*C, 1536, kernel_size=1)
         self.attention = nn.Sequential(
             nn.Conv1d(4608, 256, kernel_size=1),
             nn.ReLU(),
@@ -177,19 +246,21 @@ class ECAPA_TDNN(nn.Module):
         self.bn6 = nn.BatchNorm1d(192)
 
 
-    def forward(self, x, aug=False):
+    def forward(self, x, aug=True):
     # def forward(self, inputs):
        # (x) = inputs
-        aug=False
         with torch.no_grad():
-            if self.is_stft:
-                x = self.amplitude_to_db(self.spectrogram(x).abs()) + 1e-6
-            else:
-                x = self.torchfbank(x)+1e-6
-                x = x.log()   
+            x = self.torchfbank(x)+1e-6
+            x = x.log()   
             x = x - torch.mean(x, dim=-1, keepdim=True)
             if aug == True:
                 x = self.specaug(x)
+
+        x = x.permute(0, 2, 1)
+        x = self.conv0(x)
+        x = self.relu(x)
+        x = self.bn0(x)
+        x = x.permute(0, 2, 1)
 
         x = self.conv1(x)
         x = self.relu(x)
@@ -198,8 +269,9 @@ class ECAPA_TDNN(nn.Module):
         x1 = self.layer1(x)
         x2 = self.layer2(x+x1)
         x3 = self.layer3(x+x1+x2)
+        x4 = self.layer4(x+x1+x2+x3)
 
-        x = self.layer4(torch.cat((x1,x2,x3),dim=1))
+        x = self.layer5(torch.cat((x1,x2,x3,x4),dim=1))
         x = self.relu(x)
 
         t = x.size()[-1]
@@ -220,11 +292,8 @@ class ECAPA_TDNN(nn.Module):
 
     def get_spectrum(self, x, aug=False):
         with torch.no_grad():
-            if self.is_stft:
-                x = self.amplitude_to_db(self.spectrogram(x).abs()) + 1e-6
-            else:
-                x = self.torchfbank(x)+1e-6
-                x = x.log()   
+            x = self.torchfbank(x)+1e-6
+            x = x.log()   
             x = x - torch.mean(x, dim=-1, keepdim=True)
             if aug == True:
                 x = self.specaug(x)
@@ -266,8 +335,8 @@ class ECAPA_TDNN(nn.Module):
 
     
 if __name__=='__main__':
-    model = ECAPA_TDNN(1024, False)
-    input = torch.rand(10, 8000)
-    x = model.get_spectrum(input, False)
-    print(x.shape)
+    model = ECAPA_TDNN(1024, add_tf=True)
+    input1 = torch.rand(10, 16000)
+    e = model(input1)
+    print(e.shape)
 

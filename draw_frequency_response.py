@@ -72,7 +72,7 @@ def draw_pca(tensor, save_path=None):
         plt.savefig(save_path, bbox_inches='tight')
         print(f'Plot saved to {save_path}')
     plt.show()
-    plt.close()
+    plt.close() 
 
 
 import numpy as np

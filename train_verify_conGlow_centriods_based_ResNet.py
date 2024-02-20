@@ -256,7 +256,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
                         tmp_embeddings_piezo_enroll, tmp_embeddings_piezo_verify = embeddings_piezo.chunk(2, 1)
                         
                         # create a temporary converter along with its following trainable structures for the enrollment
-                        tmp_converter = conditionGlow(in_channel=3, n_flow=2, n_block=3).to(device)
+                        tmp_converter = conditionGlow(in_channel=3, n_flow=2, n_block=5).to(device)
                         tmp_converter.load_state_dict(converter.state_dict())
                         tmp_final_layer = FClayer().to(device)
                         tmp_final_layer.load_state_dict(final_layer.state_dict())
@@ -445,7 +445,7 @@ def train_and_test_model(device, models, ge2e_loss, loss_func,
 
 if __name__ == "__main__":
 
-    device = "cuda:0" if torch.cuda.is_available() else "cpu"
+    device = "cuda:1" if torch.cuda.is_available() else "cpu"
     
     data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds/' # folder where stores the data for training and test
     train_data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds_new/train/'
@@ -517,7 +517,7 @@ if __name__ == "__main__":
     ge2e_loss_a = GE2ELoss_ori(device).to(device)
     ge2e_loss_p = GE2ELoss_ori(device).to(device)
     ge2e_loss_c = GE2ELoss_ori(device).to(device)
-    converter = conditionGlow(in_channel=3, n_flow=2, n_block=3).to(device)
+    converter = conditionGlow(in_channel=3, n_flow=2, n_block=5).to(device)
     final_layer = FClayer().to(device)
 
     optimizer = torch.optim.Adam([

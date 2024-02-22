@@ -25,9 +25,9 @@ parser.add_argument('--train_list', type=str,   default="/mnt/ssd/gen/piezo_auth
 parser.add_argument('--train_path', type=str,   default="/mnt/hdd/gen/processed_data/wav_clips/piezobuds_new/train/",                    help='The path of the training data, eg:"/data08/VoxCeleb2/train/wav" in my case')
 parser.add_argument('--eval_list',  type=str,   default="/mnt/ssd/gen/piezo_authentication/test_list_piezo.txt",              help='The path of the evaluation list, veri_test2.txt comes from https://www.robots.ox.ac.uk/~vgg/data/voxceleb/meta/veri_test2.txt')
 parser.add_argument('--eval_path',  type=str,   default="/mnt/hdd/gen/processed_data/wav_clips/piezobuds_new/test/",                    help='The path of the evaluation data, eg:"/data08/VoxCeleb1/test/wav" in my case')
-parser.add_argument('--eval_user',  type=int,   default=20)
-parser.add_argument('--eval_uttr_enroll',  type=int,   default=8)
-parser.add_argument('--eval_uttr_verify',  type=int,   default=4)
+parser.add_argument('--eval_user',  type=int,   default=20,	help='number of users for evaluation')
+parser.add_argument('--eval_uttr_enroll',  type=int,   default=8,	help='number of utterances per user for enrollment')
+parser.add_argument('--eval_uttr_verify',  type=int,   default=4,	help='number of utterances per user for verification')
 parser.add_argument('--musan_path', type=str,   default="/mnt/hdd/gen/musan/musan",                    help='The path to the MUSAN set, eg:"/data08/Others/musan_split" in my case')
 parser.add_argument('--rir_path',   type=str,   default="/mnt/hdd/gen/rirs_noises/RIRS_NOISES/simulated_rirs",     help='The path to the RIR set, eg:"/data08/Others/RIRS_NOISES/simulated_rirs" in my case');
 parser.add_argument('--save_path',  type=str,   default="exps/huber",                                     help='Path to save the score.txt and models')

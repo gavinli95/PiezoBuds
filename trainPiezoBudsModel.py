@@ -12,21 +12,25 @@ device = "cuda:0" if torch.cuda.is_available() else "cpu"
 parser = argparse.ArgumentParser(description = "ECAPA_trainer")
 ## Training Settings
 parser.add_argument('--num_frames', type=int,   default=200,     help='Duration of the input segments, eg: 200 for 2 second')
-parser.add_argument('--max_epoch',  type=int,   default=80,      help='Maximum number of epochs')
-parser.add_argument('--batch_size', type=int,   default=200,     help='Batch size')
+parser.add_argument('--max_epoch',  type=int,   default=2000,      help='Maximum number of epochs')
+parser.add_argument('--batch_size', type=int,   default=20,     help='Batch size (number of users per batch)')
+parser.add_argument('--num_uttr', type=int,   default=10,     help='(number of uttrences per user)')
 parser.add_argument('--n_cpu',      type=int,   default=4,       help='Number of loader threads')
-parser.add_argument('--test_step',  type=int,   default=1,       help='Test and save every [test_step] epochs')
+parser.add_argument('--test_step',  type=int,   default=50,       help='Test and save every [test_step] epochs')
 parser.add_argument('--lr',         type=float, default=0.001,   help='Learning rate')
 parser.add_argument("--lr_decay",   type=float, default=0.97,    help='Learning rate decay every [test_step] epochs')
 
 ## Training and evaluation path/lists, save path
 parser.add_argument('--train_list', type=str,   default="/mnt/ssd/gen/piezo_authentication/train_list_piezo.txt",     help='The path of the training list, https://www.robots.ox.ac.uk/~vgg/data/voxceleb/meta/train_list.txt')
 parser.add_argument('--train_path', type=str,   default="/mnt/hdd/gen/processed_data/wav_clips/piezobuds_new/train/",                    help='The path of the training data, eg:"/data08/VoxCeleb2/train/wav" in my case')
-parser.add_argument('--eval_list',  type=str,   default="/mnt/ssd/gen/piezo_authentication/veri_list_piezo.txt",              help='The path of the evaluation list, veri_test2.txt comes from https://www.robots.ox.ac.uk/~vgg/data/voxceleb/meta/veri_test2.txt')
+parser.add_argument('--eval_list',  type=str,   default="/mnt/ssd/gen/piezo_authentication/test_list_piezo.txt",              help='The path of the evaluation list, veri_test2.txt comes from https://www.robots.ox.ac.uk/~vgg/data/voxceleb/meta/veri_test2.txt')
 parser.add_argument('--eval_path',  type=str,   default="/mnt/hdd/gen/processed_data/wav_clips/piezobuds_new/test/",                    help='The path of the evaluation data, eg:"/data08/VoxCeleb1/test/wav" in my case')
+parser.add_argument('--eval_user',  type=int,   default=20)
+parser.add_argument('--eval_uttr_enroll',  type=int,   default=8)
+parser.add_argument('--eval_uttr_verify',  type=int,   default=4)
 parser.add_argument('--musan_path', type=str,   default="/mnt/hdd/gen/musan/musan",                    help='The path to the MUSAN set, eg:"/data08/Others/musan_split" in my case')
 parser.add_argument('--rir_path',   type=str,   default="/mnt/hdd/gen/rirs_noises/RIRS_NOISES/simulated_rirs",     help='The path to the RIR set, eg:"/data08/Others/RIRS_NOISES/simulated_rirs" in my case');
-parser.add_argument('--save_path',  type=str,   default="exps/exp1",                                     help='Path to save the score.txt and models')
+parser.add_argument('--save_path',  type=str,   default="exps/huber",                                     help='Path to save the score.txt and models')
 parser.add_argument('--initial_model',  type=str,   default="",                                          help='Path of the initial_model')
 parser.add_argument('--initial_extractor', type=str, default="/mnt/ssd/gen/GithubRepo/PiezoBuds/ECAPA-TDNN-main/exps/ours/model/model_0080.model", help="")
 
@@ -60,7 +64,9 @@ if args.eval == True:
 	s = PiezoBudsModel(**vars(args))
 	print("Model %s loaded from previous state!"%args.initial_model)
 	s.load_parameters(args.initial_model)
-	EER, minDCF = s.eval_network(eval_list = args.eval_list, eval_path = args.eval_path)
+	EER, minDCF = s.eval_network(eval_list = args.eval_list, eval_path = args.eval_path, 
+							 eval_user=args.eval_user, eval_uttr_enroll=args.eval_uttr_enroll, 
+							 eval_uttr_verify=args.eval_uttr_verify)
 	print("EER %2.2f%%, minDCF %.4f%%"%(EER, minDCF))
 	quit()
 
@@ -106,7 +112,9 @@ while(1):
 	## Evaluation every [test_step] epochs
 	if epoch % args.test_step == 0:
 		s.save_parameters(args.model_save_path + "/model_%04d.model"%epoch)
-		EERs.append(s.eval_network(eval_list = args.eval_list, eval_path = args.eval_path)[0])
+		EERs.append(s.eval_network(eval_list = args.eval_list, eval_path = args.eval_path, 
+							 eval_user=args.eval_user, eval_uttr_enroll=args.eval_uttr_enroll, 
+							 eval_uttr_verify=args.eval_uttr_verify)[0])
 		print(time.strftime("%Y-%m-%d %H:%M:%S"), "%d epoch, ACC %2.2f%%, EER %2.2f%%, bestEER %2.2f%%"%(epoch, acc, EERs[-1], min(EERs)))
 		score_file.write("%d epoch, LR %f, LOSS %f, ACC %2.2f%%, EER %2.2f%%, bestEER %2.2f%%\n"%(epoch, lr, loss, acc, EERs[-1], min(EERs)))
 		score_file.flush()

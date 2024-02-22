@@ -6,7 +6,7 @@ import glob, numpy, os, random, soundfile, torch
 from scipy import signal
 
 class train_loader(object):
-	def __init__(self, train_list, train_path, musan_path, rir_path, num_frames, **kwargs):
+	def __init__(self, train_list, train_path, musan_path, rir_path, num_frames, num_uttr, **kwargs):
 		self.train_path = train_path
 		self.num_frames = num_frames
 		# Load and configure augmentation files
@@ -32,30 +32,69 @@ class train_loader(object):
 			file_name     = os.path.join(train_path, line.split()[1])
 			self.data_label.append(speaker_label)
 			self.data_list.append(file_name)
+		self.data_dict = {}
+		maxid = 0
+		for i in range(len(self.data_label)):
+			id = self.data_label[i]
+			if id > maxid:
+				maxid = id
+			if id in self.data_dict:
+				self.data_dict[id].append(self.data_list[i])
+			else:
+				self.data_dict[id] = [self.data_list[i]]
+		self.user_list = [i for i in range(maxid + 1)]
+		self.num_uttr = num_uttr
+		
 
-	def __getitem__(self, index):
-		# Read the utterance and randomly select the segment
-		audio, sr = soundfile.read(self.data_list[index])		
-		piezo_path = self.data_list[index].replace("audio", "piezo")
-		piezo, sr = soundfile.read(piezo_path)		
+	def process_wav(self, audio):
 		length = self.num_frames * 160 + 240
 		if audio.shape[0] <= length:
 			shortage = length - audio.shape[0]
 			audio = numpy.pad(audio, (0, shortage), 'wrap')
-			piezo = numpy.pad(piezo, (0, shortage), 'wrap')
 		start_frame = numpy.int64(random.random()*(audio.shape[0]-length))
 
 		audio = audio[start_frame:start_frame + length]
 		audio = numpy.stack([audio],axis=0)
+		return audio
 
-		piezo = piezo[start_frame:start_frame + length]
-		piezo = numpy.stack([piezo],axis=0)
+	def __getitem__(self, index):
+		# Read the utterance and randomly select the segment
+		userid = self.user_list[index]
+
+		audios = []
+		piezos = []
+		ids = []
+
+		file_paths = random.sample(self.data_dict[userid], self.num_uttr)
+		for file in file_paths:
+			audio, sr = soundfile.read(file)
+			piezo_path = file.replace("audio", "piezo")
+			piezo, sr = soundfile.read(piezo_path)		
+
+			audio = self.process_wav(audio)
+			piezo = self.process_wav(piezo)
+			audios.append(audio[0])
+			piezos.append(piezo[0])
+			ids.append(userid)
+		
+		# length = self.num_frames * 160 + 240
+		# if audio.shape[0] <= length:
+		# 	shortage = length - audio.shape[0]
+		# 	audio = numpy.pad(audio, (0, shortage), 'wrap')
+		# 	piezo = numpy.pad(piezo, (0, shortage), 'wrap')
+		# start_frame = numpy.int64(random.random()*(audio.shape[0]-length))
+
+		# audio = audio[start_frame:start_frame + length]
+		# audio = numpy.stack([audio],axis=0)
+
+		# piezo = piezo[start_frame:start_frame + length]
+		# piezo = numpy.stack([piezo],axis=0)
 
 		# Data Augmentation
 		# augtype = random.randint(0,5)
-		augtype = 0
-		if augtype == 0:   # Original
-			audio = audio
+		# augtype = 0
+		# if augtype == 0:   # Original
+		# 	audio = audio
 		# elif augtype == 1: # Reverberation
 		# 	audio = self.add_rev(audio)
 		# elif augtype == 2: # Babble
@@ -67,10 +106,13 @@ class train_loader(object):
 		# elif augtype == 5: # Television noise
 		# 	audio = self.add_noise(audio, 'speech')
 		# 	audio = self.add_noise(audio, 'music')
-		return torch.FloatTensor(audio[0]), torch.FloatTensor(piezo[0]), self.data_label[index]
+		audios = numpy.array(audios).astype(float)
+		piezos = numpy.array(piezos).astype(float)
+		ids = numpy.array(ids).astype(int)
+		return torch.from_numpy(audios).float(), torch.from_numpy(piezos).float(), torch.from_numpy(ids)
 
 	def __len__(self):
-		return len(self.data_list)
+		return len(self.data_dict)
 
 	def add_rev(self, audio):
 		rir_file    = random.choice(self.rir_files)

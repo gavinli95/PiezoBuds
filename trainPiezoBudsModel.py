@@ -21,10 +21,10 @@ parser.add_argument('--lr',         type=float, default=0.001,   help='Learning 
 parser.add_argument("--lr_decay",   type=float, default=0.97,    help='Learning rate decay every [test_step] epochs')
 
 ## Training and evaluation path/lists, save path
-parser.add_argument('--train_list', type=str,   default="/mnt/ssd/gen/piezo_authentication/train_list_piezo.txt",     help='The path of the training list, https://www.robots.ox.ac.uk/~vgg/data/voxceleb/meta/train_list.txt')
-parser.add_argument('--train_path', type=str,   default="/mnt/hdd/gen/processed_data/wav_clips/piezobuds_new/train/",                    help='The path of the training data, eg:"/data08/VoxCeleb2/train/wav" in my case')
-parser.add_argument('--eval_list',  type=str,   default="/mnt/ssd/gen/piezo_authentication/test_list_piezo.txt",              help='The path of the evaluation list, veri_test2.txt comes from https://www.robots.ox.ac.uk/~vgg/data/voxceleb/meta/veri_test2.txt')
-parser.add_argument('--eval_path',  type=str,   default="/mnt/hdd/gen/processed_data/wav_clips/piezobuds_new/test/",                    help='The path of the evaluation data, eg:"/data08/VoxCeleb1/test/wav" in my case')
+parser.add_argument('--train_list', type=str,   default="/mnt/ssd/gen/piezo_authentication/train_list_piezo_500ms.txt",     help='The path of the training list, https://www.robots.ox.ac.uk/~vgg/data/voxceleb/meta/train_list.txt')
+parser.add_argument('--train_path', type=str,   default="/mnt/hdd/gen/processed_data/wav_clips_500ms/piezobuds_new/train/",                    help='The path of the training data, eg:"/data08/VoxCeleb2/train/wav" in my case')
+parser.add_argument('--eval_list',  type=str,   default="/mnt/ssd/gen/piezo_authentication/test_list_piezo_500ms.txt",              help='The path of the evaluation list, veri_test2.txt comes from https://www.robots.ox.ac.uk/~vgg/data/voxceleb/meta/veri_test2.txt')
+parser.add_argument('--eval_path',  type=str,   default="/mnt/hdd/gen/processed_data/wav_clips_500ms/piezobuds_new/test/",                    help='The path of the evaluation data, eg:"/data08/VoxCeleb1/test/wav" in my case')
 parser.add_argument('--eval_user',  type=int,   default=20)
 parser.add_argument('--eval_uttr_enroll',  type=int,   default=8)
 parser.add_argument('--eval_uttr_verify',  type=int,   default=4)

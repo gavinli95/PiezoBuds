@@ -104,13 +104,13 @@ class PiezoBudsModel(nn.Module):
 		sys.stdout.write("\n")
 		return loss/num, lr, top1/index*len(labels)
 	
-	def eval_network(self, eval_list, eval_path, eval_user, eval_uttr_enroll, eval_uttr_verify, eval_times=10):
+	def eval_network(self, eval_list, eval_path, eval_user, eval_uttr_enroll, eval_uttr_verify, veri_usr_lst, eval_times=10):
 		EERs = []
 		thresholds = []
 		EER_FARs = []
 		EER_FRRs = []
 		for i in range(eval_times):
-			EER, EER_FAR, EER_FRR, threshold = self.eval_network_one_time(eval_list, eval_path, eval_user, eval_uttr_enroll, eval_uttr_verify)
+			EER, EER_FAR, EER_FRR, threshold = self.eval_network_one_time(eval_list, eval_path, eval_user, eval_uttr_enroll, eval_uttr_verify, veri_usr_lst)
 			EERs.append(EER)
 			thresholds.append(threshold)
 			EER_FARs.append(EER_FAR)
@@ -118,7 +118,7 @@ class PiezoBudsModel(nn.Module):
 		minDCF, _ = ComputeMinDcf(EER_FRRs, EER_FARs, thresholds, 0.05, 1, 1)
 		return np.mean(EERs), minDCF
 
-	def eval_network_one_time(self, eval_list, eval_path, eval_user, eval_uttr_enroll, eval_uttr_verify):
+	def eval_network_one_time(self, eval_list, eval_path, eval_user, eval_uttr_enroll, eval_uttr_verify, veri_user_list):
 		self.eval()
 		files = []
 		embeddings = {}
@@ -131,7 +131,11 @@ class PiezoBudsModel(nn.Module):
 				eval_dict[id].append(file_path)
 			else:
 				eval_dict[id] = [file_path]
-		eval_users_id = random.sample(self.user_list, eval_user)
+		if veri_user_list == []:
+			eval_users_id = random.sample(self.user_list, eval_user)
+		else:
+			eval_users_id = random.sample(veri_user_list, eval_user)
+
 		total_uttr = eval_uttr_enroll + eval_uttr_verify
 		audios = []
 		piezos = []

@@ -7,7 +7,7 @@ from tools import *
 from dataLoader import train_loader
 from PiezoBudsModel import PiezoBudsModel
 
-device = "cuda:0" if torch.cuda.is_available() else "cpu"
+device = "cuda:1" if torch.cuda.is_available() else "cpu"
 
 parser = argparse.ArgumentParser(description = "ECAPA_trainer")
 ## Training Settings
@@ -25,12 +25,13 @@ parser.add_argument('--train_list', type=str,   default="/mnt/ssd/gen/piezo_auth
 parser.add_argument('--train_path', type=str,   default="/mnt/hdd/gen/processed_data/wav_clips_500ms/piezobuds_new/train/",                    help='The path of the training data, eg:"/data08/VoxCeleb2/train/wav" in my case')
 parser.add_argument('--eval_list',  type=str,   default="/mnt/ssd/gen/piezo_authentication/test_list_piezo_500ms.txt",              help='The path of the evaluation list, veri_test2.txt comes from https://www.robots.ox.ac.uk/~vgg/data/voxceleb/meta/veri_test2.txt')
 parser.add_argument('--eval_path',  type=str,   default="/mnt/hdd/gen/processed_data/wav_clips_500ms/piezobuds_new/test/",                    help='The path of the evaluation data, eg:"/data08/VoxCeleb1/test/wav" in my case')
+parser.add_argument('--eval_user_total', type=int, default=0, help='Number of users for evaluating; Number of training users will be 70 - eval_user_total')
 parser.add_argument('--eval_user',  type=int,   default=20)
 parser.add_argument('--eval_uttr_enroll',  type=int,   default=8)
 parser.add_argument('--eval_uttr_verify',  type=int,   default=4)
 parser.add_argument('--musan_path', type=str,   default="/mnt/hdd/gen/musan/musan",                    help='The path to the MUSAN set, eg:"/data08/Others/musan_split" in my case')
 parser.add_argument('--rir_path',   type=str,   default="/mnt/hdd/gen/rirs_noises/RIRS_NOISES/simulated_rirs",     help='The path to the RIR set, eg:"/data08/Others/RIRS_NOISES/simulated_rirs" in my case');
-parser.add_argument('--save_path',  type=str,   default="exps/huber",                                     help='Path to save the score.txt and models')
+parser.add_argument('--save_path',  type=str,   default="exps/huber3",                                     help='Path to save the score.txt and models')
 parser.add_argument('--initial_model',  type=str,   default="",                                          help='Path of the initial_model')
 parser.add_argument('--initial_extractor', type=str, default="/mnt/ssd/gen/GithubRepo/PiezoBuds/ECAPA-TDNN-main/exps/ours/model/model_0080.model", help="")
 
@@ -53,6 +54,7 @@ args = init_args(args)
 
 ## Define the data loader
 trainloader = train_loader(**vars(args))
+_, veri_list = trainloader.return_user_lists()
 trainLoader = torch.utils.data.DataLoader(trainloader, batch_size = args.batch_size, shuffle = True, num_workers = args.n_cpu, drop_last = True)
 
 ## Search for the exist models
@@ -66,7 +68,7 @@ if args.eval == True:
 	s.load_parameters(args.initial_model)
 	EER, minDCF = s.eval_network(eval_list = args.eval_list, eval_path = args.eval_path, 
 							 eval_user=args.eval_user, eval_uttr_enroll=args.eval_uttr_enroll, 
-							 eval_uttr_verify=args.eval_uttr_verify)
+							 eval_uttr_verify=args.eval_uttr_verify, veri_usr_lst=veri_list)
 	print("EER %2.2f%%, minDCF %.4f%%"%(EER, minDCF))
 	quit()
 
@@ -88,7 +90,7 @@ else:
 	epoch = 1
 	s = PiezoBudsModel(**vars(args))
 	if args.initial_extractor != "":
-		loaded_state = torch.load(args.initial_extractor)
+		loaded_state = torch.load(args.initial_extractor, map_location=device)
 		state_a = s.encoder_a.state_dict()
 		state_p = s.encoder_p.state_dict()
 		for name, param in loaded_state.items():
@@ -114,9 +116,9 @@ while(1):
 		s.save_parameters(args.model_save_path + "/model_%04d.model"%epoch)
 		EERs.append(s.eval_network(eval_list = args.eval_list, eval_path = args.eval_path, 
 							 eval_user=args.eval_user, eval_uttr_enroll=args.eval_uttr_enroll, 
-							 eval_uttr_verify=args.eval_uttr_verify)[0])
-		print(time.strftime("%Y-%m-%d %H:%M:%S"), "%d epoch, ACC %2.2f%%, EER %2.2f%%, bestEER %2.2f%%"%(epoch, acc, EERs[-1], min(EERs)))
-		score_file.write("%d epoch, LR %f, LOSS %f, ACC %2.2f%%, EER %2.2f%%, bestEER %2.2f%%\n"%(epoch, lr, loss, acc, EERs[-1], min(EERs)))
+							 eval_uttr_verify=args.eval_uttr_verify, veri_usr_lst=veri_list)[0])
+		print(time.strftime("%Y-%m-%d %H:%M:%S"), "%d epoch, ACC %2.2f%%, EER %2.2f%%, bestEER %2.2f%%"%(epoch, acc, EERs[-1] * 100, min(EERs) * 100))
+		score_file.write("%d epoch, LR %f, LOSS %f, ACC %2.2f%%, EER %2.2f%%, bestEER %2.2f%%\n"%(epoch, lr, loss, acc, EERs[-1] * 100, min(EERs) * 100))
 		score_file.flush()
 
 	if epoch >= args.max_epoch:

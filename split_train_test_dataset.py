@@ -4,10 +4,10 @@ import shutil
 if __name__=='__main__':
     n_user = 70
 
-    data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds/'
+    data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips_500ms/piezobuds/'
 
-    target_file_dir_train = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds_new/train/'
-    target_file_dir_test = '/mnt/hdd/gen/processed_data/wav_clips/piezobuds_new/test/'
+    target_file_dir_train = '/mnt/hdd/gen/processed_data/wav_clips_500ms/piezobuds_new/train/'
+    target_file_dir_test = '/mnt/hdd/gen/processed_data/wav_clips_500ms/piezobuds_new/test/'
     os.makedirs(target_file_dir_train, exist_ok=True)
     os.makedirs(target_file_dir_test, exist_ok=True)
 

@@ -6,7 +6,7 @@ import glob, numpy, os, random, soundfile, torch
 from scipy import signal
 
 class train_loader(object):
-	def __init__(self, train_list, train_path, musan_path, rir_path, num_frames, num_uttr, **kwargs):
+	def __init__(self, train_list, train_path, musan_path, rir_path, num_frames, num_uttr, eval_user_total, **kwargs):
 		self.train_path = train_path
 		self.num_frames = num_frames
 		# Load and configure augmentation files
@@ -42,9 +42,15 @@ class train_loader(object):
 				self.data_dict[id].append(self.data_list[i])
 			else:
 				self.data_dict[id] = [self.data_list[i]]
-		self.user_list = [i for i in range(maxid + 1)]
+		number_of_train_users = maxid - eval_user_total + 1
+
+		usr_list = [i for i in range(maxid + 1)]
+		self.user_list_train = random.sample(usr_list, number_of_train_users)
+		self.user_list_veri  = [i for i in usr_list if i not in self.user_list_train]
 		self.num_uttr = num_uttr
-		
+
+	def return_user_lists(self):
+		return self.user_list_train, self.user_list_veri
 
 	def process_wav(self, audio):
 		length = self.num_frames * 160 + 240
@@ -59,7 +65,7 @@ class train_loader(object):
 
 	def __getitem__(self, index):
 		# Read the utterance and randomly select the segment
-		userid = self.user_list[index]
+		userid = self.user_list_train[index]
 
 		audios = []
 		piezos = []
@@ -112,7 +118,7 @@ class train_loader(object):
 		return torch.from_numpy(audios).float(), torch.from_numpy(piezos).float(), torch.from_numpy(ids)
 
 	def __len__(self):
-		return len(self.data_dict)
+		return len(self.user_list_train)
 
 	def add_rev(self, audio):
 		rir_file    = random.choice(self.rir_files)

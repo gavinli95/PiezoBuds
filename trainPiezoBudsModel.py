@@ -7,7 +7,7 @@ from tools import *
 from dataLoader import train_loader
 from PiezoBudsModel import PiezoBudsModel
 
-device = "cuda:0" if torch.cuda.is_available() else "cpu"
+device = "cuda:1" if torch.cuda.is_available() else "cpu"
 
 parser = argparse.ArgumentParser(description = "ECAPA_trainer")
 ## Training Settings
@@ -16,7 +16,7 @@ parser.add_argument('--max_epoch',  type=int,   default=2000,      help='Maximum
 parser.add_argument('--batch_size', type=int,   default=20,     help='Batch size (number of users per batch)')
 parser.add_argument('--num_uttr', type=int,   default=10,     help='(number of uttrences per user)')
 parser.add_argument('--n_cpu',      type=int,   default=4,       help='Number of loader threads')
-parser.add_argument('--test_step',  type=int,   default=50,       help='Test and save every [test_step] epochs')
+parser.add_argument('--test_step',  type=int,   default=25,       help='Test and save every [test_step] epochs')
 parser.add_argument('--lr',         type=float, default=0.001,   help='Learning rate')
 parser.add_argument("--lr_decay",   type=float, default=0.97,    help='Learning rate decay every [test_step] epochs')
 
@@ -88,7 +88,7 @@ else:
 	epoch = 1
 	s = PiezoBudsModel(**vars(args))
 	if args.initial_extractor != "":
-		loaded_state = torch.load(args.initial_extractor)
+		loaded_state = torch.load(args.initial_extractor, map_location=device)
 		state_a = s.encoder_a.state_dict()
 		state_p = s.encoder_p.state_dict()
 		for name, param in loaded_state.items():
@@ -115,8 +115,8 @@ while(1):
 		EERs.append(s.eval_network(eval_list = args.eval_list, eval_path = args.eval_path, 
 							 eval_user=args.eval_user, eval_uttr_enroll=args.eval_uttr_enroll, 
 							 eval_uttr_verify=args.eval_uttr_verify)[0])
-		print(time.strftime("%Y-%m-%d %H:%M:%S"), "%d epoch, ACC %2.2f%%, EER %2.2f%%, bestEER %2.2f%%"%(epoch, acc, EERs[-1], min(EERs)))
-		score_file.write("%d epoch, LR %f, LOSS %f, ACC %2.2f%%, EER %2.2f%%, bestEER %2.2f%%\n"%(epoch, lr, loss, acc, EERs[-1], min(EERs)))
+		print(time.strftime("%Y-%m-%d %H:%M:%S"), "%d epoch, ACC %2.2f%%, EER %2.2f%%, bestEER %2.2f%%"%(epoch, acc, EERs[-1] * 100.0, min(EERs)))
+		score_file.write("%d epoch, LR %f, LOSS %f, ACC %2.2f%%, EER %2.2f%%, bestEER %2.2f%%\n"%(epoch, lr, loss, acc, EERs[-1] * 100.0, min(EERs)))
 		score_file.flush()
 
 	if epoch >= args.max_epoch:

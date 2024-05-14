@@ -17,7 +17,7 @@ parser.add_argument('--max_epoch',  type=int,   default=2100,      help='Maximum
 parser.add_argument('--batch_size', type=int,   default=20,     help='Batch size (number of users per batch)')
 parser.add_argument('--num_uttr', type=int,   default=10,     help='(number of uttrences per user)')
 parser.add_argument('--n_cpu',      type=int,   default=4,       help='Number of loader threads')
-parser.add_argument('--test_step',  type=int,   default=50,       help='Test and save every [test_step] epochs')
+parser.add_argument('--test_step',  type=int,   default=25,       help='Test and save every [test_step] epochs')
 parser.add_argument('--lr',         type=float, default=0.001,   help='Learning rate')
 parser.add_argument("--lr_decay",   type=float, default=0.97,    help='Learning rate decay every [test_step] epochs')
 

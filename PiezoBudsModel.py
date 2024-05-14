@@ -164,7 +164,7 @@ class PiezoBudsModel(nn.Module):
 		lr = self.optim.param_groups[0]['lr']
 		for num, (audio, piezo, audio_extra, noise, labels) in enumerate(loader, start = 1):
 			self.zero_grad()
-			labels            = torch.LongTensor(labels).to(self.device)
+			labels = torch.LongTensor(labels).to(self.device)
 			b, u = labels.shape
 			labels = labels.contiguous().view(b * u)
 			embedding_audio, embedding_piezo, embedding_conv, embeddings_cat = self.infer_embedding(audio.to(self.device), piezo.to(self.device), labels)

@@ -218,6 +218,14 @@ class ECAPA_TDNN(nn.Module):
         self.fc6 = nn.Linear(3072, 192)
         self.bn6 = nn.BatchNorm1d(192)
 
+    def specaug_total(self, x):
+        with torch.no_grad():
+            x = self.torchfbank(x)+1e-6
+            x = x.log()   
+            x = x - torch.mean(x, dim=-1, keepdim=True)
+            x = self.specaug(x)
+        return x
+
 
     def forward(self, x, aug=True):
         with torch.no_grad():

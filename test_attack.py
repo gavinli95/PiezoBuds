@@ -24,6 +24,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import json
 from biGlow import *
+from PiezoBudsModel import *
 
 
 def remove_prefix(text, prefix):
@@ -186,7 +187,7 @@ def get_embeddings_verify(centroids_piezo_enroll, piezo_clips_verify, audio_clip
 
 
 
-def test_model(device, models, data_set, test_batch_size,
+def test_model(device, piezomodel, models, data_set, test_batch_size,
                n_fft=512, hop_length=256, win_length=512, window_fn = torch.hann_window, power=None,
                num_epochs=10, fig_store_path=None, threshold=0.5):
     
@@ -204,6 +205,8 @@ def test_model(device, models, data_set, test_batch_size,
         extractor_p.eval()
         converter.eval()
         dataloader = test_loader
+
+        piezomodel.eval()
 
         ASR_within_epoch = np.array([0, 0, 0]).astype(float)
         for batch_id, (piezo_clips, audio_clips, ids) in enumerate(dataloader):
@@ -301,6 +304,7 @@ if __name__ == "__main__":
     pth_store_dir = '/mnt/ssd/gen/GithubRepo/PiezoBuds/pth_model/' + model_pth
     test_user_id_files = '/mnt/ssd/gen/GithubRepo/PiezoBuds/pth_model/' + model_pth + 'test_users.json'
     fig_store_path = './pca_figs/' + model_pth
+    piezobuds_model_path = "/mnt/ssd/gen/GithubRepo/PiezoBuds/exps/ge2e_ap_with_huber_audioasinput_50_frames/model/model_0380.model"
     os.makedirs(fig_store_path, exist_ok=True)
 
     # set the params of each train
@@ -311,7 +315,8 @@ if __name__ == "__main__":
     n_user = 69
     num_of_epoches = 20
     test_batch_size = 7
-    threshold = 0.5436
+    # threshold = 0.5436
+    threshold = 0.94710
 
     n_fft = 512  # Size of FFT, affects the frequency granularity
     hop_length = 256  # Typically n_fft // 4 (is None, then hop_length = n_fft // 2 by default)
@@ -331,6 +336,11 @@ if __name__ == "__main__":
     converter = conditionGlow(in_channel=3, n_flow=2, n_block=3)
     converter.load_state_dict(torch.load(pth_store_dir + 'converter.pth'))
     converter.to(device)
+
+    piezobudsmodel = PiezoBudsModel(0.001, 0.97, 1024, 70, 0.2, 30, 20, device, 50)
+    piezobudsmodel.load_parameters(piezobuds_model_path)
+    piezobudsmodel.to(device)
+
 
     # create the folder to store the model
     model_struct = 'model_' + comment
@@ -353,7 +363,7 @@ if __name__ == "__main__":
     print(len(data_set))
 
     models = (extractor_a, extractor_p, converter)
-    test_model(device=device, models=models, data_set=data_set, test_batch_size=4, 
+    test_model(device=device, piezomodel=piezobudsmodel, models=models, data_set=data_set, test_batch_size=4, 
                fig_store_path=fig_store_path, num_epochs=num_of_epoches,
                threshold=threshold)
 

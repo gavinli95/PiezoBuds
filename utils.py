@@ -20,6 +20,31 @@ from netgraph import Graph
 import matplotlib.pyplot as plt
 from sklearn.manifold import MDS
 from sklearn.cluster import KMeans
+from scipy.signal import hilbert
+
+
+def extract_envelope(signal, kernel_size=51):
+    """
+    Extract the envelope of a signal using Hilbert transform.
+
+    Args:
+    - signal (numpy.ndarray): The input signal.
+    - kernel_size (int): The size of the moving average window.
+
+    Returns:
+    - numpy.ndarray: The extracted envelope of the signal.
+    """
+    # Apply the Hilbert transform to get the analytical signal
+    analytical_signal = hilbert(signal)
+    # Calculate the envelope as the magnitude of the analytical signal
+    envelope = np.abs(analytical_signal)
+    # Apply a moving average (using convolution) to smooth the envelope
+    window = np.ones(kernel_size) / kernel_size
+    smoothed_envelope = np.convolve(envelope, window, mode='same')
+    # smoothed_envelope[smoothed_envelope > 0.0005] = 1
+    # smoothed_envelope[smoothed_envelope <= 0.0005] = 1e-6
+    
+    return smoothed_envelope
 
 
 def draw_distance_matrix(distance_matrix, filename):
@@ -196,8 +221,29 @@ def get_cossim(embeddings, centroids):
     cos_diff = cos_diff + 1e-6
     return cos_diff
 
+def get_modal_cossim_revised(embeddings, centroids):
+    num_user = embeddings.shape[0]
+    num_utterances = embeddings.shape[1]
+
+    # Flatten the embeddings for manipulation
+    embeddings_flat = embeddings.view(num_user * num_utterances, -1)
+
+    # Expand embeddings to match each against every centroid
+    embeddings_expand = embeddings_flat.unsqueeze(1).repeat(1, num_user, 1)
+    embeddings_expand = embeddings_expand.view(-1, embeddings_flat.shape[-1])
+
+    # Repeat centroids to align with the expanded embeddings for comparison
+    centroids_expand = centroids.repeat(num_utterances * num_user, 1)
+
+    # Calculate the cosine similarities between embedding vectors and centroids
+    # Specify the dimension along which to compute similarity
+    cossim_modal = F.cosine_similarity(embeddings_expand, centroids_expand, dim=1)
+    cossim_modal = cossim_modal.view(num_user, num_utterances, -1)
+    cossim_modal = cossim_modal + 1e-6  # Prevent division by zero or NaN issues
+
+    return cossim_modal
+
 def get_modal_cossim(embeddings, centroids):
-    # only calculate the cosine similarities between the different modalities instead of itself
     num_user = embeddings.shape[0]
     num_utterances = embeddings.shape[1]
 

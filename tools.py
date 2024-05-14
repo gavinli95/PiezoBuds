@@ -106,7 +106,7 @@ def remove_prefix(text, prefix):
         return text[len(prefix):]
     return text
 
-def compute_EER(sim_matrix):
+def compute_EER(sim_matrix, threshold=None):
     """
     Compute EER, FAR, FRR and the threshold at which EER occurs.
 
@@ -121,31 +121,45 @@ def compute_EER(sim_matrix):
     - FRR (float): False rejection rate at EER.
     """
     num_of_speakers, num_of_utters, _ = sim_matrix.shape
-    
-    # Initialize values
-    diff = float('inf')
-    EER = 0.0
-    threshold = 0.5
-    EER_FAR = 0.0
-    EER_FRR = 0.0
+    if threshold == None:
+        # Initialize values
+        diff = float('inf')
+        EER = 0.0
+        threshold = 0.5
+        EER_FAR = 0.0
+        EER_FRR = 0.0
 
-    # Iterate over potential thresholds
-    for thres in torch.linspace(0.5, 1.0, 501):
-        sim_matrix_thresh = sim_matrix > thres
+        # Iterate over potential thresholds
+        for thres in torch.linspace(0.5, 1.0, 501):
+            sim_matrix_thresh = sim_matrix > thres
+
+            # Compute FAR and FRR
+            FAR = sum([(sim_matrix_thresh[i].sum() - sim_matrix_thresh[i, :, i].sum()).float()
+                        for i in range(num_of_speakers)]) / (num_of_speakers - 1.0) / (num_of_utters) / num_of_speakers
+
+            FRR = sum([(num_of_utters - sim_matrix_thresh[i, :, i].sum()).float()
+                    for i in range(num_of_speakers)]) / (num_of_utters) / num_of_speakers
+
+            # Update if this is the closest FAR and FRR we've seen so far
+            if diff > abs(FAR - FRR):
+                diff = abs(FAR - FRR)
+                EER = ((FAR + FRR) / 2).item()
+                threshold = thres.item()
+                EER_FAR = FAR.item()
+                EER_FRR = FRR.item()
+
+        return EER, threshold, EER_FAR, EER_FRR
+    else:
+        sim_matrix_thresh = sim_matrix > threshold
 
         # Compute FAR and FRR
         FAR = sum([(sim_matrix_thresh[i].sum() - sim_matrix_thresh[i, :, i].sum()).float()
                     for i in range(num_of_speakers)]) / (num_of_speakers - 1.0) / (num_of_utters) / num_of_speakers
 
         FRR = sum([(num_of_utters - sim_matrix_thresh[i, :, i].sum()).float()
-                   for i in range(num_of_speakers)]) / (num_of_utters) / num_of_speakers
-
-        # Update if this is the closest FAR and FRR we've seen so far
-        if diff > abs(FAR - FRR):
-            diff = abs(FAR - FRR)
-            EER = ((FAR + FRR) / 2).item()
-            threshold = thres.item()
-            EER_FAR = FAR.item()
-            EER_FRR = FRR.item()
-
-    return EER, threshold, EER_FAR, EER_FRR
+                for i in range(num_of_speakers)]) / (num_of_utters) / num_of_speakers
+        
+        EER = ((FAR + FRR) / 2).item()
+        EER_FAR = FAR.item()
+        EER_FRR = FRR.item()
+        return EER, threshold, EER_FAR, EER_FRR

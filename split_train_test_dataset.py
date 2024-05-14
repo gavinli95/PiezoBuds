@@ -2,12 +2,12 @@ import os
 import shutil
 
 if __name__=='__main__':
-    n_user = 70
+    n_user = 81
 
-    data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips_500ms/piezobuds/'
+    data_file_dir = '/mnt/hdd/gen/processed_data/wav_clips_500ms/piezobuds_new_1/'
 
-    target_file_dir_train = '/mnt/hdd/gen/processed_data/wav_clips_500ms/piezobuds_new/train/'
-    target_file_dir_test = '/mnt/hdd/gen/processed_data/wav_clips_500ms/piezobuds_new/test/'
+    target_file_dir_train = '/mnt/hdd/gen/processed_data/wav_clips_500ms/piezobuds_new_1/train/'
+    target_file_dir_test = '/mnt/hdd/gen/processed_data/wav_clips_500ms/piezobuds_new_1/test/'
     os.makedirs(target_file_dir_train, exist_ok=True)
     os.makedirs(target_file_dir_test, exist_ok=True)
 
@@ -17,8 +17,8 @@ if __name__=='__main__':
         print('User: %d' % i)
         print(n_uttr)
         n_uttr_test = int(n_uttr * 0.2)
-        if n_uttr_test < 100:
-            n_uttr_test = 100
+        if n_uttr_test < 50:
+            n_uttr_test = 50
         n_uttr_train = n_uttr - n_uttr_test
         print('Train: %d, Test: %d' % (n_uttr_train, n_uttr_test))
         

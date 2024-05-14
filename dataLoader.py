@@ -4,6 +4,9 @@ DataLoader for training
 
 import glob, numpy, os, random, soundfile, torch
 from scipy import signal
+from matplotlib import pyplot as plt
+from utils import extract_envelope
+import numpy as np
 
 class train_loader(object):
 	def __init__(self, train_list, train_path, musan_path, rir_path, num_frames, num_uttr, eval_user_total, **kwargs):
@@ -42,10 +45,10 @@ class train_loader(object):
 				self.data_dict[id].append(self.data_list[i])
 			else:
 				self.data_dict[id] = [self.data_list[i]]
-		number_of_train_users = maxid - eval_user_total + 1
+		# number_of_train_users = maxid - eval_user_total + 1
 
 		usr_list = [i for i in range(maxid + 1)]
-		self.user_list_train = random.sample(usr_list, number_of_train_users)
+		self.user_list_train = random.sample(usr_list, eval_user_total)
 		self.user_list_veri  = [i for i in usr_list if i not in self.user_list_train]
 		self.num_uttr = num_uttr
 
@@ -68,19 +71,59 @@ class train_loader(object):
 		userid = self.user_list_train[index]
 
 		audios = []
+		audios_extra = []
 		piezos = []
+		noises = []
 		ids = []
 
-		file_paths = random.sample(self.data_dict[userid], self.num_uttr)
-		for file in file_paths:
+		file_paths = random.sample(self.data_dict[userid], self.num_uttr * 2)
+		file_paths_non_current_audio = file_paths[self.num_uttr: ]
+		file_paths = file_paths[0: self.num_uttr]
+		for i in range(self.num_uttr):
+			file = file_paths[i]
+			file_extra_audio = file_paths_non_current_audio[i]
 			audio, sr = soundfile.read(file)
 			piezo_path = file.replace("audio", "piezo")
-			piezo, sr = soundfile.read(piezo_path)		
+			piezo, sr = soundfile.read(piezo_path)
+			audio_extra, _ = soundfile.read(file_extra_audio)
+
+			noise, sr = soundfile.read("./noise_piezo.wav")
 
 			audio = self.process_wav(audio)
 			piezo = self.process_wav(piezo)
-			audios.append(audio[0])
-			piezos.append(piezo[0])
+
+			audio_extra = self.process_wav(audio_extra)
+			noise = self.process_wav(noise)
+			noise = noise / np.max(np.abs(noise))
+
+			# plt.figure()
+			# plt.plot(audio)
+			# plt.savefig("audio.png")
+			# plt.close()
+
+			# plt.figure()
+			# plt.plot(piezo)
+			# plt.savefig("piezo.png")
+			# plt.close()
+
+			audio = audio[0]
+			audio_extra = audio_extra[0]
+			piezo = piezo[0]
+			noise = noise[0]
+			# env = extract_envelope(np.abs(piezo))
+			# env = env / np.max(np.abs(env))
+			# env[env > 0.21] = 1
+			# env[env <= 0.21] = 1e-6
+			# env = self.process_wav(env)[0]
+
+			# audio = audio * env
+			# piezo = piezo * env
+
+
+			audios.append(audio)
+			audios_extra.append(audio_extra)
+			piezos.append(piezo)
+			noises.append(noise)
 			ids.append(userid)
 		
 		# length = self.num_frames * 160 + 240
@@ -113,9 +156,11 @@ class train_loader(object):
 		# 	audio = self.add_noise(audio, 'speech')
 		# 	audio = self.add_noise(audio, 'music')
 		audios = numpy.array(audios).astype(float)
+		audios_extra = numpy.array(audios_extra).astype(float)
 		piezos = numpy.array(piezos).astype(float)
+		noises = numpy.array(noises).astype(float)
 		ids = numpy.array(ids).astype(int)
-		return torch.from_numpy(audios).float(), torch.from_numpy(piezos).float(), torch.from_numpy(ids)
+		return torch.from_numpy(audios).float(), torch.from_numpy(piezos).float(), torch.from_numpy(audios_extra), torch.from_numpy(noises), torch.from_numpy(ids)
 
 	def __len__(self):
 		return len(self.user_list_train)
